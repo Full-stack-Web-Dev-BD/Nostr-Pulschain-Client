@@ -1,8 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import {
   CButton,
   CCard,
   CCardBody,
+  CCardGroup,
   CCol,
   CContainer,
   CForm,
@@ -19,48 +21,43 @@ const Register = () => {
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={9} lg={7} xl={6}>
-            <CCard className="mx-4">
-              <CCardBody className="p-4">
-                <CForm>
-                  <h1>Register</h1>
-                  <p className="text-body-secondary">Create your account</p>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilUser} />
-                    </CInputGroupText>
-                    <CFormInput placeholder="Username" autoComplete="username" />
-                  </CInputGroup>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>@</CInputGroupText>
-                    <CFormInput placeholder="Email" autoComplete="email" />
-                  </CInputGroup>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Password"
-                      autoComplete="new-password"
-                    />
-                  </CInputGroup>
-                  <CInputGroup className="mb-4">
-                    <CInputGroupText>
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      placeholder="Repeat password"
-                      autoComplete="new-password"
-                    />
-                  </CInputGroup>
-                  <div className="d-grid">
-                    <CButton color="success">Create Account</CButton>
+          <CCol md={8}>
+            <CCardGroup>
+              <CCard className="p-4">
+                <CCardBody>
+                  <CForm className='pt-4'>
+                    <h1>Signup</h1>
+                    <p className="text-body-secondary">What should we call you?</p>
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText>
+                        <CIcon icon={cilUser} />
+                      </CInputGroupText>
+                      <CFormInput placeholder="Your Name" autoComplete="Name" />
+                    </CInputGroup> 
+                    <CRow>
+                      <CCol xs={6}>
+                        <CButton color="primary" className="px-4">
+                          Create 
+                        </CButton>
+                      </CCol> 
+                    </CRow>
+                  </CForm>
+                </CCardBody>
+              </CCard>
+              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+                <CCardBody className="text-center">
+                  <div>
+                    <h2>Login</h2>
+                    <p>Already have an account?</p>
+                    <Link to="/login">
+                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
+                        Login 
+                      </CButton>
+                    </Link>
                   </div>
-                </CForm>
-              </CCardBody>
-            </CCard>
+                </CCardBody>
+              </CCard>
+            </CCardGroup>
           </CCol>
         </CRow>
       </CContainer>
