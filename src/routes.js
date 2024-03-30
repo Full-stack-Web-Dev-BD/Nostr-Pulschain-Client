@@ -1,10 +1,11 @@
 import React from 'react'
 
 const Home = React.lazy(() => import('./views/home/Home'))
-const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
-const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
+const Profile = React.lazy(() => import('./views/profile/Profile'))
 
 // Base
+const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
+const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
 const Cards = React.lazy(() => import('./views/base/cards/Cards'))
@@ -53,6 +54,8 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   // Applicatoin
   { path: '/', exact: true, name: 'Home' },
+  { path: '/home', name: 'Home', element: Home },
+  { path: '/profile', name: 'Home', element: Profile },
 
 
 
@@ -75,7 +78,6 @@ const routes = [
 
 
   // others
-  { path: '/home', name: 'Home', element: Home },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

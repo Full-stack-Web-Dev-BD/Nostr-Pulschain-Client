@@ -1,3 +1,10 @@
+.btn_success{
+  border-radius: 50px;
+  background-color: #d008f8;
+  color: white;
+  font-weight: 500;
+  text-transform: capitalize;
+}
 // Here you can add other styles
 .user_profile_box {
   display: flex;
@@ -113,4 +120,74 @@
 }
 .search_box {
   position: relative;
+}
+
+/*
+==========================Profile Page==================================
+*/
+.profile_cover_wrap {
+  margin-bottom: 100px;
+}
+.profile_cover_photo {
+  width: 100%;
+  background-image: url(/src/assets/images/react.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  text-align: center;
+  height: 250px;
+  position: relative;
+  border: 2px solid #d008f8;
+}
+
+.profile_cover_photo .profile_main_photo {
+  width: 120px;
+  height: 120px;
+  background-image: url(/src/assets/images/avatars/8.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+  top: 100%;
+  z-index: 2;
+  border: 2px solid #d008f8;
+}
+
+
+.profile_cover_photo button {
+  position: absolute;
+  right: 40px;
+  top: 50px;
+  z-index: 2;
+}
+.btn_cp_upload{
+  background-color: #d008f8;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 600;
+  border-radius: 50px;
+}
+
+.btn_cp_upload:hover{
+  background-color: #8920e9;
+}
+
+
+.color_keys p {
+  color: #d008f8;
+  margin: 0;
+}
+.color_keys p span{
+  cursor: pointer;
+}
+
+.web3pub_qr_code img{
+  border-radius: 10px;
 }
