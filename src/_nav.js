@@ -19,17 +19,7 @@ const _nav = [
     badge: {
       color: 'info',
     },
-  },
-
-  {
-    component: CNavItem,
-    name: 'Search',
-    to: '/search',
-    icon: <CIcon icon={cilSearch} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-    },
-  },
+  }, 
   {
     component: CNavItem,
     name: 'Message',
@@ -38,25 +28,7 @@ const _nav = [
     badge: {
       color: 'info',
     },
-  },
-  {
-    component: CNavItem,
-    name: 'About',
-    to: '/about',
-    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-    },
-  },
-  {
-    component: CNavItem,
-    name: 'Setting',
-    to: '/setting',
-    icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-    },
-  },
+  },  
   
   {
     component: CNavTitle,

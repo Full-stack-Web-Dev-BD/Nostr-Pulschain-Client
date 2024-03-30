@@ -1,1 +1,116 @@
 // Here you can add other styles
+.user_profile_box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.user_profile_box p {
+  color: #d008f8;
+  margin: 0;
+}
+.user_profile_box p span {
+  cursor: pointer;
+}
+.user_profile_box img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid #d008f8;
+}
+.upload_panal {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.upload_panal .send {
+  background-color: #8920e9;
+  color: white;
+  font-size: 16px;
+}
+
+.upload_panal .cancel {
+  background-color: #d008f8;
+  color: white;
+  font-size: 16px;
+}
+
+.upload_panal svg {
+  color: #d008f8;
+}
+
+// post
+
+.upload_panal {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.user_profile_link a {
+  text-decoration: none;
+  color: white;
+}
+
+.user_profile_link a:hover {
+  text-decoration: underline;
+}
+.post_content p {
+  font-size: 18px;
+}
+.post_content img {
+  border-radius: 10px;
+  max-width: 100%;
+}
+
+.post_reaction_item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.post_reaction_item span {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.reaction_icon {
+  cursor: pointer;
+}
+// comment
+.post_comments {
+}
+.comment_user {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.comment_user p,
+.comment_user h6 {
+  margin: 0;
+}
+.comment_user img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #d008f8;
+}
+
+.no_border {
+  border: none;
+}
+
+.search_box span {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translate(0, -30%);
+}
+.search_box svg {
+  color: #4a4a4a;
+}
+.search_box input {
+  padding-right: 50px;
+}
+.search_box {
+  position: relative;
+}
