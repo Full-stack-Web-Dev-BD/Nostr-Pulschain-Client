@@ -1,18 +1,14 @@
 import React from 'react'
 import {
   CAvatar,
-  CBadge,
   CDropdown,
-  CDropdownDivider,
   CDropdownHeader,
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
 import {
-  cilEnvelopeOpen,
   cilLockLocked,
-  cilUser,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
@@ -26,20 +22,7 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader> 
-        <CDropdownItem href="#">
-          <CIcon icon={cilEnvelopeOpen} className="me-2" />
-          Messages
-          <CBadge color="success" className="ms-2">
-            42
-          </CBadge>
-        </CDropdownItem>  
-        <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
-        <CDropdownItem href="#">
-          <CIcon icon={cilUser} className="me-2" />
-          Profile
-        </CDropdownItem> 
-        <CDropdownDivider />
-        <CDropdownItem href="#">
+         <CDropdownItem href="#">
           <CIcon icon={cilLockLocked} className="me-2" />
           Log Out
         </CDropdownItem>

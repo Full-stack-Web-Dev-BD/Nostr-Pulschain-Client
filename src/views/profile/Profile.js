@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { cilChatBubble, cilCloudUpload, cilCopy, cilHeart, cilSwapHorizontal } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import { Link } from 'react-router-dom'
 import { CFormInput, CFormLabel } from '@coreui/react'
 
 const Profile = () => {

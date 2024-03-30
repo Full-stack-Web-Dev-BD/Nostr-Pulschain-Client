@@ -1,9 +1,12 @@
-.btn_success{
+.btn_success {
   border-radius: 50px;
   background-color: #d008f8;
   color: white;
   font-weight: 500;
   text-transform: capitalize;
+}
+.btn_success:hover {
+  background-color: #8920e9;
 }
 // Here you can add other styles
 .user_profile_box {
@@ -158,14 +161,13 @@
   border: 2px solid #d008f8;
 }
 
-
 .profile_cover_photo button {
   position: absolute;
   right: 40px;
   top: 50px;
   z-index: 2;
 }
-.btn_cp_upload{
+.btn_cp_upload {
   background-color: #d008f8;
   color: white;
   display: flex;
@@ -175,19 +177,61 @@
   border-radius: 50px;
 }
 
-.btn_cp_upload:hover{
+.btn_cp_upload:hover {
   background-color: #8920e9;
 }
-
 
 .color_keys p {
   color: #d008f8;
   margin: 0;
 }
-.color_keys p span{
+.color_keys p span {
   cursor: pointer;
 }
 
-.web3pub_qr_code img{
+.web3pub_qr_code img {
   border-radius: 10px;
+}
+
+/*
+============================ Chat Page========================
+*/
+.chat_wrap {
+  height: 600px;
+  position: relative; /* Necessary for positioning child elements */
+}
+
+.chat_user {
+  height: calc(100% - 50px); /* Adjust based on the height of message send box */
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+.chat_history {
+  height: calc(100% - 50px); /* Adjust based on the height of message send box */
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+.message_sendbox {
+  background-color: #1d222b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  position: absolute;
+  bottom: 56px;
+  height: 50px; /* Adjust based on the desired height of the message send box */
+}
+
+.input_box {
+  width: calc(100% - 100px); /* Adjust based on the width of any additional elements */
+}
+
+.single_user {
+  cursor: pointer;
+  border-radius: 10px;
+}
+.single_user:hover {
+  background-color: #2b3242;
 }

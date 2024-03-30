@@ -2,6 +2,7 @@ import React from 'react'
 
 const Home = React.lazy(() => import('./views/home/Home'))
 const Profile = React.lazy(() => import('./views/profile/Profile'))
+const Chat = React.lazy(() => import('./views/chat/Chat'))
 
 // Base
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -55,7 +56,9 @@ const routes = [
   // Applicatoin
   { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', element: Home },
-  { path: '/profile', name: 'Home', element: Profile },
+  { path: '/dashboard', name: 'Home', element: Home },
+  { path: '/profile', name: 'Profile', element: Profile },
+  { path: '/message', name: 'Chat', element: Chat },
 
 
 
