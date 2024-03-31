@@ -39,28 +39,26 @@ const Register = () => {
   }, [])
 
   const registerNostr = async () => {
-
-    
     let sk = generateSecretKey()
     let nsec = nip19.nsecEncode(sk)
-    console.log("Secret Key", nsec)
+    console.log('Secret Key', nsec)
     let pk = getPublicKey(sk)
     let npub = nip19.npubEncode(pk)
-    console.log("Public Key",npub)
+    console.log('Public Key', npub)
 
     const relay = await Relay.connect('wss://relay.damus.io')
     console.log(`connected to ${relay.url}`)
     let eventTemplate = {
-      kind: 1,
+      kind: 0,
       created_at: Math.floor(Date.now() / 1000),
       tags: [],
-      content: 'hello world',
+      content: `{"name":"Alamin"}`,
     }
 
     // this assigns the pubkey, calculates the event id and signs the event in a single step
     const signedEvent = finalizeEvent(eventTemplate, sk)
-    const response= await relay.publish(signedEvent)
-    console.log("response", response)
+    const response = await relay.publish(signedEvent)
+    console.log('response', response)
     relay.close()
   }
   return (
