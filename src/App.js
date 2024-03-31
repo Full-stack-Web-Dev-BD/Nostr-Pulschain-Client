@@ -1,9 +1,13 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense,useState, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
+// toast
+import { ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -33,6 +37,7 @@ const App = () => {
   }, []) 
   return (
     <HashRouter>
+      <ToastContainer/>
       <Suspense
         fallback={
           <div className="pt-3 text-center">

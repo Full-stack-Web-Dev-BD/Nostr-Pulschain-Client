@@ -5,6 +5,15 @@
   font-weight: 500;
   text-transform: capitalize;
 }
+
+.btn_primary{
+  border-radius: 50px;
+  background-color: #8920e9;
+  color: white;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
 .btn_success:hover {
   background-color: #8920e9;
 }
@@ -235,3 +244,11 @@
 .single_user:hover {
   background-color: #2b3242;
 }
+
+
+
+// login page / signup page 
+
+.bg-primary{
+  background-color: #8920e9 !important;
+} 

@@ -14,9 +14,13 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilShieldAlt,  cilUser } from '@coreui/icons'
+import { cilShieldAlt } from '@coreui/icons'
 
 const Login = () => {
+  const loginNostr=()=>{
+    console.log("Loggin in !")
+  }
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -32,14 +36,14 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilShieldAlt} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Enter your Private Key"  />
-                    </CInputGroup> 
+                      <CFormInput placeholder="Enter your Private Key" />
+                    </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
-                          Sign In
-                        </CButton>
-                      </CCol> 
+                          <CButton onClick={e=>loginNostr()} color="primary" className="px-4">
+                            Sign In
+                          </CButton>
+                      </CCol>
                     </CRow>
                   </CForm>
                 </CCardBody>
@@ -48,9 +52,7 @@ const Login = () => {
                 <CCardBody className="text-center">
                   <div>
                     <h2>Sign up</h2>
-                    <p>
-                    Don't have an account?
-                    </p>
+                    <p>Don't have an account?</p>
                     <Link to="/register">
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>
                         Register Now!
