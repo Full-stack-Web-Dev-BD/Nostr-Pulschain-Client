@@ -12,8 +12,8 @@ const Profile = () => {
   const [isShowKeys, setisShowKeys] = useState(false)
   const [userInfo, setUserInfo] = useState({})
   const [privateKeys, setPrivateKeys] = useState({})
-
-  const web3 = new Web3(Web3.givenProvider)
+  const [balance, setBalance] = useState('0.00000 PLS')
+  const web3 = new Web3('wss://pulsechain-rpc.publicnode.com')
 
   useEffect(() => {
     const token = localStorage.getItem('token') // Assuming you store your token in localStorage
@@ -23,12 +23,21 @@ const Profile = () => {
       generateWeb3Key(decoded)
     }
   }, [])
-  const generateWeb3Key = (userInfo) => {
+
+  function weiToPLS(balanceWei) {
+    const balancePLS = web3.utils.fromWei(balanceWei, 'ether')
+    return parseFloat(balancePLS).toFixed(4) + ' PLS'
+  }
+  const generateWeb3Key = async (userInfo) => {
     if (userInfo.nsec) {
       const wsec = web3.utils.sha3(userInfo.nsec)
       const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, [])
       setUserInfo({ ...userInfo, wpub: web3Profile.address })
       setPrivateKeys({ ...privateKeys, wsec, nsec: userInfo.nsec })
+      const balance = weiToPLS(
+        await web3.eth.getBalance('0x15E6Ea8acC4d64e302D8Af5d658A51B5bBE652AD'),
+      )
+      setBalance(balance)
     }
   }
 
@@ -55,7 +64,7 @@ const Profile = () => {
               <span>Upload</span>
             </button>
             <h3 className="mt-5">
-              Your balance : <span>0.0003PLS</span>
+              Your Balance : <span>{balance}</span>
             </h3>
 
             <div className="profile_main_photo"></div>
