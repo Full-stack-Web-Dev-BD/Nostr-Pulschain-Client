@@ -1,17 +1,8 @@
-Login Process : 
-    We have Nostr and Crypto wallet integrated  , this 2 account should  be initiated at a time while user register 
-    [
-        // Creating user nostr  wallet  and  generating the web3 wallet from nostr private key .
-        run npm install crypto-js
-        const crypto = require('crypto');
+Profile page task remining : 
+-Copy to clipboard ( keys ) ##Done 
+-generating qr code
+-generating secret phase of  web3 
+-Show current balance 
 
-        function createHash(password) {
-        return crypto.createHash('sha256').update(password).digest('hex');
-        }
-
-        const password = 'mysecretpassword';
-        const hashedPassword = createHash(password);
-        console.log(hashedPassword);
-    ]
 
 

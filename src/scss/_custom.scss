@@ -8,7 +8,7 @@
   text-transform: capitalize;
 }
 
-.btn_primary{
+.btn_primary {
   padding: 6px 24px;
   border: 0;
   border-radius: 50px;
@@ -126,7 +126,7 @@
   position: absolute;
   top: 50%;
   right: 10px;
-  transform: translate(0, -30%);
+  transform: translate(0, -50%);
 }
 .search_box svg {
   color: #4a4a4a;
@@ -177,7 +177,7 @@
 .profile_cover_photo button {
   position: absolute;
   right: 40px;
-  top: 50px;
+  bottom: 50px;
   z-index: 2;
 }
 .btn_cp_upload {
@@ -249,10 +249,22 @@
   background-color: #2b3242;
 }
 
+// login page / signup page
 
-
-// login page / signup page 
-
-.bg-primary{
+.bg-primary {
   background-color: #8920e9 !important;
-} 
+}
+
+.qr_wrap {
+  display: inline-block;
+  padding: 10px;
+  border: 8px solid #d8d0d0;
+  border-radius: 11px;
+}
+
+
+.password_line {
+  color: white;
+  -webkit-text-security: disc; /* Safari */
+  text-security: disc; /* Other browsers */
+}
