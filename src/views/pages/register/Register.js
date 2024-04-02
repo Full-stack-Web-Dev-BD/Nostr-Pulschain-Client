@@ -144,7 +144,7 @@ const Register = () => {
                     <p>Already have an account?</p>
                     <Link to="/login">
                       <button className="btn btn-primary px-4 btn_success" type="button">
-                        Create
+                        Create Account
                       </button>
                     </Link>
                   </div>

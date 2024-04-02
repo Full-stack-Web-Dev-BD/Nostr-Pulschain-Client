@@ -26,7 +26,7 @@ const Home = () => {
                   <textarea
                     style={{ border: '0', fontSize: '26px' }}
                     className="form-control"
-                    rows={5}
+                    rows={3}
                     placeholder="What's on your mind ? "
                     defaultValue={''}
                   />
