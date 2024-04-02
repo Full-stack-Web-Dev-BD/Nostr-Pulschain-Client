@@ -13,6 +13,7 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
+import { logoutAccount } from '../../utils/function'
 
 const AppHeaderDropdown = () => {
   return (
@@ -22,8 +23,8 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader> 
-         <CDropdownItem href="/#/login">
-          <CIcon icon={cilLockLocked} className="me-2" />
+         <CDropdownItem style={{cursor:'pointer'}} onClick={e=>logoutAccount()}>
+          <CIcon icon={cilLockLocked}  className="me-2" />
           Log Out
         </CDropdownItem>
       </CDropdownMenu>

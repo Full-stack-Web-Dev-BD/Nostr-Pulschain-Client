@@ -81,8 +81,9 @@ const Register = () => {
       const signedEvent = finalizeEvent(eventTemplate, sk)
       await relay.publish(signedEvent)
       relay.close()
-      saveToken({ nsec, npub })
+      saveToken({ nsec, npub , name})
     } catch (error) {
+      toast.error(error)
       console.log(error)
     }
     setIsAccCreationPending(false)

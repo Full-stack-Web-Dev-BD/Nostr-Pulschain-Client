@@ -1,10 +1,28 @@
-import React, { useState } from 'react'
-import { cilChatBubble, cilCloudUpload, cilCopy, cilHeart, cilSwapHorizontal } from '@coreui/icons'
+import React, { useEffect, useState } from 'react'
+import {  cilCloudUpload, cilCopy, } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { CFormInput, CFormLabel } from '@coreui/react'
+import { jwtDecode } from 'jwt-decode'
+
+
+
 
 const Profile = () => {
   const [isShowKeys, setisShowKeys] = useState(false)
+
+
+  const [userInfo, setUserInfo] = useState({})
+  const [keyPair, setKeyPair] = useState({})
+  
+
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // Assuming you store your token in localStorage
+    if (token) {
+      const decoded = jwtDecode(token)
+      setUserInfo(decoded);
+      console.log("userinfo", decoded)
+    }
+  }, []);
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">

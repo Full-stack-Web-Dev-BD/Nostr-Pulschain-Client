@@ -38,7 +38,7 @@ const App = () => {
   }, []) 
   return (
     <HashRouter>
-      <ToastContainer/>
+      <ToastContainer position='bottom-right' style={{textTransform:'capitalize'}}/>
       <Suspense
         fallback={
           <Loading/>
