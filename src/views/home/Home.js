@@ -101,7 +101,7 @@ const Home = () => {
                           id="exampleFormControlTextarea1"
                           rows="3"
                           placeholder="Wnat's in your mind ?"
-                          spellcheck="false"
+                          spellCheckheck="false"
                         ></textarea>
                         <div className="post_comments">
                           {[1, 2, 3, 4, 5].map((el) => (
