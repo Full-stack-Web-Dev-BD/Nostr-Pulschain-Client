@@ -21,12 +21,13 @@ import { SimplePool } from 'nostr-tools'
 import { Relay } from 'nostr-tools/relay'
 import { finalizeEvent, generateSecretKey, getPublicKey } from 'nostr-tools/pure'
 import * as nip19 from 'nostr-tools/nip19'
-
+import jwt from 'jwt-encode'
+import { toast } from 'react-toastify'
 export const RELAYS = ['wss://relay.damus.io']
 
 const Register = () => {
   const [name, setName] = useState('')
-
+  const [isAccCreationPending, setIsAccCreationPending] = useState(false)
   const [pool, setPool] = useState()
 
   useEffect(() => {
@@ -39,27 +40,62 @@ const Register = () => {
   }, [])
 
   const registerNostr = async () => {
-    let sk = generateSecretKey()
-    let nsec = nip19.nsecEncode(sk)
-    console.log('Secret Key', nsec)
-    let pk = getPublicKey(sk)
-    let npub = nip19.npubEncode(pk)
-    console.log('Public Key', npub)
+    try {
+      setIsAccCreationPending(true)
+      let sk = generateSecretKey()
+      let nsec = nip19.nsecEncode(sk)
+      console.log('Secret Key', nsec)
+      let pk = getPublicKey(sk)
+      let npub = nip19.npubEncode(pk)
+      console.log('Public Key', npub)
 
-    const relay = await Relay.connect('wss://relay.damus.io')
-    console.log(`connected to ${relay.url}`)
-    let eventTemplate = {
-      kind: 0,
-      created_at: Math.floor(Date.now() / 1000),
-      tags: [],
-      content: `{"name":"Alamin"}`,
+      const relay = await Relay.connect('wss://relay.damus.io')
+      relay.subscribe(
+        [
+          {
+            kinds: [0],
+            authors: [pk],
+          },
+        ],
+        {
+          onevent(event) {
+            console.log('got event:', event)
+          },
+        },
+      )
+
+      const eventObject = {
+        name,
+        // about: 'Business Man',
+        // picture: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+      }
+      const eventJson = JSON.stringify(eventObject)
+      let eventTemplate = {
+        kind: 0,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [],
+        content: eventJson,
+      }
+
+      // this assigns the pubkey, calculates the event id and signs the event in a single step
+      const signedEvent = finalizeEvent(eventTemplate, sk)
+      await relay.publish(signedEvent)
+      relay.close()
+      saveToken({ nsec, npub })
+    } catch (error) {
+      console.log(error)
     }
+    setIsAccCreationPending(false)
+  }
 
-    // this assigns the pubkey, calculates the event id and signs the event in a single step
-    const signedEvent = finalizeEvent(eventTemplate, sk)
-    const response = await relay.publish(signedEvent)
-    console.log('response', response)
-    relay.close()
+  const saveToken = (keyPair) => {
+    const secret = 'Iheakaram '
+    const token = jwt(keyPair, secret)
+    localStorage.setItem('token', token)
+    toast("Nost'r Wallet Created !!")
+    setTimeout(() => {
+      window.location.href = '#/dashboard'
+    }, 2000)
   }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
@@ -69,7 +105,7 @@ const Register = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm className="pt-4">
+                  <div className="pt-4">
                     <h1>Signup</h1>
                     <p className="text-body-secondary">What should we call you?</p>
                     <CInputGroup className="mb-3">
@@ -84,16 +120,20 @@ const Register = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <button
-                          className="btn btn-primary px-4 btn_primary"
-                          type="button"
-                          onClick={(e) => registerNostr()}
-                        >
-                          Create
-                        </button>
+                        {isAccCreationPending ? (
+                          <button className="btn btn-primary px-4 btn_primary">Creating ...</button>
+                        ) : (
+                          <button
+                            className="btn btn-primary px-4 btn_primary"
+                            type="button"
+                            onClick={(e) => registerNostr()}
+                          >
+                            Create
+                          </button>
+                        )}
                       </CCol>
                     </CRow>
-                  </CForm>
+                  </div>
                 </CCardBody>
               </CCard>
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>

@@ -51,7 +51,7 @@ const Home = () => {
           <div className="card-body">
             <div className="row">
               {[1, 2, 4, 6, 7, 4, 4].map((el) => (
-                <div className="col-sm-11 ms-auto mt-5">
+                <div className="col-sm-11 ms-auto mt-5" key={el}>
                   <div className="user_profile_box user_profile_link">
                     <img src="/img/8.jpg" />
                     <div>
@@ -97,7 +97,7 @@ const Home = () => {
                     <div className="card mb-4">
                       <div className="card-body">
                         <textarea
-                          class="form-control no_border"
+                          className="form-control no_border"
                           id="exampleFormControlTextarea1"
                           rows="3"
                           placeholder="Wnat's in your mind ?"
@@ -105,7 +105,7 @@ const Home = () => {
                         ></textarea>
                         <div className="post_comments">
                           {[1, 2, 3, 4, 5].map((el) => (
-                            <div className="comment_user mb-4">
+                            <div className="comment_user mb-4" key={el}>
                               <img src="/img/8.jpg" />
                               <div>
                                 <h6>Alamin Hossin</h6>
