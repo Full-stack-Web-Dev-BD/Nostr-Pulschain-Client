@@ -7,6 +7,7 @@ import Web3 from 'web3'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { toast } from 'react-toastify'
 import QRCode from 'react-qr-code'
+import { entropyToMnemonic, mnemonicToEntropy } from 'bip39'
 
 const Profile = () => {
   const [isShowKeys, setisShowKeys] = useState(false)
@@ -16,7 +17,8 @@ const Profile = () => {
   const web3 = new Web3('wss://pulsechain-rpc.publicnode.com')
 
   useEffect(() => {
-    const token = localStorage.getItem('token') // Assuming you store your token in localStorage
+    // Set token and extract keys ( Nostr Private key )
+    const token = localStorage.getItem('token')
     if (token) {
       const decoded = jwtDecode(token)
       setUserInfo(decoded)
@@ -24,23 +26,24 @@ const Profile = () => {
     }
   }, [])
 
+  // Convert user Wei balance to PLS token
   function weiToPLS(balanceWei) {
     const balancePLS = web3.utils.fromWei(balanceWei, 'ether')
     return parseFloat(balancePLS).toFixed(4) + ' PLS'
   }
+  // Initialize  web3 key pair from the nostr private key and set balance ( PLS )
   const generateWeb3Key = async (userInfo) => {
     if (userInfo.nsec) {
       const wsec = web3.utils.sha3(userInfo.nsec)
       const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, [])
       setUserInfo({ ...userInfo, wpub: web3Profile.address })
       setPrivateKeys({ ...privateKeys, wsec, nsec: userInfo.nsec })
-      const balance = weiToPLS(
-        await web3.eth.getBalance('0x15E6Ea8acC4d64e302D8Af5d658A51B5bBE652AD'),
-      )
+      const balance = weiToPLS(await web3.eth.getBalance(web3Profile.address))
       setBalance(balance)
     }
   }
 
+  // Shorten the  full address to short  dotted address
   function shortenString(fullString) {
     if (fullString) {
       if (fullString.length <= 6) {
