@@ -40,7 +40,7 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                          <CButton onClick={e=>loginNostr()} color="primary" className="px-4">
+                          <CButton onClick={e=>loginNostr()} color="primary" className="px-4 btn_success">
                             Sign In
                           </CButton>
                       </CCol>
@@ -54,7 +54,7 @@ const Login = () => {
                     <h2>Sign up</h2>
                     <p>Don't have an account?</p>
                     <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
+                      <CButton color="primary" className="mt-3 btn_primary" active tabIndex={-1}>
                         Register Now!
                       </CButton>
                     </Link>
