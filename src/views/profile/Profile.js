@@ -10,7 +10,6 @@ import { nsecToSK, shortenString, updateToken } from '../../utils/function'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
 import { RELAY_URL, UPLOAD_API_KEY } from '../../utils/constant'
 import axios from 'axios'
-import * as nip19 from 'nostr-tools/nip19'
 
 const Profile = () => {
   const [isShowKeys, setIsShowKeys] = useState(false)
@@ -22,21 +21,11 @@ const Profile = () => {
 
   const [profileUpdateInPending, setProfileUpdateInPending] = useState(false)
   const [pictureUploadPending, setPictureUploadPending] = useState(null)
-  const [pool, setPool] = useState()
-
-  useEffect(() => {
-    const _pool = new SimplePool()
-    setPool(_pool)
-
-    return () => {
-      _pool.close(RELAY_URL)
-    }
-  }, [])
 
   const updateProfile = async () => {
     try {
       setProfileUpdateInPending(true)
-      const { nsec, npub} = userState
+      const { nsec, npub } = userState
       const userObj = { name, about, picture }
       const relay = await Relay.connect(RELAY_URL)
       relay.subscribe(
@@ -66,8 +55,8 @@ const Profile = () => {
       const signedEvent = finalizeEvent(eventTemplate, nsecToSK(nsec))
       await relay.publish(signedEvent)
       relay.close()
-      updateToken({ name , about, picture, npub, nsec })
-      toast("Profile update Request submitted !")
+      updateToken({ name, about, picture, npub, nsec })
+      toast('Profile update Request submitted !')
     } catch (error) {
       toast.error(error)
       console.log(error)
@@ -159,9 +148,16 @@ const Profile = () => {
                   />
                 </div>
                 <div className="text-right">
-                  <button className="btn btn_success mt-4 ml-auto" onClick={(e) => updateProfile()}>
-                    Update Profile
-                  </button>
+                  {profileUpdateInPending ? (
+                    <button className="btn btn_primary mt-4 ml-auto">Request Sending</button>
+                  ) : (
+                    <button
+                      className="btn btn_success mt-4 ml-auto"
+                      onClick={(e) => updateProfile()}
+                    >
+                      Update Profile
+                    </button>
+                  )}
                 </div>
               </div>
               <div>
