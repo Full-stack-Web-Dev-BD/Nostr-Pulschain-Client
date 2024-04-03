@@ -1,55 +1,181 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { cilCloudUpload, cilCopy } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import { CFormInput, CFormLabel } from '@coreui/react' 
+import { CFormInput, CFormLabel, CFormTextarea } from '@coreui/react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { toast } from 'react-toastify'
-import QRCode from 'react-qr-code' 
+import QRCode from 'react-qr-code'
 import { useSelector } from 'react-redux'
-import { shortenString } from '../../utils/function'
-
+import { nsecToSK, shortenString, updateToken } from '../../utils/function'
+import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
+import { RELAY_URL, UPLOAD_API_KEY } from '../../utils/constant'
+import axios from 'axios'
+import * as nip19 from 'nostr-tools/nip19'
 
 const Profile = () => {
   const [isShowKeys, setIsShowKeys] = useState(false)
-  const {user} = useSelector((state) => state) 
+  const { userState } = useSelector((state) => state)
 
+  const [name, setName] = useState(userState.name)
+  const [about, setAbout] = useState(userState.about)
+  const [picture, setPicture] = useState(userState.picture)
+
+  const [profileUpdateInPending, setProfileUpdateInPending] = useState(false)
+  const [pictureUploadPending, setPictureUploadPending] = useState(null)
+  const [pool, setPool] = useState()
+
+  useEffect(() => {
+    const _pool = new SimplePool()
+    setPool(_pool)
+
+    return () => {
+      _pool.close(RELAY_URL)
+    }
+  }, [])
+
+  const updateProfile = async () => {
+    try {
+      setProfileUpdateInPending(true)
+      const { nsec, npub} = userState
+      const userObj = { name, about, picture }
+      const relay = await Relay.connect(RELAY_URL)
+      relay.subscribe(
+        [
+          {
+            kinds: [0],
+            authors: [npub],
+          },
+        ],
+        {
+          onevent(event) {
+            console.log('got event:', event)
+          },
+        },
+      )
+
+      const eventObject = {
+        ...userObj,
+      }
+      const eventJson = JSON.stringify(eventObject)
+      let eventTemplate = {
+        kind: 0,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [],
+        content: eventJson,
+      }
+      const signedEvent = finalizeEvent(eventTemplate, nsecToSK(nsec))
+      await relay.publish(signedEvent)
+      relay.close()
+      updateToken({ name , about, picture, npub, nsec })
+      toast("Profile update Request submitted !")
+    } catch (error) {
+      toast.error(error)
+      console.log(error)
+    }
+    setProfileUpdateInPending(false)
+  }
+
+  const pictureUpload = (e) => {
+    setPictureUploadPending(true)
+    const formData = new FormData()
+    formData.append('image', e.target.files[0])
+
+    axios
+      .post(`https://api.imgbb.com/1/upload?key=${UPLOAD_API_KEY}`, formData)
+      .then((response) => {
+        console.log('Upload successful:', response.data)
+        if (response.data) {
+          setPicture(response.data.data.url)
+        }
+        // Handle success, such as showing a success message or redirecting
+      })
+      .catch((error) => {
+        console.error('Upload failed:', error)
+        // Handle error, such as showing an error message
+      })
+      .finally(() => {
+        setPictureUploadPending(false)
+      })
+  }
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
         <div className="profile_cover_wrap">
           <div className="profile_cover_photo">
-            <button className="btn btn_cp_upload">
-              <CIcon icon={cilCloudUpload} size="lg" />
-              <span>Upload</span>
-            </button>
-            <h3 className="mt-5">
-              Your Balance : <span>{user.balance}</span>
+            {pictureUploadPending ? (
+              <button className="btn btn_cp_upload">
+                <CIcon icon={cilCloudUpload} size="lg" />
+                <span>Processing ...</span>
+              </button>
+            ) : (
+              <button
+                onClick={(e) => document.getElementById('upload_nostr_picture').click()}
+                className="btn btn_cp_upload"
+              >
+                <input
+                  type="file"
+                  onChange={pictureUpload}
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  id="upload_nostr_picture"
+                />
+                <CIcon icon={cilCloudUpload} size="lg" />
+                <span>Upload</span>
+              </button>
+            )}
+            <h3 className="mt-5" onClick={(e) => console.log(picture)}>
+              Your Balance : <span className="">{userState.balance}</span>
             </h3>
 
-            <div className="profile_main_photo"></div>
+            <div
+              className="profile_main_photo"
+              style={{
+                backgroundImage: `url(${picture ? picture : '/src/assets/images/avatars/8.jpg'})`,
+              }}
+            ></div>
           </div>
         </div>
         <div className="ca mb-4">
           <div className="row">
             <div className="col-sm-11 ms-auto">
-              <form>
+              <div>
                 <div className="mb-3">
                   <CFormLabel htmlFor="exampleFormControlInput1">Name</CFormLabel>
-                  <CFormInput type="text" placeholder={user.name} />
+                  <CFormInput
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={name ? name : 'Your Name'}
+                  />
                 </div>
-              </form>
+
+                <div className="mb-3">
+                  <CFormLabel htmlFor="exampleFormControlInput1">About</CFormLabel>
+                  <CFormTextarea
+                    rows={3}
+                    onChange={(e) => setAbout(e.target.value)}
+                    type="text"
+                    placeholder={about ? about : 'About You '}
+                  />
+                </div>
+                <div className="text-right">
+                  <button className="btn btn_success mt-4 ml-auto" onClick={(e) => updateProfile()}>
+                    Update Profile
+                  </button>
+                </div>
+              </div>
               <div>
                 {/* Public Key */}
                 <div>
                   <h3 className="mt-5">Public Keys</h3>
                   <hr />
                   <div className="web3pub_qr_code text-center mt-4 mb-4">
-                    {user.wpub ? (
+                    {userState.wpub ? (
                       <div className="qr_wrap">
                         <QRCode
                           size={256}
                           style={{ height: 'auto', maxWidth: '300px', width: '300px' }}
-                          value={user.wpub}
+                          value={userState.wpub}
                           viewBox={`0 0 256 256`}
                         />
                       </div>
@@ -61,8 +187,8 @@ const Profile = () => {
                   <div className="mb-3 color_keys">
                     <CFormLabel htmlFor="exampleFormControlInput1">Nostr Public Key</CFormLabel>
                     <p>
-                      <strong>{shortenString(user.npub)}</strong>
-                      <CopyToClipboard text={user.npub}>
+                      <strong>{shortenString(userState.npub)}</strong>
+                      <CopyToClipboard text={userState.npub}>
                         <span onClick={(e) => toast('Copied To Clipboard!')}>
                           <CIcon icon={cilCopy} size="lg" />
                         </span>
@@ -72,8 +198,8 @@ const Profile = () => {
                   <div className="mb-3 color_keys">
                     <CFormLabel htmlFor="exampleFormControlInput1">Web3 Public Key</CFormLabel>
                     <p>
-                      <strong> {shortenString(user.wpub)} </strong>
-                      <CopyToClipboard text={user.wpub}>
+                      <strong> {shortenString(userState.wpub)} </strong>
+                      <CopyToClipboard text={userState.wpub}>
                         <span onClick={(e) => toast('Copied To Clipboard!')}>
                           <CIcon icon={cilCopy} size="lg" />
                         </span>
@@ -85,9 +211,6 @@ const Profile = () => {
                 <div>
                   <h3 className="mt-5">Private Keys</h3>
                   <hr />
-                  <button className="btn btn_success" onClick={(e) => setIsShowKeys(!isShowKeys)}>
-                    {isShowKeys ? <span>Hide private key</span> : <span>Reveal private key</span>}
-                  </button>
                   {isShowKeys ? (
                     <div>
                       <div className="mb-3 color_keys">
@@ -95,8 +218,8 @@ const Profile = () => {
                           Nostr Private Key
                         </CFormLabel>
                         <p>
-                          <strong>{shortenString(user.nsec)}</strong>
-                          <CopyToClipboard text={user.nsec}>
+                          <strong>{shortenString(userState.nsec)}</strong>
+                          <CopyToClipboard text={userState.nsec}>
                             <span onClick={(e) => toast('Copied To Clipboard!')}>
                               <CIcon icon={cilCopy} size="lg" />
                             </span>
@@ -106,8 +229,8 @@ const Profile = () => {
                       <div className="mb-3 color_keys">
                         <CFormLabel htmlFor="exampleFormControlInput1">Web3 Private Key</CFormLabel>
                         <p>
-                          <strong>{shortenString(user.wsec)}</strong>
-                          <CopyToClipboard text={user.wsec}>
+                          <strong>{shortenString(userState.wsec)}</strong>
+                          <CopyToClipboard text={userState.wsec}>
                             <span onClick={(e) => toast('Copied To Clipboard!')}>
                               <CIcon icon={cilCopy} size="lg" />
                             </span>
@@ -123,22 +246,25 @@ const Profile = () => {
                           Nostr Private Key
                         </CFormLabel>
                         <p>
-                          <strong className="password_line">
-                            {shortenString(user.nsec)}
-                          </strong>
+                          <strong className="password_line">{shortenString(userState.nsec)}</strong>
                         </p>
                       </div>
                       <div className="mb-3 color_keys">
                         <CFormLabel htmlFor="exampleFormControlInput1">Web3 Private Key</CFormLabel>
                         <p>
-                          <strong className="password_line">
-                            {shortenString(user.wsec)}
-                          </strong>
+                          <strong className="password_line">{shortenString(userState.wsec)}</strong>
                         </p>
                       </div>
                       <div></div>
                     </div>
                   )}
+
+                  <button
+                    className="btn btn_success mt-4"
+                    onClick={(e) => setIsShowKeys(!isShowKeys)}
+                  >
+                    {isShowKeys ? <span>Hide private key</span> : <span>Reveal private key</span>}
+                  </button>
                 </div>
               </div>
             </div>
@@ -149,4 +275,4 @@ const Profile = () => {
   )
 }
 
-export default  Profile
+export default Profile

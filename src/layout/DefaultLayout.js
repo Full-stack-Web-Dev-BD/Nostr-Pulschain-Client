@@ -4,8 +4,9 @@ import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/inde
 import Loading from '../views/pages/Loading/Loading';
 import NotAuthenticated from '../views/pages/NotAuthenticated/NotAuthenticated';
 import Web3 from 'web3';
-import { changeState, CHANGE_STATE } from "../store/reducers/userReducer" ; // Import your action type
 import { jwtDecode } from 'jwt-decode';
+import { INIT_USER_PROFILE } from '../store/actions/actionType';
+import { RPC_URL } from '../utils/constant';
 
 const DefaultLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -31,13 +32,13 @@ const DefaultLayout = () => {
   }, []);
 
   // Pulschain web3
-  const web3 = new Web3('wss://pulsechain-rpc.publicnode.com');
+  const web3 = new Web3(RPC_URL);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       const decoded = jwtDecode(token);
-      dispatch({ type: CHANGE_STATE, user: decoded }); // Dispatch action to update user details
+      dispatch({ type: INIT_USER_PROFILE, userState: decoded }); // Dispatch action to update user details
       generateWeb3Key(decoded);
     }
   }, [dispatch]); // Add dispatch to dependency array
@@ -53,7 +54,7 @@ const DefaultLayout = () => {
       const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, []);
       const balance = weiToPLS(await web3.eth.getBalance(web3Profile.address));
       // Dispatch action to update balance and other user details if needed
-      dispatch({ type: CHANGE_STATE, user: { ...userInfo, wpub:web3Profile.address, wsec, balance } });
+      dispatch({ type: INIT_USER_PROFILE, userState: { ...userInfo, wpub:web3Profile.address, wsec, balance } });
     }
   };
 

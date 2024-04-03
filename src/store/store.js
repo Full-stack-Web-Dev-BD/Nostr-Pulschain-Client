@@ -1,17 +1,17 @@
 import { legacy_createStore as createStore } from 'redux'
+import { INIT_USER_PROFILE, SET_THEME } from './actions/actionType'
 
 const initialState = {
-  user: {},
+  userState: {},
   sidebarShow: true,
   theme: 'light',
 }
-const CHANGE_STATE = 'CHANGE_STATE' // Define your action type
 
 const changeState = (state = initialState, { type, ...rest }) => {
   switch (type) {
-    case 'set':
+    case SET_THEME:
       return { ...state, ...rest }
-    case CHANGE_STATE:
+    case INIT_USER_PROFILE:
       return { ...state, ...rest }
     default:
       return state

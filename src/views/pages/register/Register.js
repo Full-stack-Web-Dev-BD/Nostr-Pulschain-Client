@@ -42,14 +42,13 @@ const Register = () => {
   const registerNostr = async () => {
     try {
       setIsAccCreationPending(true)
-      let sk = generateSecretKey()
+      let sk = generateSecretKey() 
       let nsec = nip19.nsecEncode(sk)
-      console.log('Secret Key', nsec)
       let pk = getPublicKey(sk)
       let npub = nip19.npubEncode(pk)
-      console.log('Public Key', npub)
-
+      localStorage.setItem("sk", JSON.stringify(sk))
       const relay = await Relay.connect('wss://relay.damus.io')
+      console.log(sk)
       relay.subscribe(
         [
           {
@@ -66,8 +65,7 @@ const Register = () => {
 
       const eventObject = {
         name,
-        // about: 'Business Man',
-        // picture: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+        // about, picture...
       }
       const eventJson = JSON.stringify(eventObject)
       let eventTemplate = {

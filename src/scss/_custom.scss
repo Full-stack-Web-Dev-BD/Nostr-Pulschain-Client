@@ -1,3 +1,12 @@
+.text-right{
+  text-align: right;
+}
+.success_color{
+  color: #d008f8;
+}
+.primary_color{
+  color: #8920e9;
+}
 .btn_success {
   padding: 6px 24px;
   border-radius: 50px;
@@ -160,7 +169,6 @@
 .profile_cover_photo .profile_main_photo {
   width: 120px;
   height: 120px;
-  background-image: url(/src/assets/images/avatars/8.jpg);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
