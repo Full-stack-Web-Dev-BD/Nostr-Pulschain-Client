@@ -1,61 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { cilCloudUpload, cilCopy } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import { CFormInput, CFormLabel } from '@coreui/react'
-import { jwtDecode } from 'jwt-decode'
-import Web3 from 'web3'
+import { CFormInput, CFormLabel } from '@coreui/react' 
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { toast } from 'react-toastify'
-import QRCode from 'react-qr-code'
-import { entropyToMnemonic, mnemonicToEntropy } from 'bip39'
+import QRCode from 'react-qr-code' 
+import { useSelector } from 'react-redux'
+import { shortenString } from '../../utils/function'
+
 
 const Profile = () => {
-  const [isShowKeys, setisShowKeys] = useState(false)
-  const [userInfo, setUserInfo] = useState({})
-  const [privateKeys, setPrivateKeys] = useState({})
-  const [balance, setBalance] = useState('0.00000 PLS')
-  const web3 = new Web3('wss://pulsechain-rpc.publicnode.com')
-
-  useEffect(() => {
-    // Set token and extract keys ( Nostr Private key )
-    const token = localStorage.getItem('token')
-    if (token) {
-      const decoded = jwtDecode(token)
-      setUserInfo(decoded)
-      generateWeb3Key(decoded)
-    }
-  }, [])
-
-  // Convert user Wei balance to PLS token
-  function weiToPLS(balanceWei) {
-    const balancePLS = web3.utils.fromWei(balanceWei, 'ether')
-    return parseFloat(balancePLS).toFixed(4) + ' PLS'
-  }
-  // Initialize  web3 key pair from the nostr private key and set balance ( PLS )
-  const generateWeb3Key = async (userInfo) => {
-    if (userInfo.nsec) {
-      const wsec = web3.utils.sha3(userInfo.nsec)
-      const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, [])
-      setUserInfo({ ...userInfo, wpub: web3Profile.address })
-      setPrivateKeys({ ...privateKeys, wsec, nsec: userInfo.nsec })
-      const balance = weiToPLS(await web3.eth.getBalance(web3Profile.address))
-      setBalance(balance)
-    }
-  }
-
-  // Shorten the  full address to short  dotted address
-  function shortenString(fullString) {
-    if (fullString) {
-      if (fullString.length <= 6) {
-        return fullString // If the string is 6 characters or less, return it as it is
-      }
-
-      const firstChars = fullString.slice(0, 15)
-      const lastChars = fullString.slice(-15)
-
-      return `${firstChars}...${lastChars}`
-    } else return ''
-  }
+  const [isShowKeys, setIsShowKeys] = useState(false)
+  const {user} = useSelector((state) => state) 
 
   return (
     <div>
@@ -67,7 +23,7 @@ const Profile = () => {
               <span>Upload</span>
             </button>
             <h3 className="mt-5">
-              Your Balance : <span>{balance}</span>
+              Your Balance : <span>{user.balance}</span>
             </h3>
 
             <div className="profile_main_photo"></div>
@@ -79,7 +35,7 @@ const Profile = () => {
               <form>
                 <div className="mb-3">
                   <CFormLabel htmlFor="exampleFormControlInput1">Name</CFormLabel>
-                  <CFormInput type="text" placeholder={userInfo.name} />
+                  <CFormInput type="text" placeholder={user.name} />
                 </div>
               </form>
               <div>
@@ -88,12 +44,12 @@ const Profile = () => {
                   <h3 className="mt-5">Public Keys</h3>
                   <hr />
                   <div className="web3pub_qr_code text-center mt-4 mb-4">
-                    {userInfo.wpub ? (
+                    {user.wpub ? (
                       <div className="qr_wrap">
                         <QRCode
                           size={256}
                           style={{ height: 'auto', maxWidth: '300px', width: '300px' }}
-                          value={userInfo.wpub}
+                          value={user.wpub}
                           viewBox={`0 0 256 256`}
                         />
                       </div>
@@ -105,8 +61,8 @@ const Profile = () => {
                   <div className="mb-3 color_keys">
                     <CFormLabel htmlFor="exampleFormControlInput1">Nostr Public Key</CFormLabel>
                     <p>
-                      <strong>{shortenString(userInfo.npub)}</strong>
-                      <CopyToClipboard text={userInfo.npub}>
+                      <strong>{shortenString(user.npub)}</strong>
+                      <CopyToClipboard text={user.npub}>
                         <span onClick={(e) => toast('Copied To Clipboard!')}>
                           <CIcon icon={cilCopy} size="lg" />
                         </span>
@@ -116,8 +72,8 @@ const Profile = () => {
                   <div className="mb-3 color_keys">
                     <CFormLabel htmlFor="exampleFormControlInput1">Web3 Public Key</CFormLabel>
                     <p>
-                      <strong> {shortenString(userInfo.wpub)} </strong>
-                      <CopyToClipboard text={userInfo.wpub}>
+                      <strong> {shortenString(user.wpub)} </strong>
+                      <CopyToClipboard text={user.wpub}>
                         <span onClick={(e) => toast('Copied To Clipboard!')}>
                           <CIcon icon={cilCopy} size="lg" />
                         </span>
@@ -129,7 +85,7 @@ const Profile = () => {
                 <div>
                   <h3 className="mt-5">Private Keys</h3>
                   <hr />
-                  <button className="btn btn_success" onClick={(e) => setisShowKeys(!isShowKeys)}>
+                  <button className="btn btn_success" onClick={(e) => setIsShowKeys(!isShowKeys)}>
                     {isShowKeys ? <span>Hide private key</span> : <span>Reveal private key</span>}
                   </button>
                   {isShowKeys ? (
@@ -139,8 +95,8 @@ const Profile = () => {
                           Nostr Private Key
                         </CFormLabel>
                         <p>
-                          <strong>{shortenString(privateKeys.nsec)}</strong>
-                          <CopyToClipboard text={userInfo.nsec}>
+                          <strong>{shortenString(user.nsec)}</strong>
+                          <CopyToClipboard text={user.nsec}>
                             <span onClick={(e) => toast('Copied To Clipboard!')}>
                               <CIcon icon={cilCopy} size="lg" />
                             </span>
@@ -150,8 +106,8 @@ const Profile = () => {
                       <div className="mb-3 color_keys">
                         <CFormLabel htmlFor="exampleFormControlInput1">Web3 Private Key</CFormLabel>
                         <p>
-                          <strong>{shortenString(privateKeys.wsec)}</strong>
-                          <CopyToClipboard text={userInfo.wsec}>
+                          <strong>{shortenString(user.wsec)}</strong>
+                          <CopyToClipboard text={user.wsec}>
                             <span onClick={(e) => toast('Copied To Clipboard!')}>
                               <CIcon icon={cilCopy} size="lg" />
                             </span>
@@ -168,7 +124,7 @@ const Profile = () => {
                         </CFormLabel>
                         <p>
                           <strong className="password_line">
-                            {shortenString(privateKeys.nsec)}
+                            {shortenString(user.nsec)}
                           </strong>
                         </p>
                       </div>
@@ -176,7 +132,7 @@ const Profile = () => {
                         <CFormLabel htmlFor="exampleFormControlInput1">Web3 Private Key</CFormLabel>
                         <p>
                           <strong className="password_line">
-                            {shortenString(privateKeys.wsec)}
+                            {shortenString(user.wsec)}
                           </strong>
                         </p>
                       </div>
@@ -193,4 +149,4 @@ const Profile = () => {
   )
 }
 
-export default Profile
+export default  Profile

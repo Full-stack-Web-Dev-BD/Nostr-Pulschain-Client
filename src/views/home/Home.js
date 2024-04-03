@@ -1,8 +1,9 @@
 import React from 'react'
 import { cilChatBubble, cilCloudUpload, cilCopy, cilHeart, cilSwapHorizontal } from '@coreui/icons'
+import { connect } from "react-redux";
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
-const Home = () => {
+const Home = (props) => {
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
@@ -126,5 +127,13 @@ const Home = () => {
     </div>
   )
 }
+const mapStateToProps = state => ({
+  ...state
+});
 
-export default Home
+const mapDispatchToProps = dispatch => ({
+  startAction: () => dispatch(startAction),
+  stopAction: () => dispatch(stopAction)
+});
+// export default Home
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

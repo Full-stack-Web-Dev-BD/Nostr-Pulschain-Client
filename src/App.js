@@ -1,18 +1,16 @@
-import React, { Suspense,useState, useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-
-import { CSpinner, useColorModes } from '@coreui/react'
-import './scss/style.scss'
-// toast
+import { useColorModes } from '@coreui/react'
 import { ToastContainer } from 'react-toastify';
 
+// CSS
+import './scss/style.scss'
 import 'react-toastify/dist/ReactToastify.css';
 
-// Containers
-const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
 // Pages
+const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
