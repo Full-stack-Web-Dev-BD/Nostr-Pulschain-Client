@@ -4,6 +4,7 @@ import * as nip19 from 'nostr-tools/nip19'
 import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, finalizeEvent } from 'nostr-tools'
+import { queryProfile } from 'nostr-tools/nip05'
 
 export const logoutAccount = () => {
   localStorage.removeItem('token')
@@ -97,4 +98,31 @@ export const createNote = async (userState, text, notePicture, setLoading) => {
     console.log(error)
   }
   setLoading(false)
+}
+
+
+
+export const fetchProfile = async (userState) => {
+  try {
+    const { nsec, npub } = userState 
+    const relay = await Relay.connect(RELAY_URL)
+    relay.subscribe(
+      [
+        {
+          kinds: [1],
+          authors: [npub],
+        },
+      ],
+      {
+        onevent(event) {
+          console.log('got event:', event)
+        },
+      },
+    )
+    let profile = await queryProfile("jb55.com")
+    console.log("nostr profile data "  , profile)
+  } catch (error) {
+    toast.error(error)
+    console.log(error)
+  }
 }

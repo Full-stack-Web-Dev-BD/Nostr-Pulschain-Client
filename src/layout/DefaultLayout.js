@@ -1,62 +1,66 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux'; // Import useDispatch
-import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index';
-import Loading from '../views/pages/Loading/Loading';
-import NotAuthenticated from '../views/pages/NotAuthenticated/NotAuthenticated';
-import Web3 from 'web3';
-import { jwtDecode } from 'jwt-decode';
-import { INIT_USER_PROFILE } from '../store/actions/actionType';
-import { RPC_URL } from '../utils/constant';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
+import Loading from '../views/pages/Loading/Loading'
+import NotAuthenticated from '../views/pages/NotAuthenticated/NotAuthenticated'
+import Web3 from 'web3'
+import { jwtDecode } from 'jwt-decode'
+import { INIT_USER_PROFILE } from '../store/actions/actionType'
+import { RPC_URL } from '../utils/constant'
+import { fetchProfile } from '../utils/function'
 
 const DefaultLayout = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const dispatch = useDispatch(); // Initialize dispatch
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { userState } = useSelector((state) => state)
+  const dispatch = useDispatch()
 
   useEffect(() => {
+    fetchProfile(userState)
     const checkAuth = () => {
       if (localStorage.getItem('token')) {
-        setIsAuthenticated(true);
-        setIsLoading(false);
+        setIsAuthenticated(true)
+        setIsLoading(false)
       } else {
-        setIsAuthenticated(false);
-        setIsLoading(false);
+        setIsAuthenticated(false)
+        setIsLoading(false)
       }
-    };
+    }
 
     setTimeout(() => {
-      checkAuth();
-    }, 2000);
+      checkAuth()
+    }, 2000)
 
-    checkAuth();
-  }, []);
+    checkAuth()
+  }, [])
 
-  // Pulschain web3
-  const web3 = new Web3(RPC_URL);
+  const web3 = new Web3(RPC_URL)
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
     if (token) {
-      const decoded = jwtDecode(token);
-      dispatch({ type: INIT_USER_PROFILE, userState: decoded }); // Dispatch action to update user details
-      generateWeb3Key(decoded);
+      const decoded = jwtDecode(token)
+      dispatch({ type: INIT_USER_PROFILE, userState: decoded })
+      generateWeb3Key(decoded)
     }
-  }, [dispatch]); // Add dispatch to dependency array
+  }, [dispatch])
 
   function weiToPLS(balanceWei) {
-    const balancePLS = web3.utils.fromWei(balanceWei, 'ether');
-    return parseFloat(balancePLS).toFixed(4) + ' PLS';
+    const balancePLS = web3.utils.fromWei(balanceWei, 'ether')
+    return parseFloat(balancePLS).toFixed(4) + ' PLS'
   }
 
   const generateWeb3Key = async (userInfo) => {
     if (userInfo.nsec) {
-      const wsec = web3.utils.sha3(userInfo.nsec);
-      const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, []);
-      const balance = weiToPLS(await web3.eth.getBalance(web3Profile.address));
-      // Dispatch action to update balance and other user details if needed
-      dispatch({ type: INIT_USER_PROFILE, userState: { ...userInfo, wpub:web3Profile.address, wsec, balance } });
+      const wsec = web3.utils.sha3(userInfo.nsec)
+      const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, [])
+      const balance = weiToPLS(await web3.eth.getBalance(web3Profile.address))
+      dispatch({
+        type: INIT_USER_PROFILE,
+        userState: { ...userInfo, wpub: web3Profile.address, wsec, balance },
+      })
     }
-  };
+  }
 
   return (
     <div>
@@ -81,7 +85,7 @@ const DefaultLayout = () => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default DefaultLayout;
+export default DefaultLayout

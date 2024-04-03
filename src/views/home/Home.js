@@ -7,13 +7,12 @@ import {
   cilHeart,
   cilSwapHorizontal,
 } from '@coreui/icons'
-import { connect, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
 import { createNote, fileUpload } from '../../utils/function'
-import { Relay } from 'nostr-tools'
-import { RELAY_URL } from '../../utils/constant'
-const Home = (props) => {
+
+const Home = () => {
   const { userState } = useSelector((state) => state)
   const [isPreviewMode, setIsPreviewMode] = useState(false)
   const [note, setNote] = useState('')
@@ -192,13 +191,4 @@ const Home = (props) => {
     </div>
   )
 }
-const mapStateToProps = (state) => ({
-  ...state,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  startAction: () => dispatch(startAction),
-  stopAction: () => dispatch(stopAction),
-})
-// export default Home
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default Home
