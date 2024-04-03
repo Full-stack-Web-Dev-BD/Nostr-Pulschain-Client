@@ -6,7 +6,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { toast } from 'react-toastify'
 import QRCode from 'react-qr-code'
 import { useSelector } from 'react-redux'
-import { nsecToSK, shortenString, updateToken } from '../../utils/function'
+import { fileUpload, nsecToSK, shortenString, updateToken } from '../../utils/function'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
 import { RELAY_URL, UPLOAD_API_KEY } from '../../utils/constant'
 import axios from 'axios'
@@ -64,28 +64,6 @@ const Profile = () => {
     setProfileUpdateInPending(false)
   }
 
-  const pictureUpload = (e) => {
-    setPictureUploadPending(true)
-    const formData = new FormData()
-    formData.append('image', e.target.files[0])
-
-    axios
-      .post(`https://api.imgbb.com/1/upload?key=${UPLOAD_API_KEY}`, formData)
-      .then((response) => {
-        console.log('Upload successful:', response.data)
-        if (response.data) {
-          setPicture(response.data.data.url)
-        }
-        // Handle success, such as showing a success message or redirecting
-      })
-      .catch((error) => {
-        console.error('Upload failed:', error)
-        // Handle error, such as showing an error message
-      })
-      .finally(() => {
-        setPictureUploadPending(false)
-      })
-  }
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
@@ -103,7 +81,7 @@ const Profile = () => {
               >
                 <input
                   type="file"
-                  onChange={pictureUpload}
+                  onChange={(e) => fileUpload(e, setPicture, setPictureUploadPending)}
                   accept="image/*"
                   style={{ display: 'none' }}
                   id="upload_nostr_picture"
@@ -144,6 +122,7 @@ const Profile = () => {
                     rows={3}
                     onChange={(e) => setAbout(e.target.value)}
                     type="text"
+                    value={about}
                     placeholder={about ? about : 'About You '}
                   />
                 </div>

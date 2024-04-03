@@ -1,10 +1,13 @@
-.text-right{
+.cp {
+  cursor: pointer;
+}
+.text-right {
   text-align: right;
 }
-.success_color{
+.success_color {
   color: #d008f8;
 }
-.primary_color{
+.primary_color {
   color: #8920e9;
 }
 .btn_success {
@@ -76,7 +79,7 @@
 .upload_panal {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 15px;
 }
 .user_profile_link a {
   text-decoration: none;
@@ -109,6 +112,13 @@
   cursor: pointer;
 }
 // comment
+.note_preview{
+  margin: 20px 0 ;
+}
+.note_preview img {
+  border-radius: 10px;
+  max-width: 100%;
+}
 .post_comments {
 }
 .comment_user {
@@ -269,7 +279,6 @@
   border: 8px solid #d8d0d0;
   border-radius: 11px;
 }
-
 
 .password_line {
   color: white;

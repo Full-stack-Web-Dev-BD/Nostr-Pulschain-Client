@@ -1,9 +1,26 @@
-import React from 'react'
-import { cilChatBubble, cilCloudUpload, cilCopy, cilHeart, cilSwapHorizontal } from '@coreui/icons'
-import { connect } from "react-redux";
+import React, { useState } from 'react'
+import {
+  cilChatBubble,
+  cilCloudUpload,
+  cilCopy,
+  cilFile,
+  cilHeart,
+  cilSwapHorizontal,
+} from '@coreui/icons'
+import { connect, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
+import { createNote, fileUpload } from '../../utils/function'
+import { Relay } from 'nostr-tools'
+import { RELAY_URL } from '../../utils/constant'
 const Home = (props) => {
+  const { userState } = useSelector((state) => state)
+  const [isPreviewMode, setIsPreviewMode] = useState(false)
+  const [note, setNote] = useState('')
+  const [notePicture, setNotePicture] = useState(null)
+  const [pictureUploadPending, setPictureUploadPending] = useState(false)
+  const [isNoteCreating, setIsNoteCreating] = useState(false)
+
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
@@ -12,11 +29,11 @@ const Home = (props) => {
             <div className="row">
               <div className="col-sm-11 ms-auto">
                 <div className="user_profile_box">
-                  <img src="/img/8.jpg" />
+                  <img src={userState.picture ? userState.picture : '/img/8.jpg'} />
                   <div>
-                    <h5>Hi Alamin Hossin! </h5>
+                    <h5>Hi {userState.name} ! </h5>
                     <p>
-                      Wallet : <strong>0xCF3b9Bf1A60aeC3381f30d4877E4D615cC29C01E</strong>
+                      Wallet : <strong> {userState.wpub} </strong>
                       <span>
                         <CIcon icon={cilCopy} size="lg" />
                       </span>
@@ -24,21 +41,69 @@ const Home = (props) => {
                   </div>
                 </div>
                 <div className="mb-3 mt-4">
-                  <textarea
-                    style={{ border: '0', fontSize: '26px' }}
-                    className="form-control"
-                    rows={3}
-                    placeholder="What's on your mind ? "
-                    defaultValue={''}
-                  />
+                  {isPreviewMode ? (
+                    <div className="note_preview">
+                      <h4> {note} </h4>
+                      {notePicture ? <img src={notePicture} /> : ''}
+                    </div>
+                  ) : (
+                    <>
+                      <textarea
+                        style={{ border: '0', fontSize: '26px' }}
+                        className="form-control"
+                        rows={3}
+                        onChange={(e) => setNote(e.target.value)}
+                        placeholder="What's on your mind ? "
+                        defaultValue={''}
+                      />
+                      {notePicture ? (
+                        <p>
+                          {' '}
+                          <CIcon icon={cilFile} /> File Uploaded !!{' '}
+                        </p>
+                      ) : (
+                        ''
+                      )}
+                    </>
+                  )}
                 </div>
                 <div>
                   <div className="upload_panal">
-                    <span>
+                    <span
+                      className="cp"
+                      onClick={(e) => document.getElementById('upload_note_image').click()}
+                    >
+                      <input
+                        id="upload_note_image"
+                        type="file"
+                        onChange={(e) => fileUpload(e, setNotePicture, setPictureUploadPending)}
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                      />
                       <CIcon icon={cilCloudUpload} size="xxl" />
                     </span>
-                    <button className="btn send">Send</button>
-                    <button className="btn cancel">Cancel</button>
+                    <button
+                      onClick={(e) => setIsPreviewMode(!isPreviewMode)}
+                      className="btn btn_success"
+                    >
+                      {isPreviewMode ? 'Edit Note' : 'Preview'}
+                    </button>
+                    <button className="btn btn_primary">Cancel</button>
+                    {isNoteCreating ? (
+                      <button className="btn btn_success">Sending ...</button>
+                    ) : (
+                      <button
+                        className="btn btn_success"
+                        onClick={(e) => {
+                          createNote(userState, note, notePicture, setIsNoteCreating)
+                          setNote('')
+                          setNotePicture('')
+                          setIsPreviewMode(false)
+                        }}
+                      >
+                        Send
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -127,13 +192,13 @@ const Home = (props) => {
     </div>
   )
 }
-const mapStateToProps = state => ({
-  ...state
-});
+const mapStateToProps = (state) => ({
+  ...state,
+})
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   startAction: () => dispatch(startAction),
-  stopAction: () => dispatch(stopAction)
-});
+  stopAction: () => dispatch(stopAction),
+})
 // export default Home
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
