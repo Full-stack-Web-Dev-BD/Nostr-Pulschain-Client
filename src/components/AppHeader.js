@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -9,19 +9,22 @@ import {
   CHeader,
   CHeaderNav,
   CHeaderToggler,
-  CNavLink,
   CNavItem,
   useColorModes,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilBell, cilContrast, cilMenu, cilMoon, cilSearch, cilSun } from '@coreui/icons'
-
 import { AppHeaderDropdown } from './header/index'
+import { searchNostrContent } from '../utils/function'
 
 const AppHeader = () => {
+  const [searchText, setSearchText] = useState('')
+  const [searching, setSearcing] = useState(false)
+
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
 
+  const { userstate } = useSelector((state) => state)
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
 
@@ -32,11 +35,17 @@ const AppHeader = () => {
     })
   }, [])
 
+  const keyDownHandler = (event) => {
+    if((event.key).toLocaleLowerCase()=="enter"){
+      searchNostrContent(userstate, searchText, setSearcing, dispatch)
+    }
+  }
+
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
       <CContainer className="border-bottom px-4" fluid>
         <CHeaderToggler
-          onClick={() => dispatch({ type: 'set', payload:{sidebarShow: !sidebarShow} })}
+          onClick={() => dispatch({ type: 'set', payload: { sidebarShow: !sidebarShow } })}
           style={{ marginInlineStart: '-14px' }}
         >
           <CIcon icon={cilMenu} size="lg" />
@@ -46,7 +55,13 @@ const AppHeader = () => {
           <CNavItem>
             <div className="header-nav nav-link">
               <div className="search_box">
-                <input className="form-control" placeholder="#BTC " />
+                <input
+                  className="form-control"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value) }
+                  placeholder="#BTC "
+                  onKeyDown={keyDownHandler}
+                />
                 <span>
                   <CIcon icon={cilSearch} size="lg" />
                 </span>
@@ -54,8 +69,7 @@ const AppHeader = () => {
             </div>
           </CNavItem>
         </CHeaderNav>
-        <CHeaderNav className="ms-auto">  
-        </CHeaderNav>
+        <CHeaderNav className="ms-auto"></CHeaderNav>
         <CHeaderNav>
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>

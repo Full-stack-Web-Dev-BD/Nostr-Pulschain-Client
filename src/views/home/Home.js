@@ -21,6 +21,10 @@ const Home = () => {
   const [notePicture, setNotePicture] = useState(null)
   const [pictureUploadPending, setPictureUploadPending] = useState(false)
   const [isNoteCreating, setIsNoteCreating] = useState(false)
+
+
+
+  // Search content 
   const dispatch = useDispatch()
 
   return (

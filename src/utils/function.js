@@ -3,7 +3,7 @@ import jwt from 'jwt-encode'
 import * as nip19 from 'nostr-tools/nip19'
 import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
-import { Relay, finalizeEvent } from 'nostr-tools'
+import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
 import { queryProfile } from 'nostr-tools/nip05'
 import { ADD_NEW_NOTE } from '../store/actions/actionType'
 
@@ -101,6 +101,43 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
         note: signedEvent,
       },
     })
+  } catch (error) {
+    toast.error(error)
+    console.log(error)
+  }
+  setLoading(false)
+}
+
+export const searchNostrContent = async (userState, text, setLoading, dispatch) => {
+  setLoading(true)
+  try {
+    const relay = await Relay.connect(RELAY_URL)
+    const pool = new SimplePool()
+    const r = pool.sub([RELAY_URL], [
+      {
+        kinds: [1],
+        limit: 100,
+        '#t': "#BTC",
+      },
+    ])
+    console.log("r", r)
+    // let eventTemplate = {
+    //   kind: 1,
+    //   created_at: Math.floor(Date.now() / 1000),
+    //   tags: [],
+    //   content: noteObj.content,
+    // }
+    // const signedEvent = finalizeEvent(eventTemplate, nsecToSK(nsec))
+    // await relay.publish(signedEvent)
+    // relay.close()
+    // toast('Note Created!')
+
+    // dispatch({
+    //   type: ADD_NEW_NOTE,
+    //   payload: {
+    //     note: signedEvent,
+    //   },
+    // })
   } catch (error) {
     toast.error(error)
     console.log(error)

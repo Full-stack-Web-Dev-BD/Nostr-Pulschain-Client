@@ -1,8 +1,2 @@
-Profile page task remining : 
--Copy to clipboard ( keys ) ##Done 
--generating qr code
--generating secret phase of  web3 
--Show current balance 
-
-
-
+Search content -Home page 
+Chat page 
