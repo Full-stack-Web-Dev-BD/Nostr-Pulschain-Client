@@ -2,12 +2,11 @@ import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useColorModes } from '@coreui/react'
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify'
 
 // CSS
 import './scss/style.scss'
-import 'react-toastify/dist/ReactToastify.css';
-
+import 'react-toastify/dist/ReactToastify.css'
 
 // Pages
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -25,23 +24,20 @@ const App = () => {
     const urlParams = new URLSearchParams(window.location.href.split('?')[1])
     const theme = urlParams.get('theme') && urlParams.get('theme').match(/^[A-Za-z0-9\s]+/)[0]
     if (theme) {
-      setColorMode("dark")
+      setColorMode('dark')
     }
 
     if (isColorModeSet()) {
       return
     }
 
-    setColorMode("dark")
-  }, []) 
+    setColorMode('dark')
+  }, [])
+
   return (
     <HashRouter>
-      <ToastContainer position='bottom-right' style={{textTransform:'capitalize'}}/>
-      <Suspense
-        fallback={
-          <Loading/>
-        }
-      >
+      <ToastContainer position="bottom-right" style={{ textTransform: 'capitalize' }} />
+      <Suspense fallback={<Loading />}>
         <Routes>
           <Route exact path="/login" name="Login Page" element={<Login />} />
           <Route exact path="/register" name="Register Page" element={<Register />} />

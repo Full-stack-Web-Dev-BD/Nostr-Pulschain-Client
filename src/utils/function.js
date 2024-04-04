@@ -99,30 +99,3 @@ export const createNote = async (userState, text, notePicture, setLoading) => {
   }
   setLoading(false)
 }
-
-
-
-export const fetchProfile = async (userState) => {
-  try {
-    const { nsec, npub } = userState 
-    const relay = await Relay.connect(RELAY_URL)
-    relay.subscribe(
-      [
-        {
-          kinds: [1],
-          authors: [npub],
-        },
-      ],
-      {
-        onevent(event) {
-          console.log('got event:', event)
-        },
-      },
-    )
-    let profile = await queryProfile("jb55.com")
-    console.log("nostr profile data "  , profile)
-  } catch (error) {
-    toast.error(error)
-    console.log(error)
-  }
-}

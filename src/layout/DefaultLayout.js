@@ -7,7 +7,6 @@ import Web3 from 'web3'
 import { jwtDecode } from 'jwt-decode'
 import { INIT_USER_PROFILE } from '../store/actions/actionType'
 import { RPC_URL } from '../utils/constant'
-import { fetchProfile } from '../utils/function'
 
 const DefaultLayout = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -16,7 +15,6 @@ const DefaultLayout = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetchProfile(userState)
     const checkAuth = () => {
       if (localStorage.getItem('token')) {
         setIsAuthenticated(true)

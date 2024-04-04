@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   cilChatBubble,
   cilCloudUpload,
@@ -12,6 +12,8 @@ import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
 import { createNote, fileUpload } from '../../utils/function'
 
+
+
 const Home = () => {
   const { userState } = useSelector((state) => state)
   const [isPreviewMode, setIsPreviewMode] = useState(false)
@@ -20,6 +22,16 @@ const Home = () => {
   const [pictureUploadPending, setPictureUploadPending] = useState(false)
   const [isNoteCreating, setIsNoteCreating] = useState(false)
 
+  useEffect(() => {
+    if(userState.npub){
+      fetchEvent()
+    }
+  }, [userState.npub])
+
+  const fetchEvent = async () => {
+    const data = await window.fetchAndBroadcast()
+    console.log("Events data",  data)
+  }
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
