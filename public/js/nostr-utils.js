@@ -1,5 +1,3 @@
-
-
 // fetch events from relay, returns a promise
 const fetchFromRelay = async (relay, filter, events) =>
   new Promise((resolve, reject) => {
@@ -44,12 +42,11 @@ const npub2hexa = (npub) => {
   }
 }
 
-
 // parse inserted pubkey
 const parsePubkey = (pubkey) => (pubkey.match('npub1') ? npub2hexa(pubkey) : pubkey)
 
-const getEvents = async (pubKey) => { 
-  const processedPubKey= parsePubkey(pubKey)
+const getEvents = async (pubKey) => {
+  const processedPubKey = parsePubkey(pubKey)
   const filter = { authors: [processedPubKey] }
 
   // events hash
@@ -60,10 +57,11 @@ const getEvents = async (pubKey) => {
   return Object.keys(events).map((id) => events[id])
 }
 
-const fetchAndBroadcast = async () => {
-  const pubKey = 'npub1hdezhjsgv7u8t8q0khlg9n4l8y3kkxwnu3nknxyqqvp9c0h3ek0qlma0ds'
+const fetchNostrEvents = async (pubKey) => {
+  if (!pubKey) return []
   const data = await getEvents(pubKey)
+  console.log('events html ', data)
   return data
 }
- 
-window.fetchAndBroadcast = fetchAndBroadcast
+
+window.fetchNostrEvents = fetchNostrEvents

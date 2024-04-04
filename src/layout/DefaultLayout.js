@@ -11,7 +11,6 @@ import { RPC_URL } from '../utils/constant'
 const DefaultLayout = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const { userState } = useSelector((state) => state)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -39,7 +38,7 @@ const DefaultLayout = () => {
       const token = localStorage.getItem('token')
       if (token) {
         const decoded = jwtDecode(token)
-        const data = await window.fetchAndBroadcast()
+        const data = await window.fetchNostrEvents(decoded.npub)
 
         dispatch({
           type: SET_USER_PROFILE,

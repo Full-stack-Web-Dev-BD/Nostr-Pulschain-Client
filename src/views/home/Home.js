@@ -7,7 +7,7 @@ import {
   cilHeart,
   cilSwapHorizontal,
 } from '@coreui/icons'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
 import { createNote, fileUpload } from '../../utils/function'
@@ -21,17 +21,8 @@ const Home = () => {
   const [notePicture, setNotePicture] = useState(null)
   const [pictureUploadPending, setPictureUploadPending] = useState(false)
   const [isNoteCreating, setIsNoteCreating] = useState(false)
+  const dispatch = useDispatch()
 
-  useEffect(() => {
-    if(userState.npub){
-      fetchEvent()
-    }
-  }, [userState.npub])
-
-  const fetchEvent = async () => {
-    const data = await window.fetchAndBroadcast()
-    console.log("Events data",  data)
-  }
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
@@ -65,7 +56,7 @@ const Home = () => {
                         rows={3}
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="What's on your mind ? "
-                        defaultValue={''}
+                        value={note}
                       />
                       {notePicture ? (
                         <p>
@@ -102,11 +93,15 @@ const Home = () => {
                     <button className="btn btn_primary">Cancel</button>
                     {isNoteCreating ? (
                       <button className="btn btn_success">Sending ...</button>
-                    ) : (
+                    ) : 
+                    pictureUploadPending ? 
+                    <button className="btn btn_success">File Processing ...</button>
+:
+                    (
                       <button
                         className="btn btn_success"
                         onClick={(e) => {
-                          createNote(userState, note, notePicture, setIsNoteCreating)
+                          createNote(userState, note, notePicture, setIsNoteCreating, dispatch)
                           setNote('')
                           setNotePicture('')
                           setIsPreviewMode(false)
@@ -114,7 +109,9 @@ const Home = () => {
                       >
                         Send
                       </button>
-                    )}
+                    )
+                    
+                  }
                   </div>
                 </div>
               </div>

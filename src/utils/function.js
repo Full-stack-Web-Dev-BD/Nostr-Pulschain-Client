@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, finalizeEvent } from 'nostr-tools'
 import { queryProfile } from 'nostr-tools/nip05'
+import { ADD_NEW_NOTE } from '../store/actions/actionType'
 
 export const logoutAccount = () => {
   localStorage.removeItem('token')
@@ -58,7 +59,7 @@ export const fileUpload = (event, setFile, setLoading) => {
     })
 }
 
-export const createNote = async (userState, text, notePicture, setLoading) => {
+export const createNote = async (userState, text, notePicture, setLoading, dispatch) => {
   setLoading(true)
   try {
     const { nsec, npub } = userState
@@ -82,7 +83,7 @@ export const createNote = async (userState, text, notePicture, setLoading) => {
         },
       },
     )
- 
+
     let eventTemplate = {
       kind: 1,
       created_at: Math.floor(Date.now() / 1000),
@@ -93,9 +94,36 @@ export const createNote = async (userState, text, notePicture, setLoading) => {
     await relay.publish(signedEvent)
     relay.close()
     toast('Note Created!')
+
+    dispatch({
+      type: ADD_NEW_NOTE,
+      payload: {
+        note: signedEvent,
+      },
+    })
   } catch (error) {
     toast.error(error)
     console.log(error)
   }
   setLoading(false)
+}
+
+export function extractTextAndImage(post) {
+  // Regular expression pattern to match text and image link
+  var pattern = /(.*?)\s*(https?:\/\/\S+\.(?:jpg|png|gif|jpeg)|null)\s*/
+
+  // Execute the regular expression on the post
+  var matches = post.match(pattern)
+
+  if (matches) {
+    // Extract text and image link from the first match
+    var text = matches[1].trim()
+    var imageLink = matches[2]
+
+    // Return as an object
+    return { text: text, img: imageLink !== 'null' ? imageLink : null }
+  } else {
+    // If no matches found, return only the text
+    return { text: post.trim(), img: null }
+  }
 }
