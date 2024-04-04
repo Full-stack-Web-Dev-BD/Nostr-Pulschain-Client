@@ -1,5 +1,5 @@
 import { legacy_createStore as createStore } from 'redux'
-import { INIT_USER_PROFILE, SET_THEME } from './actions/actionType'
+import { SET_USER_PROFILE, SET_THEME } from './actions/actionType'
 
 const initialState = {
   userState: {},
@@ -7,12 +7,12 @@ const initialState = {
   theme: 'light',
 }
 
-const changeState = (state = initialState, { type, ...rest }) => {
+const changeState = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_THEME:
-      return { ...state, ...rest }
-    case INIT_USER_PROFILE:
-      return { ...state, ...rest }
+      return { ...state, ...payload }
+    case SET_USER_PROFILE:
+      return { ...state, userState: { ...state.userState,...payload.userState} }
     default:
       return state
   }

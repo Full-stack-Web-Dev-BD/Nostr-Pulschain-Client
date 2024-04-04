@@ -5,7 +5,7 @@ import Loading from '../views/pages/Loading/Loading'
 import NotAuthenticated from '../views/pages/NotAuthenticated/NotAuthenticated'
 import Web3 from 'web3'
 import { jwtDecode } from 'jwt-decode'
-import { INIT_USER_PROFILE } from '../store/actions/actionType'
+import { SET_USER_PROFILE } from '../store/actions/actionType'
 import { RPC_URL } from '../utils/constant'
 
 const DefaultLayout = () => {
@@ -33,14 +33,27 @@ const DefaultLayout = () => {
   }, [])
 
   const web3 = new Web3(RPC_URL)
-
+  // set user token info
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      const decoded = jwtDecode(token)
-      dispatch({ type: INIT_USER_PROFILE, userState: decoded })
-      generateWeb3Key(decoded)
+    const init = async () => {
+      const token = localStorage.getItem('token')
+      if (token) {
+        const decoded = jwtDecode(token)
+        const data = await window.fetchAndBroadcast()
+
+        dispatch({
+          type: SET_USER_PROFILE,
+          payload: {
+            userState: {
+              ...decoded,
+              userEvents: data,
+            },
+          },
+        })
+        generateWeb3Key(decoded)
+      }
     }
+    init()
   }, [dispatch])
 
   function weiToPLS(balanceWei) {
@@ -54,8 +67,8 @@ const DefaultLayout = () => {
       const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, [])
       const balance = weiToPLS(await web3.eth.getBalance(web3Profile.address))
       dispatch({
-        type: INIT_USER_PROFILE,
-        userState: { ...userInfo, wpub: web3Profile.address, wsec, balance },
+        type: SET_USER_PROFILE,
+        payload: { userState: { ...userInfo, wpub: web3Profile.address, wsec, balance } },
       })
     }
   }

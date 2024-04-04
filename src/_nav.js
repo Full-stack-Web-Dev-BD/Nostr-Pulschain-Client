@@ -1,14 +1,7 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import {
-  cil3d,
-  cilUserFemale,
-  cilSearch,
-  cilChatBubble,
-  cilInfo,
-  cilSettings
-} from '@coreui/icons'
-import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import { cil3d, cilUserFemale, cilChatBubble, cilFile } from '@coreui/icons'
+import { CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
   {
@@ -19,7 +12,7 @@ const _nav = [
     badge: {
       color: 'info',
     },
-  }, 
+  },
   {
     component: CNavItem,
     name: 'Message',
@@ -28,8 +21,18 @@ const _nav = [
     badge: {
       color: 'info',
     },
-  },  
-  
+  },
+
+  {
+    component: CNavItem,
+    name: 'Create Note',
+    to: '/note',
+    icon: <CIcon icon={cilFile} customClassName="nav-icon" />,
+    badge: {
+      color: 'info',
+    },
+  },
+
   {
     component: CNavTitle,
     name: 'Profile',
