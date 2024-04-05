@@ -10,7 +10,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
-import { createNote, extractTextAndImage, fileUpload, shortenString } from '../../utils/function'
+import { createNote, extractTextAndImage, fileUpload, getStockNostrContentProfileData, shortenString } from '../../utils/function'
 import LoadingContent from '../pages/Loading/LoadingContent'
 
 const Home = () => {
@@ -21,9 +21,18 @@ const Home = () => {
   const [pictureUploadPending, setPictureUploadPending] = useState(false)
   const [isNoteCreating, setIsNoteCreating] = useState(false)
 
+  const [loadedContent, setLoadedContent] = useState([])
+
   // Search content
   const dispatch = useDispatch()
 
+  useEffect(()=>{
+    // if(userState.stockEvents.length > 0){
+      window.fetchNostrContentProfile("3e21c587ac08b2d0205da3006c7e602fd2a32aa6cb9f4b43a751720b1a85b1fd")
+    // }
+    
+  },
+[userState.stockEvents])
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
@@ -134,7 +143,7 @@ const Home = () => {
                         <img src="/img/8.jpg" />
                         <div>
                           <Link to={'#'}>
-                            <h5> User Name </h5>
+                            <h5> Nostr </h5>
                           </Link>
 
                           <p>

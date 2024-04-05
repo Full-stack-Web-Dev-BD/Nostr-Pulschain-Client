@@ -172,20 +172,26 @@ export const getStockNostrContentProfileData = async (pubkey) => {
     const pool = RelayPool([RELAY_URL])
     // start storeEvents
     pool.on('open', (relay) => {
-      relay.subscribe('subid', { limit: 1, kinds: [0], authors: [pubkey] })
+      relay.subscribe('subid', {
+        limit: 1,
+        kinds: [0],
+        authors: ['3fdf8b43d2e6eb59fc399f7cb1b81923d1dff0215d45a11e1c1f279827eaaad8'],
+      })
     })
 
     pool.on('eose', (relay) => {
-      dispatch({
-        type: STOCK_EVENTS,
-        payload: {
-          events: storeEvents,
-        },
-      })
+      // dispatch({
+      //   type: STOCK_EVENTS,
+      //   payload: {
+      //     events: storeEvents,
+      //   },
+      // })
+      console.log("closed")
       relay.close()
     })
 
     pool.on('event', (relay, sub_id, ev) => {
+      console.log("event profile", ev)
       storeEvents.push(ev)
     })
   } catch (error) {

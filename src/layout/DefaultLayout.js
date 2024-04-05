@@ -39,7 +39,7 @@ const DefaultLayout = () => {
       const token = localStorage.getItem('token')
       if (token) {
         const decoded = jwtDecode(token)
-        const data = await window.fetchNostrEvents(decoded.npub)
+        const data = await window.fetchNostrUserProfileEvents(decoded.npub)
 
         dispatch({
           type: SET_USER_PROFILE,
