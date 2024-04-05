@@ -5,7 +5,7 @@ import * as nip19 from 'nostr-tools/nip19'
 import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
-import { ADD_NEW_NOTE } from '../store/actions/actionType'
+import { ADD_NEW_NOTE, SEARCH_EVENTS, STOCK_EVENTS } from '../store/actions/actionType'
 
 export const logoutAccount = () => {
   localStorage.removeItem('token')
@@ -108,7 +108,7 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
   setLoading(false)
 }
 
-export const searchNostrContent = async (userState, text, setLoading, dispatch) => {
+export const searchNostrContent = async ( text, setLoading, dispatch) => {
   setLoading(true)
   try {
     let storeEvents=[]
@@ -117,11 +117,16 @@ export const searchNostrContent = async (userState, text, setLoading, dispatch) 
     
     // start storeEvents
     pool.on('open', (relay) => {
-      relay.subscribe('subid', { limit: 10, kinds: [1], '#t': ['btc'] })
+      relay.subscribe('subid', { limit: 50, kinds: [1], '#t': [`${text}`] })
     })
 
     pool.on('eose', (relay) => {
-      console.log('closed', storeEvents)
+      dispatch({
+        type: SEARCH_EVENTS,
+        payload: {
+          events: storeEvents,
+        },
+      })
       relay.close()
     })
 
@@ -135,6 +140,36 @@ export const searchNostrContent = async (userState, text, setLoading, dispatch) 
   }
   setLoading(false)
 }
+
+export const getStockNostrContent = async ( dispatch) => {
+  try {
+    let storeEvents=[]
+    const pool = RelayPool([RELAY_URL])
+    // start storeEvents
+    pool.on('open', (relay) => {
+      relay.subscribe('subid', { limit: 100, kinds: [1], })
+    })
+
+    pool.on('eose', (relay) => {
+      dispatch({
+        type: STOCK_EVENTS,
+        payload: {
+          events: storeEvents,
+        },
+      })
+      relay.close()
+    })
+
+    pool.on('event', (relay, sub_id, ev) => {
+      storeEvents.push(ev)
+    }) 
+
+  } catch (error) {
+    toast.error(error)
+    console.log(error)
+  }
+}
+
 
 export function extractTextAndImage(post) {
   // Regular expression pattern to match text and image link

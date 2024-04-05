@@ -24,7 +24,6 @@ const AppHeader = () => {
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
 
-  const { userstate } = useSelector((state) => state)
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
 
@@ -37,7 +36,7 @@ const AppHeader = () => {
 
   const keyDownHandler = (event) => {
     if((event.key).toLocaleLowerCase()=="enter"){
-      searchNostrContent(userstate, searchText, setSearcing, dispatch)
+      searchNostrContent(searchText, setSearcing, dispatch)
     }
   }
 
