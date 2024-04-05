@@ -108,13 +108,12 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
   setLoading(false)
 }
 
-export const searchNostrContent = async ( text, setLoading, dispatch) => {
+export const searchNostrContent = async (text, setLoading, dispatch) => {
   setLoading(true)
   try {
-    let storeEvents=[]
+    let storeEvents = []
     const pool = RelayPool([RELAY_URL])
-    
-    
+
     // start storeEvents
     pool.on('open', (relay) => {
       relay.subscribe('subid', { limit: 50, kinds: [1], '#t': [`${text}`] })
@@ -132,8 +131,7 @@ export const searchNostrContent = async ( text, setLoading, dispatch) => {
 
     pool.on('event', (relay, sub_id, ev) => {
       storeEvents.push(ev)
-    }) 
-
+    })
   } catch (error) {
     toast.error(error)
     console.log(error)
@@ -141,13 +139,13 @@ export const searchNostrContent = async ( text, setLoading, dispatch) => {
   setLoading(false)
 }
 
-export const getStockNostrContent = async ( dispatch) => {
+export const getStockNostrContent = async (dispatch) => {
   try {
-    let storeEvents=[]
+    let storeEvents = []
     const pool = RelayPool([RELAY_URL])
     // start storeEvents
     pool.on('open', (relay) => {
-      relay.subscribe('subid', { limit: 100, kinds: [1], })
+      relay.subscribe('subid', { limit: 100, kinds: [1] })
     })
 
     pool.on('eose', (relay) => {
@@ -162,14 +160,39 @@ export const getStockNostrContent = async ( dispatch) => {
 
     pool.on('event', (relay, sub_id, ev) => {
       storeEvents.push(ev)
-    }) 
-
+    })
   } catch (error) {
     toast.error(error)
     console.log(error)
   }
 }
+export const getStockNostrContentProfileData = async (pubkey) => {
+  try {
+    let storeEvents = []
+    const pool = RelayPool([RELAY_URL])
+    // start storeEvents
+    pool.on('open', (relay) => {
+      relay.subscribe('subid', { limit: 1, kinds: [0], authors: [pubkey] })
+    })
 
+    pool.on('eose', (relay) => {
+      dispatch({
+        type: STOCK_EVENTS,
+        payload: {
+          events: storeEvents,
+        },
+      })
+      relay.close()
+    })
+
+    pool.on('event', (relay, sub_id, ev) => {
+      storeEvents.push(ev)
+    })
+  } catch (error) {
+    toast.error(error)
+    console.log(error)
+  }
+}
 
 export function extractTextAndImage(post) {
   // Regular expression pattern to match text and image link

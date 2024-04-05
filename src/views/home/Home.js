@@ -11,8 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
 import { createNote, fileUpload } from '../../utils/function'
-
-
+import LoadingContent from '../pages/Loading/LoadingContent'
 
 const Home = () => {
   const { userState } = useSelector((state) => state)
@@ -22,9 +21,7 @@ const Home = () => {
   const [pictureUploadPending, setPictureUploadPending] = useState(false)
   const [isNoteCreating, setIsNoteCreating] = useState(false)
 
-
-
-  // Search content 
+  // Search content
   const dispatch = useDispatch()
 
   return (
@@ -97,11 +94,9 @@ const Home = () => {
                     <button className="btn btn_primary">Cancel</button>
                     {isNoteCreating ? (
                       <button className="btn btn_success">Sending ...</button>
-                    ) : 
-                    pictureUploadPending ? 
-                    <button className="btn btn_success">File Processing ...</button>
-:
-                    (
+                    ) : pictureUploadPending ? (
+                      <button className="btn btn_success">File Processing ...</button>
+                    ) : (
                       <button
                         className="btn btn_success"
                         onClick={(e) => {
@@ -113,9 +108,7 @@ const Home = () => {
                       >
                         Send
                       </button>
-                    )
-                    
-                  }
+                    )}
                   </div>
                 </div>
               </div>
@@ -124,21 +117,29 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="col-12 col-md-8 offset-md-2">
-        <div className="card mb-4">
-          <div className="card-body">
-            <div className="row">
-              {[1, 2, 4, 6, 7, 5].map((el) => (
-                <div className="col-sm-11 ms-auto mt-5" key={el}>
+      {/* Stock Content */}
+
+      <div className="row">
+        <div className="col-12 col-md-8 offset-md-2">
+          {
+            userState.stockEvents.length <1 ? 
+            <>
+            <LoadingContent/>
+            </>
+            :
+          <div className="card mb-4">
+            <div className="card-body">
+              {userState.stockEvents.map((note) => (
+                <div className="col-sm-11 ms-auto mt-5" key={note.id}>
                   <div className="user_profile_box user_profile_link">
                     <img src="/img/8.jpg" />
                     <div>
                       <Link to={'#'}>
-                        <h5>Alamin Hossin </h5>
+                        <h5> User Name </h5>
                       </Link>
 
                       <p>
-                        PubKey : <strong>0xCF3b9Bf1A60aeC3381f30d4877E4D615cC29C01E</strong>
+                        PubKey : <strong> {note.pubkey} </strong>
                         <span>
                           <CIcon icon={cilCopy} size="lg" />
                         </span>
@@ -199,6 +200,8 @@ const Home = () => {
               ))}
             </div>
           </div>
+          }
+
         </div>
       </div>
     </div>
