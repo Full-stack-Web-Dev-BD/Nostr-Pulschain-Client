@@ -111,12 +111,12 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
 export const searchNostrContent = async (userState, text, setLoading, dispatch) => {
   setLoading(true)
   try {
-    // fetching by Nostr npm 
+    // fetching by Nostr npm
     const pool = RelayPool([RELAY_URL])
     console.log('pool', pool)
     pool.on('open', (relay) => {
       console.log('opening')
-      relay.subscribe('subid', { limit: 100, kinds: [1], })
+      relay.subscribe('subid', { limit: 100, kinds: [1], '#t': ['btc'] })
     })
 
     pool.on('eose', (relay) => {
