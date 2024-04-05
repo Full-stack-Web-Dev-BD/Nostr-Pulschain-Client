@@ -4,6 +4,7 @@ import { SET_USER_PROFILE, SET_THEME, ADD_NEW_NOTE } from './actions/actionType'
 const initialState = {
   userState: {
     userEvents: [],
+    searchEvent: [],
   },
   sidebarShow: true,
   theme: 'light',

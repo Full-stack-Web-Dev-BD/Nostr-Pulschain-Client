@@ -111,50 +111,24 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
 export const searchNostrContent = async (userState, text, setLoading, dispatch) => {
   setLoading(true)
   try {
-    // fetching by Nostr npm
+    let storeEvents=[]
     const pool = RelayPool([RELAY_URL])
-    console.log('pool', pool)
+    
+    
+    // start storeEvents
     pool.on('open', (relay) => {
-      console.log('opening')
-      relay.subscribe('subid', { limit: 100, kinds: [1], '#t': ['btc'] })
+      relay.subscribe('subid', { limit: 10, kinds: [1], '#t': ['btc'] })
     })
 
     pool.on('eose', (relay) => {
-      console.log('closed')
+      console.log('closed', storeEvents)
       relay.close()
     })
 
     pool.on('event', (relay, sub_id, ev) => {
-      console.log('event')
-      console.log(ev)
-    })
-    // const relay = await Relay.connect(RELAY_URL)
-    // const pool = new SimplePool()
-    // const r = pool.sub([RELAY_URL], [
-    //   {
-    //     kinds: [1],
-    //     limit: 100,
-    //     '#t': "#BTC",
-    //   },
-    // ])
-    // console.log("r", r)
-    // let eventTemplate = {
-    //   kind: 1,
-    //   created_at: Math.floor(Date.now() / 1000),
-    //   tags: [],
-    //   content: noteObj.content,
-    // }
-    // const signedEvent = finalizeEvent(eventTemplate, nsecToSK(nsec))
-    // await relay.publish(signedEvent)
-    // relay.close()
-    // toast('Note Created!')
+      storeEvents.push(ev)
+    }) 
 
-    // dispatch({
-    //   type: ADD_NEW_NOTE,
-    //   payload: {
-    //     note: signedEvent,
-    //   },
-    // })
   } catch (error) {
     toast.error(error)
     console.log(error)
