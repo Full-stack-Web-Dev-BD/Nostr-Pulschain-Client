@@ -1,10 +1,10 @@
+import { RelayPool } from 'nostr'
 import axios from 'axios'
 import jwt from 'jwt-encode'
 import * as nip19 from 'nostr-tools/nip19'
 import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
-import { queryProfile } from 'nostr-tools/nip05'
 import { ADD_NEW_NOTE } from '../store/actions/actionType'
 
 export const logoutAccount = () => {
@@ -111,16 +111,33 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
 export const searchNostrContent = async (userState, text, setLoading, dispatch) => {
   setLoading(true)
   try {
-    const relay = await Relay.connect(RELAY_URL)
-    const pool = new SimplePool()
-    const r = pool.sub([RELAY_URL], [
-      {
-        kinds: [1],
-        limit: 100,
-        '#t': "#BTC",
-      },
-    ])
-    console.log("r", r)
+    // fetching by Nostr npm 
+    const pool = RelayPool([RELAY_URL])
+    console.log('pool', pool)
+    pool.on('open', (relay) => {
+      console.log('opening')
+      relay.subscribe('subid', { limit: 100, kinds: [1], })
+    })
+
+    pool.on('eose', (relay) => {
+      console.log('closed')
+      relay.close()
+    })
+
+    pool.on('event', (relay, sub_id, ev) => {
+      console.log('event')
+      console.log(ev)
+    })
+    // const relay = await Relay.connect(RELAY_URL)
+    // const pool = new SimplePool()
+    // const r = pool.sub([RELAY_URL], [
+    //   {
+    //     kinds: [1],
+    //     limit: 100,
+    //     '#t': "#BTC",
+    //   },
+    // ])
+    // console.log("r", r)
     // let eventTemplate = {
     //   kind: 1,
     //   created_at: Math.floor(Date.now() / 1000),
