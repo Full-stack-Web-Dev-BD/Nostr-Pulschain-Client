@@ -29,7 +29,7 @@ const Home = () => {
       <div className="col-12 col-md-8 offset-md-2">
         <div className="card mb-4">
           <div className="card-body">
-            <div className="row">
+            <div className="row pb-4">
               <div className="col-sm-11 ms-auto">
                 <div className="user_profile_box">
                   <img src={userState.picture ? userState.picture : '/img/8.jpg'} />
@@ -126,60 +126,60 @@ const Home = () => {
               <LoadingContent />
             </>
           ) : (
-            <div className="card mb-4">
-              <div className="card-body">
-                {userState.stockEvents.map((note) => (
-                  <div className="col-sm-11 ms-auto mt-5" key={note.id}>
-                    <div className="user_profile_box user_profile_link">
-                      <img src="/img/8.jpg" />
-                      <div>
-                        <Link to={'#'}>
-                          <h5> User Name </h5>
-                        </Link>
+            <>
+              {userState.stockEvents.map((note) => (
+                <div className="card mb-4 pb-4">
+                    <div className="col-sm-11 ms-auto mt-5" key={note.id}>
+                      <div className="user_profile_box user_profile_link">
+                        <img src="/img/8.jpg" />
+                        <div>
+                          <Link to={'#'}>
+                            <h5> User Name </h5>
+                          </Link>
 
-                        <p>
-                          PubKey : <strong> {shortenString(note.pubkey)} </strong>
-                          <span>
-                            <CIcon icon={cilCopy} size="lg" />
-                          </span>
-                        </p>
+                          <p>
+                            PubKey : <strong> {shortenString(note.pubkey)} </strong>
+                            <span>
+                              <CIcon icon={cilCopy} size="lg" />
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="mb-3 mt-4 post_content">
-                      {extractTextAndImage(note.content).text ? (
-                        <p> {extractTextAndImage(note.content).text} </p>
-                      ) : (
-                        ''
-                      )}
-                      {extractTextAndImage(note.content).img ? (
-                        <img src={extractTextAndImage(note.content).img} />
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                    <div>
-                      <div className="upload_panal">
-                        {/* <div className="post_reaction_item">
+                      <div className="mb-3 mt-4 post_content">
+                        {extractTextAndImage(note.content).text ? (
+                          <p> {extractTextAndImage(note.content).text} </p>
+                        ) : (
+                          ''
+                        )}
+                        {extractTextAndImage(note.content).img ? (
+                          <img src={extractTextAndImage(note.content).img} />
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                      <div>
+                        <div className="upload_panal">
+                          {/* <div className="post_reaction_item">
                           <span className="reaction_icon">
                             <CIcon icon={cilChatBubble} size="xl" />
                           </span>
                           <span>0</span>
                         </div> */}
-                        {/* <div className="post_reaction_item">
+                          {/* <div className="post_reaction_item">
                           <span className="reaction_icon">
                             <CIcon icon={cilSwapHorizontal} size="xl" />
                           </span>
                           <span>0</span>
                         </div> */}
-                        <div className="post_reaction_item">
-                          <span className="reaction_icon">
-                            <CIcon icon={cilHeart} size="xl" />
-                          </span>
-                          <span> {note.tags.length} </span>
+                          <div className="post_reaction_item">
+                            <span className="reaction_icon">
+                              <CIcon icon={cilHeart} size="xl" />
+                            </span>
+                            <span> {note.tags.length} </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {/* <div>
+                      {/* <div>
                       <div className="card mb-4">
                         <div className="card-body">
                           <textarea
@@ -204,9 +204,9 @@ const Home = () => {
                       </div>
                     </div> */}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              ))}{' '}
+            </>
           )}
         </div>
       </div>
