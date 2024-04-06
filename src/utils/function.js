@@ -140,68 +140,54 @@ export const searchNostrContent = async (text, setLoading, dispatch) => {
 }
 
 export const getStockNostrContent = async (dispatch) => {
-  try {
-    let storeEvents = []
+  try { 
     const pool = RelayPool([RELAY_URL])
-    // start storeEvents
     pool.on('open', (relay) => {
       relay.subscribe('subid', { limit: 100, kinds: [1] })
     })
 
-    pool.on('eose', (relay) => {
-      dispatch({
-        type: STOCK_EVENTS,
-        payload: {
-          events: storeEvents,
-        },
-      })
+    pool.on('eose', (relay) => { 
       relay.close()
     })
 
-    pool.on('event', (relay, sub_id, ev) => {
-      storeEvents.push(ev)
+    pool.on('event', (relay, sub_id, eventNote) => {
+      try {
+        const pool = RelayPool([RELAY_URL])
+        pool.on('open', (relay) => {
+          relay.subscribe('subid', {
+            limit: 1,
+            kinds: [0],
+            authors: [eventNote.pubkey], // it working  with event  default pubkey 
+          })
+        })
+
+        pool.on('eose', (relay) => {
+          console.log('closed')
+          relay.close()
+        })
+
+        pool.on('event', (relay, sub_id, eventProfileNote) => {
+          
+          dispatch({
+            type: STOCK_EVENTS,
+            payload: {
+              event:{
+                ...eventNote,
+                user:eventProfileNote
+              } ,
+            },
+          })
+        })
+      } catch (error) {
+        toast.error(error)
+        console.log(error)
+      }
     })
   } catch (error) {
     toast.error(error)
     console.log(error)
   }
 }
-export const getStockNostrContentProfileData = async (pubkey) => {
-  try {
-    let storeEvents = []
-    const pool = RelayPool([RELAY_URL])
-    // start storeEvents
-    pool.on('open', (relay) => {
-      relay.subscribe('subid', {
-        limit: 1,
-        kinds: [0],
-        authors: ['15977ca9ddb6e056cb4957be20cfb9cee8b6b9577c6d4e714242bd7331d40306']
-        // authors: ['15977ca9ddb6e056cb4957be20cfb9cee8b6b9577c6d4e714242bd7331d40306']
-        // authors: ['3fdf8b43d2e6eb59fc399f7cb1b81923d1dff0215d45a11e1c1f279827eaaad8'],
-      })
-    })
-
-    pool.on('eose', (relay) => {
-      // dispatch({
-      //   type: STOCK_EVENTS,
-      //   payload: {
-      //     events: storeEvents,
-      //   },
-      // })
-      console.log("closed")
-      relay.close()
-    })
-
-    pool.on('event', (relay, sub_id, ev) => {
-      console.log("event profile", ev)
-      // storeEvents.push(ev)
-    })
-  } catch (error) {
-    toast.error(error)
-    console.log(error)
-  }
-}
-
 export function extractTextAndImage(post) {
   // Regular expression pattern to match text and image link
   var pattern = /(.*?)\s*(https?:\/\/\S+\.(?:jpg|png|gif|jpeg)|null)\s*/

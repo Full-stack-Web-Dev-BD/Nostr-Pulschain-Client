@@ -46,19 +46,16 @@ const npub2hexa = (npub) => {
 const parsePubkey = (pubkey) => (pubkey.match('npub1') ? npub2hexa(pubkey) : pubkey)
 
 const getEvents = async (pubKey, length) => {
+  console.log('Before process notr utils ', pubKey)
   const processedPubKey = parsePubkey(pubKey)
   let filter
   if (length) {
     filter = { authors: [processedPubKey], limit: 1, kind: [0] }
   } else [(filter = { authors: [processedPubKey] })]
-// } else [(filter = { authors: [processedPubKey], kinds: [0] })] // including the kinds
-  console.log( processedPubKey, 'pubkey')
+  // } else [(filter = { authors: [processedPubKey], kinds: [0] })] // including the kinds
   // events hash
   const events = {}
-  // wait for all relays to finish
   await Promise.allSettled(relays.map((relay) => fetchFromRelay(relay, filter, events)))
-  console.log('i got the events', events)
-  // return data as an array of events
   return Object.keys(events).map((id) => events[id])
 }
 
@@ -68,5 +65,5 @@ const fetchNostrUserProfileEvents = async (pubKey) => {
   console.log('events html ', data)
   return data
 }
-
+window.parsePubkey = parsePubkey
 window.fetchNostrUserProfileEvents = fetchNostrUserProfileEvents

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { cilCloudUpload, cilCopy, cilFile, cilHeart } from '@coreui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
-import { createNote, extractTextAndImage, fileUpload, getStockNostrContentProfileData, shortenString } from '../../utils/function'
+import { createNote, extractTextAndImage, fileUpload, shortenString } from '../../utils/function'
 import LoadingContent from '../pages/Loading/LoadingContent'
 
 const Home = () => {
@@ -15,12 +15,6 @@ const Home = () => {
   const [isNoteCreating, setIsNoteCreating] = useState(false)
 
   const dispatch = useDispatch()
-
-  useEffect(()=>{
-    getStockNostrContentProfileData()
-  })
-  
-  
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
@@ -31,7 +25,7 @@ const Home = () => {
                 <div className="user_profile_box">
                   <img src={userState.picture ? userState.picture : '/img/8.jpg'} />
                   <div>
-                    <h5>Hi {userState.name} ! </h5>
+                    <h5>Hi {userState.name ? userState.name : 'Nostr User'} ! </h5>
                     <p>
                       Wallet : <strong> {userState.wpub} </strong>
                       <span>
@@ -128,10 +122,19 @@ const Home = () => {
                 <div className="card mb-4 pb-4">
                   <div className="col-sm-11 ms-auto mt-5" key={note.id}>
                     <div className="user_profile_box user_profile_link">
-                      <img src="/img/8.jpg" />
+                      {JSON.parse(note.user.content).picture ? (
+                        <img src={JSON.parse(note.user.content).picture} />
+                      ) : (
+                        <img src="/img/8.jpg" />
+                      )}
                       <div>
                         <Link to={'#'}>
-                          <h5> Nostr </h5>
+                          <h5 style={{ textTransform: 'capitalize' }}>
+                            {' '}
+                            {JSON.parse(note.user.content).name
+                              ? JSON.parse(note.user.content).name
+                              : 'Nostr User'}{' '}
+                          </h5>
                         </Link>
 
                         <p>

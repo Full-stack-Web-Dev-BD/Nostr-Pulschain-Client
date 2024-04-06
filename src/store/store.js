@@ -28,7 +28,7 @@ const changeState = (state = initialState, { type, payload }) => {
         ...state,
         userState: {
           ...state.userState,
-          stockEvents: payload.events,
+          stockEvents: [...state.userState.stockEvents, payload.event ],
         },
       }
     case SEARCH_EVENTS:
