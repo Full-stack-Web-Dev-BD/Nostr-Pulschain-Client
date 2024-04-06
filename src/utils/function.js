@@ -175,7 +175,9 @@ export const getStockNostrContentProfileData = async (pubkey) => {
       relay.subscribe('subid', {
         limit: 1,
         kinds: [0],
-        authors: ['3fdf8b43d2e6eb59fc399f7cb1b81923d1dff0215d45a11e1c1f279827eaaad8'],
+        authors: ['15977ca9ddb6e056cb4957be20cfb9cee8b6b9577c6d4e714242bd7331d40306']
+        // authors: ['15977ca9ddb6e056cb4957be20cfb9cee8b6b9577c6d4e714242bd7331d40306']
+        // authors: ['3fdf8b43d2e6eb59fc399f7cb1b81923d1dff0215d45a11e1c1f279827eaaad8'],
       })
     })
 
@@ -192,7 +194,7 @@ export const getStockNostrContentProfileData = async (pubkey) => {
 
     pool.on('event', (relay, sub_id, ev) => {
       console.log("event profile", ev)
-      storeEvents.push(ev)
+      // storeEvents.push(ev)
     })
   } catch (error) {
     toast.error(error)

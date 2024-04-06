@@ -51,11 +51,13 @@ const getEvents = async (pubKey, length) => {
   if (length) {
     filter = { authors: [processedPubKey], limit: 1, kind: [0] }
   } else [(filter = { authors: [processedPubKey] })]
-  console.log(processedPubKey, 'pubkey')
+// } else [(filter = { authors: [processedPubKey], kinds: [0] })] // including the kinds
+  console.log( processedPubKey, 'pubkey')
   // events hash
   const events = {}
   // wait for all relays to finish
   await Promise.allSettled(relays.map((relay) => fetchFromRelay(relay, filter, events)))
+  console.log('i got the events', events)
   // return data as an array of events
   return Object.keys(events).map((id) => events[id])
 }
@@ -67,12 +69,4 @@ const fetchNostrUserProfileEvents = async (pubKey) => {
   return data
 }
 
-const fetchNostrContentProfile = async (pubKey) => {
-  if (!pubKey) return []
-  const data = await getEvents(pubKey, true)
-  console.log('events profile ', data)
-  return data
-}
-
-window.fetchNostrContentProfile = fetchNostrContentProfile
 window.fetchNostrUserProfileEvents = fetchNostrUserProfileEvents

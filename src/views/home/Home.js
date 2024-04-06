@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  cilChatBubble,
-  cilCloudUpload,
-  cilCopy,
-  cilFile,
-  cilHeart,
-  cilSwapHorizontal,
-} from '@coreui/icons'
+import { cilCloudUpload, cilCopy, cilFile, cilHeart } from '@coreui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
@@ -21,18 +14,13 @@ const Home = () => {
   const [pictureUploadPending, setPictureUploadPending] = useState(false)
   const [isNoteCreating, setIsNoteCreating] = useState(false)
 
-  const [loadedContent, setLoadedContent] = useState([])
-
-  // Search content
   const dispatch = useDispatch()
 
   useEffect(()=>{
-    // if(userState.stockEvents.length > 0){
-      window.fetchNostrContentProfile("3e21c587ac08b2d0205da3006c7e602fd2a32aa6cb9f4b43a751720b1a85b1fd")
-    // }
-    
-  },
-[userState.stockEvents])
+    getStockNostrContentProfileData()
+  })
+  
+  
   return (
     <div>
       <div className="col-12 col-md-8 offset-md-2">
@@ -138,57 +126,57 @@ const Home = () => {
             <>
               {userState.stockEvents.map((note) => (
                 <div className="card mb-4 pb-4">
-                    <div className="col-sm-11 ms-auto mt-5" key={note.id}>
-                      <div className="user_profile_box user_profile_link">
-                        <img src="/img/8.jpg" />
-                        <div>
-                          <Link to={'#'}>
-                            <h5> Nostr </h5>
-                          </Link>
-
-                          <p>
-                            PubKey : <strong> {shortenString(note.pubkey)} </strong>
-                            <span>
-                              <CIcon icon={cilCopy} size="lg" />
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mb-3 mt-4 post_content">
-                        {extractTextAndImage(note.content).text ? (
-                          <p> {extractTextAndImage(note.content).text} </p>
-                        ) : (
-                          ''
-                        )}
-                        {extractTextAndImage(note.content).img ? (
-                          <img src={extractTextAndImage(note.content).img} />
-                        ) : (
-                          ''
-                        )}
-                      </div>
+                  <div className="col-sm-11 ms-auto mt-5" key={note.id}>
+                    <div className="user_profile_box user_profile_link">
+                      <img src="/img/8.jpg" />
                       <div>
-                        <div className="upload_panal">
-                          {/* <div className="post_reaction_item">
+                        <Link to={'#'}>
+                          <h5> Nostr </h5>
+                        </Link>
+
+                        <p>
+                          PubKey : <strong> {shortenString(note.pubkey)} </strong>
+                          <span>
+                            <CIcon icon={cilCopy} size="lg" />
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mb-3 mt-4 post_content">
+                      {extractTextAndImage(note.content).text ? (
+                        <p> {extractTextAndImage(note.content).text} </p>
+                      ) : (
+                        ''
+                      )}
+                      {extractTextAndImage(note.content).img ? (
+                        <img src={extractTextAndImage(note.content).img} />
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                    <div>
+                      <div className="upload_panal">
+                        {/* <div className="post_reaction_item">
                           <span className="reaction_icon">
                             <CIcon icon={cilChatBubble} size="xl" />
                           </span>
                           <span>0</span>
                         </div> */}
-                          {/* <div className="post_reaction_item">
+                        {/* <div className="post_reaction_item">
                           <span className="reaction_icon">
                             <CIcon icon={cilSwapHorizontal} size="xl" />
                           </span>
                           <span>0</span>
                         </div> */}
-                          <div className="post_reaction_item">
-                            <span className="reaction_icon">
-                              <CIcon icon={cilHeart} size="xl" />
-                            </span>
-                            <span> {note.tags.length} </span>
-                          </div>
+                        <div className="post_reaction_item">
+                          <span className="reaction_icon">
+                            <CIcon icon={cilHeart} size="xl" />
+                          </span>
+                          <span> {note.tags.length} </span>
                         </div>
                       </div>
-                      {/* <div>
+                    </div>
+                    {/* <div>
                       <div className="card mb-4">
                         <div className="card-body">
                           <textarea
