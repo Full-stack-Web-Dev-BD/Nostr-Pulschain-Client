@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { createNote, extractTextAndImage, fileUpload, shortenString } from '../../utils/function'
 import LoadingContent from '../pages/Loading/LoadingContent'
 
-const Home = () => {
+const SearchTag = () => {
   const { userState } = useSelector((state) => state)
   const [isPreviewMode, setIsPreviewMode] = useState(false)
   const [note, setNote] = useState('')
@@ -52,7 +52,8 @@ const Home = () => {
                       />
                       {notePicture ? (
                         <p>
-                          <CIcon icon={cilFile} /> File Uploaded !!
+                          {' '}
+                          <CIcon icon={cilFile} /> File Uploaded !!{' '}
                         </p>
                       ) : (
                         ''
@@ -117,10 +118,10 @@ const Home = () => {
             </>
           ) : (
             <>
-              {userState.stockEvents.map((note, i) => (
-                <div className="card mb-4 pb-4" key={i}>
+              {userState.stockEvents.map((note) => (
+                <div className="card mb-4 pb-4">
                   <div className="col-sm-11 ms-auto mt-5" key={note.id}>
-                    <div className="user_profile_box user_profile_link"> 
+                    <div className="user_profile_box user_profile_link">
                       {JSON.parse(note.user.content).picture ? (
                         <img src={JSON.parse(note.user.content).picture} />
                       ) : (
@@ -129,9 +130,10 @@ const Home = () => {
                       <div>
                         <Link to={'#'}>
                           <h5 style={{ textTransform: 'capitalize' }}>
+                            {' '}
                             {JSON.parse(note.user.content).name
                               ? JSON.parse(note.user.content).name
-                              : 'Nostr User'}
+                              : 'Nostr User'}{' '}
                           </h5>
                         </Link>
 
@@ -203,7 +205,7 @@ const Home = () => {
                     </div> */}
                   </div>
                 </div>
-              ))}
+              ))}{' '}
             </>
           )}
         </div>
@@ -211,4 +213,4 @@ const Home = () => {
     </div>
   )
 }
-export default Home
+export default SearchTag

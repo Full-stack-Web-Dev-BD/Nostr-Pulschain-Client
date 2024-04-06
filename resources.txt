@@ -2,3 +2,10 @@ nostr-tools
 
 Fetch Events:
 https://github.com/jiftechnify/nostr-fetch
+https://github.com/bordalix/nostr-broadcast?tab=readme-ov-file // search features 
+
+
+
+
+relays :
+https://nostr.watch/relays/find

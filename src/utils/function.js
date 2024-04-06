@@ -7,6 +7,9 @@ import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
 import { ADD_NEW_NOTE, SEARCH_EVENTS, STOCK_EVENTS } from '../store/actions/actionType'
 
+const stockLimit = 10
+const searchLimit = 10
+
 export const logoutAccount = () => {
   localStorage.removeItem('token')
   toast('Logout success !')
@@ -111,26 +114,43 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
 export const searchNostrContent = async (text, setLoading, dispatch) => {
   setLoading(true)
   try {
-    let storeEvents = []
-    const pool = RelayPool([RELAY_URL])
-
-    // start storeEvents
-    pool.on('open', (relay) => {
-      relay.subscribe('subid', { limit: 50, kinds: [1], '#t': [`${text}`] })
+    console.log('Searching ...')
+    const searchPool = RelayPool([RELAY_URL])
+    searchPool.on('open', (relay) => {
+      relay.subscribe('searchedNote', { limit: searchLimit, kinds: [1], '#t': [`${text}`] })
     })
 
-    pool.on('eose', (relay) => {
-      dispatch({
-        type: SEARCH_EVENTS,
-        payload: {
-          events: storeEvents,
-        },
-      })
+    searchPool.on('eose', (relay) => {
+      console.log('Searching Done ')
       relay.close()
     })
 
-    pool.on('event', (relay, sub_id, ev) => {
-      storeEvents.push(ev)
+    searchPool.on('event', (relay, sub_id, searchedNote) => {
+      // fetch profile of each note
+      try {
+        const searchPool = RelayPool([RELAY_URL])
+        searchPool.on('open', (relay) => {
+          relay.subscribe('searchedNoteProfile', {
+            limit: 1,
+            kinds: [0],
+            authors: [searchedNote.pubkey], // it working  with event  default pubkey
+          })
+        })
+        searchPool.on('event', (relay, sub_id, searchedNoteProfile) => {
+          dispatch({
+            type: SEARCH_EVENTS,
+            payload: {
+              event: {
+                ...searchedNote,
+                user: searchedNoteProfile,
+              },
+            },
+          })
+        })
+      } catch (error) {
+        toast.error(error)
+        console.log(error)
+      }
     })
   } catch (error) {
     toast.error(error)
@@ -140,41 +160,36 @@ export const searchNostrContent = async (text, setLoading, dispatch) => {
 }
 
 export const getStockNostrContent = async (dispatch) => {
-  try { 
+  try {
     const pool = RelayPool([RELAY_URL])
     pool.on('open', (relay) => {
-      relay.subscribe('subid', { limit: 100, kinds: [1] })
+      relay.subscribe('nostrNote', { limit: stockLimit, kinds: [1] })
     })
 
-    pool.on('eose', (relay) => { 
+    pool.on('eose', (relay) => {
+      console.log('Stock Ended')
       relay.close()
     })
 
     pool.on('event', (relay, sub_id, eventNote) => {
+      // search nested user
       try {
         const pool = RelayPool([RELAY_URL])
         pool.on('open', (relay) => {
-          relay.subscribe('subid', {
+          relay.subscribe('nostrNoteProfile', {
             limit: 1,
             kinds: [0],
-            authors: [eventNote.pubkey], // it working  with event  default pubkey 
+            authors: [eventNote.pubkey], // it working  with event  default pubkey
           })
         })
-
-        pool.on('eose', (relay) => {
-          console.log('closed')
-          relay.close()
-        })
-
         pool.on('event', (relay, sub_id, eventProfileNote) => {
-          
           dispatch({
             type: STOCK_EVENTS,
             payload: {
-              event:{
+              event: {
                 ...eventNote,
-                user:eventProfileNote
-              } ,
+                user: eventProfileNote,
+              },
             },
           })
         })
