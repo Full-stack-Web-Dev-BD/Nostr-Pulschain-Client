@@ -118,10 +118,10 @@ const UserNotePage = () => {
       {/* Events */}
       <div className="row">
         <div className="col-12 col-md-8 offset-md-2">
-          {userState.userEvents.map((note) => (
+          {userState.userEvents.map((note, id) => (
             <>
               {note.kind == 0 ? (
-                <div className="card mb-4">
+                <div className="card mb-4" key={id}>
                   <div className="card-body">
                     <div className="col-sm-11 ms-auto mt-5" key={note.id}>
                       {/* {console.log(JSON.parse(note.content))} */}
@@ -211,7 +211,7 @@ const UserNotePage = () => {
               ) : (
                 // Note Event  (Post)
 
-                <div className="card mb-4 pb-4">
+                <div className="card mb-4 pb-4" key={id}>
                   <div className="col-sm-11 ms-auto mt-5" key={note.id}>
                     <div className="user_profile_box user_profile_link">
                       {userState.picture ? (

@@ -7,6 +7,7 @@ import {
   STOCK_EVENTS,
   SET_LOADING,
   RESET_SEARCH_EVENTS,
+  SET_USER_PROFILE_EVENT,
 } from './actions/actionType'
 
 const initialState = {
@@ -29,6 +30,8 @@ const changeState = (state = initialState, { type, payload }) => {
       return { ...state, ...payload }
     case SET_USER_PROFILE:
       return { ...state, userState: { ...state.userState, ...payload.userState } }
+    case SET_USER_PROFILE_EVENT:
+      return { ...state, userState: { ...state.userState, userEvents:[...state.userState.userEvents , payload.event] } }
     case STOCK_EVENTS:
       return {
         ...state,

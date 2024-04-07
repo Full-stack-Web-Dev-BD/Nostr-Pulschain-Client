@@ -7,7 +7,7 @@ import Web3 from 'web3'
 import { jwtDecode } from 'jwt-decode'
 import { SET_USER_PROFILE } from '../store/actions/actionType'
 import { RPC_URL } from '../utils/constant'
-import { getStockNostrContent } from '../utils/function'
+import { getStockNostrContent, searchNostrUserProfileEvents } from '../utils/function'
 
 const DefaultLayout = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -39,17 +39,7 @@ const DefaultLayout = () => {
       const token = localStorage.getItem('token')
       if (token) {
         const decoded = jwtDecode(token)
-        const data = await window.fetchNostrUserProfileEvents(decoded.npub)
-
-        dispatch({
-          type: SET_USER_PROFILE,
-          payload: {
-            userState: {
-              ...decoded,
-              userEvents: data,
-            },
-          },
-        })
+        searchNostrUserProfileEvents(decoded.npub, dispatch)
         generateWeb3Key(decoded)
       }
     }

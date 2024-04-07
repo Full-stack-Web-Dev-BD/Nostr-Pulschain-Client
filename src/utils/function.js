@@ -10,13 +10,23 @@ import {
   RESET_SEARCH_EVENTS,
   SEARCH_EVENTS,
   SET_LOADING,
+  SET_USER_PROFILE_EVENT,
   STOCK_EVENTS,
 } from '../store/actions/actionType'
 import moment from 'moment'
+import { bech32 } from 'bech32'
 
 const stockLimit = 50
 const searchLimit = 30
 
+
+const npub2hexa = (npub) => {
+  let { prefix, words } = bech32.decode(npub, 90)
+  if (prefix === 'npub') {
+    let data = new Uint8Array(bech32.fromWords(words))
+    return buffer.Buffer.from(data).toString('hex')
+  }
+}
 export const logoutAccount = () => {
   localStorage.removeItem('token')
   toast('Logout success !')
@@ -45,6 +55,7 @@ export const updateToken = (userInfo) => {
 
 export const nsecToSK = (nsec) => {
   let { type, data } = nip19.decode(nsec)
+  console.log("mynsec", data)
   return data
 }
 
@@ -182,6 +193,31 @@ export const searchNostrContent = async (text, setLoading, dispatch) => {
   setLoading(false)
 }
 
+export const searchNostrUserProfileEvents= async(pubkey, dispatch)=>{
+  try {
+    const hexaPubKey= npub2hexa(pubkey)
+    const searchPool = RelayPool([RELAY_URL])
+    searchPool.on('open', (relay) => {
+      relay.subscribe('profileEvent', {
+        limit: 5,
+        kinds: [0,1],
+        authors: [hexaPubKey]
+      })
+    })
+    searchPool.on('event', (relay, sub_id, profileEvent) => {
+      console.log("my notes",  profileEvent)
+      dispatch({
+        type: SET_USER_PROFILE_EVENT,
+        payload: {
+          event:profileEvent
+        },
+      })
+    })
+  } catch (error) {
+    toast.error(error)
+    console.log(error)
+  }
+}
 export const getStockNostrContent = async (dispatch) => {
   try {
     dispatch({
