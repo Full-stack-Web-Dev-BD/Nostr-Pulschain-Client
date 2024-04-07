@@ -1,6 +1,6 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cil3d, cilUserFemale, cilChatBubble, cilFile } from '@coreui/icons'
+import { cil3d, cilUserFemale, cilChatBubble, cilFile, cilSearch } from '@coreui/icons'
 import { CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
@@ -23,6 +23,15 @@ const _nav = [
     },
   },
 
+  {
+    component: CNavItem,
+    name: 'Search ',
+    to: '/search',
+    icon: <CIcon icon={cilSearch} customClassName="nav-icon" />,
+    badge: {
+      color: 'info',
+    },
+  },
   {
     component: CNavItem,
     name: 'Create Note',

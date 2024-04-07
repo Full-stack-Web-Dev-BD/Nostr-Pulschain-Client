@@ -5,11 +5,17 @@ import * as nip19 from 'nostr-tools/nip19'
 import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
-import { ADD_NEW_NOTE, SEARCH_EVENTS, STOCK_EVENTS } from '../store/actions/actionType'
+import {
+  ADD_NEW_NOTE,
+  RESET_SEARCH_EVENTS,
+  SEARCH_EVENTS,
+  SET_LOADING,
+  STOCK_EVENTS,
+} from '../store/actions/actionType'
 import moment from 'moment'
 
-const stockLimit = 10
-const searchLimit = 10
+const stockLimit = 50
+const searchLimit = 30
 
 export const logoutAccount = () => {
   localStorage.removeItem('token')
@@ -115,13 +121,29 @@ export const createNote = async (userState, text, notePicture, setLoading, dispa
 export const searchNostrContent = async (text, setLoading, dispatch) => {
   setLoading(true)
   try {
-    console.log('Searching ...')
+    dispatch({
+      type: SET_LOADING,
+      payload: {
+        searchLoading: true,
+      },
+    })
+
+    dispatch({
+      type: RESET_SEARCH_EVENTS,
+      payload: {},
+    })
     const searchPool = RelayPool([RELAY_URL])
     searchPool.on('open', (relay) => {
       relay.subscribe('searchedNote', { limit: searchLimit, kinds: [1], '#t': [`${text}`] })
     })
 
     searchPool.on('eose', (relay) => {
+      dispatch({
+        type: SET_LOADING,
+        payload: {
+          searchLoading: false,
+        },
+      })
       console.log('Searching Done ')
       relay.close()
     })
@@ -162,12 +184,24 @@ export const searchNostrContent = async (text, setLoading, dispatch) => {
 
 export const getStockNostrContent = async (dispatch) => {
   try {
+    dispatch({
+      type: SET_LOADING,
+      payload: {
+        stockLoading: true,
+      },
+    })
     const pool = RelayPool([RELAY_URL])
     pool.on('open', (relay) => {
       relay.subscribe('nostrNote', { limit: stockLimit, kinds: [1] })
     })
 
     pool.on('eose', (relay) => {
+      dispatch({
+        type: SET_LOADING,
+        payload: {
+          stockLoading: false,
+        },
+      })
       console.log('Stock Ended')
       relay.close()
     })
@@ -223,52 +257,52 @@ export function extractTextAndImage(post) {
     return { text: post.trim(), img: null }
   }
 }
-export const  formatTime = (timestamp) => {
-  const currentTime = moment();
-  const postTime = moment.unix(timestamp);
+export const formatTime = (timestamp) => {
+  const currentTime = moment()
+  const postTime = moment.unix(timestamp)
 
-  const diffMinutes = currentTime.diff(postTime, 'minutes');
-  const diffHours = currentTime.diff(postTime, 'hours');
-  const diffDays = currentTime.diff(postTime, 'days');
-  const diffWeeks = currentTime.diff(postTime, 'weeks');
-  const diffMonths = currentTime.diff(postTime, 'months');
+  const diffMinutes = currentTime.diff(postTime, 'minutes')
+  const diffHours = currentTime.diff(postTime, 'hours')
+  const diffDays = currentTime.diff(postTime, 'days')
+  const diffWeeks = currentTime.diff(postTime, 'weeks')
+  const diffMonths = currentTime.diff(postTime, 'months')
 
   if (diffMinutes < 1) {
-    return "Just Now";
+    return 'Just Now'
   } else if (diffMinutes < 5) {
-    return `${diffMinutes} Minutes Ago`;
+    return `${diffMinutes} Minutes Ago`
   } else if (diffMinutes < 10) {
-    return "5 Minutes Ago";
+    return '5 Minutes Ago'
   } else if (diffMinutes < 15) {
-    return "10 Minutes Ago";
+    return '10 Minutes Ago'
   } else if (diffMinutes < 30) {
-    return "15 Minutes Ago";
+    return '15 Minutes Ago'
   } else if (diffMinutes < 60) {
-    return "30 Minutes Ago";
+    return '30 Minutes Ago'
   } else if (diffHours < 2) {
-    return "1 Hour Ago";
+    return '1 Hour Ago'
   } else if (diffHours < 3) {
-    return "2 Hours Ago";
+    return '2 Hours Ago'
   } else if (diffHours < 4) {
-    return "3 Hours Ago";
+    return '3 Hours Ago'
   } else if (diffHours < 6) {
-    return "6 Hours Ago";
+    return '6 Hours Ago'
   } else if (diffHours < 12) {
-    return "12 Hours Ago";
+    return '12 Hours Ago'
   } else if (diffDays < 2) {
-    return "1 Day Ago";
+    return '1 Day Ago'
   } else if (diffDays < 3) {
-    return "2 Days Ago";
+    return '2 Days Ago'
   } else if (diffDays < 4) {
-    return "3 Days Ago";
+    return '3 Days Ago'
   } else if (diffWeeks < 2) {
-    return "1 Week Ago";
+    return '1 Week Ago'
   } else if (diffWeeks < 3) {
-    return "2 Weeks Ago";
+    return '2 Weeks Ago'
   } else if (diffMonths < 2) {
-    return "1 Month Ago";
+    return '1 Month Ago'
   } else {
     // Customize this part if you want to handle older timestamps differently
-    return "More than 1 Month Ago";
+    return 'More than 1 Month Ago'
   }
-};
+}

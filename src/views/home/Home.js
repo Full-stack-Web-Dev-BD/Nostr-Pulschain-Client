@@ -8,12 +8,11 @@ import {
   extractTextAndImage,
   fileUpload,
   formatTime,
-  shortenString,
 } from '../../utils/function'
 import LoadingContent from '../pages/Loading/LoadingContent'
 
 const Home = () => {
-  const { userState } = useSelector((state) => state)
+  const { loading, userState } = useSelector((state) => state)
   const [isPreviewMode, setIsPreviewMode] = useState(false)
   const [note, setNote] = useState('')
   const [notePicture, setNotePicture] = useState(null)

@@ -16,6 +16,7 @@ import CIcon from '@coreui/icons-react'
 import { cilBell, cilContrast, cilMenu, cilMoon, cilSearch, cilSun } from '@coreui/icons'
 import { AppHeaderDropdown } from './header/index'
 import { searchNostrContent } from '../utils/function'
+import { SET_THEME } from '../store/actions/actionType'
 
 const AppHeader = () => {
   const [searchText, setSearchText] = useState('')
@@ -36,7 +37,9 @@ const AppHeader = () => {
 
   const keyDownHandler = (event) => {
     if((event.key).toLocaleLowerCase()=="enter"){
+      window.location.href="/#/search"
       searchNostrContent(searchText, setSearcing, dispatch)
+      
     }
   }
 
@@ -44,7 +47,7 @@ const AppHeader = () => {
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
       <CContainer className="border-bottom px-4" fluid>
         <CHeaderToggler
-          onClick={() => dispatch({ type: 'set', payload: { sidebarShow: !sidebarShow } })}
+          onClick={() => dispatch({ type: SET_THEME, payload: { sidebarShow: !sidebarShow } })}
           style={{ marginInlineStart: '-14px' }}
         >
           <CIcon icon={cilMenu} size="lg" />

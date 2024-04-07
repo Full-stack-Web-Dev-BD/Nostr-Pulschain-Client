@@ -5,6 +5,8 @@ import {
   ADD_NEW_NOTE,
   SEARCH_EVENTS,
   STOCK_EVENTS,
+  SET_LOADING,
+  RESET_SEARCH_EVENTS,
 } from './actions/actionType'
 
 const initialState = {
@@ -12,6 +14,10 @@ const initialState = {
     userEvents: [],
     searchedEvents: [],
     stockEvents: [],
+  },
+  loading: {
+    searchLoading: false,
+    stockLoading: true,
   },
   sidebarShow: true,
   theme: 'light',
@@ -39,6 +45,24 @@ const changeState = (state = initialState, { type, payload }) => {
           searchedEvents: [...state.userState.searchedEvents, payload.event],
         },
       }
+
+    case RESET_SEARCH_EVENTS:
+      return {
+        ...state,
+        userState: {
+          ...state.userState,
+          searchedEvents: [],
+        },
+      }
+    case SET_LOADING:
+      return {
+        ...state,
+        loading: {
+          ...state.loading,
+          ...payload,
+        },
+      }
+
     case ADD_NEW_NOTE:
       return {
         ...state,

@@ -2,6 +2,7 @@ import React from 'react'
 
 const Home = React.lazy(() => import('./views/home/Home'))
 const Profile = React.lazy(() => import('./views/profile/Profile'))
+const SearchTag = React.lazy(() => import('./views/search/Search'))
 const Chat = React.lazy(() => import('./views/chat/Chat'))
 const UserNotePage = React.lazy(() => import('./views/note/UserNotePage'))
 
@@ -61,6 +62,7 @@ const routes = [
   { path: '/profile', name: 'Profile', element: Profile },
   { path: '/message', name: 'Chat', element: Chat },
   { path: '/note', name: 'NOte', element: UserNotePage },
+  { path: '/search', name: 'NOte', element: SearchTag },
 
   // others
   // { path: '/theme', name: 'Theme', element: Colors, exact: true },
