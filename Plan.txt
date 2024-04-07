@@ -8,5 +8,6 @@ My next plan is to work in search and stock notes  confliction protection by din
 =>Lock screen Page 
 =>Build for production and test
 =>remove unnecessery files 
+=>resolve PWA Feature 
 =>Deployment 
 =>Preview

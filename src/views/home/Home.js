@@ -3,7 +3,13 @@ import { cilCloudUpload, cilCopy, cilFile, cilHeart } from '@coreui/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
-import { createNote, extractTextAndImage, fileUpload, shortenString } from '../../utils/function'
+import {
+  createNote,
+  extractTextAndImage,
+  fileUpload,
+  formatTime,
+  shortenString,
+} from '../../utils/function'
 import LoadingContent from '../pages/Loading/LoadingContent'
 
 const Home = () => {
@@ -27,6 +33,7 @@ const Home = () => {
                   <div>
                     <h5>Hi {userState.name ? userState.name : 'Nostr User'} ! </h5>
                     <p>
+                      {/* {formatTime(note.created_at)} */}
                       Wallet : <strong> {userState.wpub} </strong>
                       <span>
                         <CIcon icon={cilCopy} size="lg" />
@@ -120,7 +127,7 @@ const Home = () => {
               {userState.stockEvents.map((note, i) => (
                 <div className="card mb-4 pb-4" key={i}>
                   <div className="col-sm-11 ms-auto mt-5" key={note.id}>
-                    <div className="user_profile_box user_profile_link"> 
+                    <div className="user_profile_box user_profile_link">
                       {JSON.parse(note.user.content).picture ? (
                         <img src={JSON.parse(note.user.content).picture} />
                       ) : (
@@ -134,13 +141,7 @@ const Home = () => {
                               : 'Nostr User'}
                           </h5>
                         </Link>
-
-                        <p>
-                          PubKey : <strong> {shortenString(note.pubkey)} </strong>
-                          <span>
-                            <CIcon icon={cilCopy} size="lg" />
-                          </span>
-                        </p>
+                        <p> {formatTime(note.created_at)} </p>
                       </div>
                     </div>
                     <div className="mb-3 mt-4 post_content">

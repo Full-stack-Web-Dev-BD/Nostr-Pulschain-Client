@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
 import { ADD_NEW_NOTE, SEARCH_EVENTS, STOCK_EVENTS } from '../store/actions/actionType'
+import moment from 'moment'
 
 const stockLimit = 10
 const searchLimit = 10
@@ -222,3 +223,52 @@ export function extractTextAndImage(post) {
     return { text: post.trim(), img: null }
   }
 }
+export const  formatTime = (timestamp) => {
+  const currentTime = moment();
+  const postTime = moment.unix(timestamp);
+
+  const diffMinutes = currentTime.diff(postTime, 'minutes');
+  const diffHours = currentTime.diff(postTime, 'hours');
+  const diffDays = currentTime.diff(postTime, 'days');
+  const diffWeeks = currentTime.diff(postTime, 'weeks');
+  const diffMonths = currentTime.diff(postTime, 'months');
+
+  if (diffMinutes < 1) {
+    return "Just Now";
+  } else if (diffMinutes < 5) {
+    return `${diffMinutes} Minutes Ago`;
+  } else if (diffMinutes < 10) {
+    return "5 Minutes Ago";
+  } else if (diffMinutes < 15) {
+    return "10 Minutes Ago";
+  } else if (diffMinutes < 30) {
+    return "15 Minutes Ago";
+  } else if (diffMinutes < 60) {
+    return "30 Minutes Ago";
+  } else if (diffHours < 2) {
+    return "1 Hour Ago";
+  } else if (diffHours < 3) {
+    return "2 Hours Ago";
+  } else if (diffHours < 4) {
+    return "3 Hours Ago";
+  } else if (diffHours < 6) {
+    return "6 Hours Ago";
+  } else if (diffHours < 12) {
+    return "12 Hours Ago";
+  } else if (diffDays < 2) {
+    return "1 Day Ago";
+  } else if (diffDays < 3) {
+    return "2 Days Ago";
+  } else if (diffDays < 4) {
+    return "3 Days Ago";
+  } else if (diffWeeks < 2) {
+    return "1 Week Ago";
+  } else if (diffWeeks < 3) {
+    return "2 Weeks Ago";
+  } else if (diffMonths < 2) {
+    return "1 Month Ago";
+  } else {
+    // Customize this part if you want to handle older timestamps differently
+    return "More than 1 Month Ago";
+  }
+};
