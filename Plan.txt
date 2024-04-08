@@ -1,7 +1,6 @@
-My next plan is to work in search and stock notes  confliction protection by ding :
-=>initially home page will load 20 note , with loadmore button user can load more  10+...
-=>initially user will search for notes  it will load 20 and  then it will load more  by 10+...
-=>Resove sidebar  hide show issue 
+=>Resolve Timeout issue 
+
+
 
 
 =>Chat Page 
