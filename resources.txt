@@ -9,3 +9,17 @@ https://github.com/bordalix/nostr-broadcast?tab=readme-ov-file // search feature
 
 relays :
 https://nostr.watch/relays/find
+
+https://developer.onekey.so/connect-to-software/webapp-connect-onekey/nostr/api-reference/signevent
+chat page : 
+https://github.com/Full-stack-Web-Dev-BD/NostrChat
+
+
+            return nip04.decrypt(this.priv, peer, ev.content).then(content => {
+                console.log('asdfasdf', peer, ev)
+                return {
+                    ...msg,
+                    content,
+                    decrypted: true
+                }
+            });

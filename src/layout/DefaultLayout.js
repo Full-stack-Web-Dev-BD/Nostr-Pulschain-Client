@@ -7,7 +7,11 @@ import Web3 from 'web3'
 import { jwtDecode } from 'jwt-decode'
 import { SET_USER_PROFILE } from '../store/actions/actionType'
 import { RPC_URL } from '../utils/constant'
-import { getStockNostrContent, searchNostrUserProfileEvents } from '../utils/function'
+import {
+  getStockNostrContent,
+  searchNostrUserProfileEvents,
+  searchUserConversations,
+} from '../utils/function'
 
 const DefaultLayout = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -40,6 +44,7 @@ const DefaultLayout = () => {
       if (token) {
         const decoded = jwtDecode(token)
         searchNostrUserProfileEvents(decoded.npub, dispatch)
+        searchUserConversations(decoded.nsec, decoded.npub, dispatch)
         generateWeb3Key(decoded)
       }
     }
@@ -47,9 +52,9 @@ const DefaultLayout = () => {
   }, [dispatch])
 
   // Set home page content ( Nostr events)
-  useEffect(()=>{
+  useEffect(() => {
     getStockNostrContent(dispatch)
-  },[])
+  }, [])
   function weiToPLS(balanceWei) {
     const balancePLS = web3.utils.fromWei(balanceWei, 'ether')
     return parseFloat(balancePLS).toFixed(4) + ' PLS'

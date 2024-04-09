@@ -3,7 +3,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useColorModes } from '@coreui/react'
 import { ToastContainer } from 'react-toastify'
-
+import {nip19} from 'nostr-tools'
 // CSS
 import './scss/style.scss'
 import 'react-toastify/dist/ReactToastify.css'
@@ -35,7 +35,11 @@ const App = () => {
   }, [])
 
   return (
+    
     <HashRouter>
+      {
+                console.log(nip19.decode('nsec14t2z000qyjudnuaapvyjz4d7cc9txgu7wvyjplzdmfd3zr8eahmqrf2g0p'))
+      }
       <ToastContainer position="bottom-right" style={{ textTransform: 'capitalize' }} />
       <Suspense fallback={<Loading />}>
         <Routes>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import AddNostrUserOnChat from '../notifications/modals/AddNostrUserOnChat'
 
 const ChatPage = () => {
   const [chatHistoryWidth, setChatHistoryWidth] = useState('100%')
@@ -161,8 +162,7 @@ const ChatPage = () => {
     <div>
       <section>
         <div className="container py-5">
-          <h5 className="font-weight-bold mb-3 text-center text-lg-start">Nostr Member</h5>
-
+          <AddNostrUserOnChat/>
           <div className="row chat_wrap">
             {/* Conversation user List */}
             <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0 chat_user">

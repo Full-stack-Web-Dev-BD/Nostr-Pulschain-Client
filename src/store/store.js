@@ -8,6 +8,7 @@ import {
   SET_LOADING,
   RESET_SEARCH_EVENTS,
   SET_USER_PROFILE_EVENT,
+  SET_USER_CONVERSATION_LIST,
 } from './actions/actionType'
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
     userEvents: [],
     searchedEvents: [],
     stockEvents: [],
+    userConversationList:[]
   },
   loading: {
     searchLoading: false,
@@ -57,6 +59,15 @@ const changeState = (state = initialState, { type, payload }) => {
           searchedEvents: [],
         },
       }
+      // Chat page
+      case SET_USER_CONVERSATION_LIST:
+        return {
+          ...state,
+          userState: {
+            ...state.userState,
+            userConversationList: [...state.userState.userConversationList, payload.users],
+          },
+        }
     case SET_LOADING:
       return {
         ...state,

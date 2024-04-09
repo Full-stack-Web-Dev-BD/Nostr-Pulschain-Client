@@ -45,7 +45,7 @@ const Register = () => {
       let sk = generateSecretKey() 
       let nsec = nip19.nsecEncode(sk)
       let pk = getPublicKey(sk)
-      console.log("get pub key ", pk)
+      console.log("get pub key ", pk , 'secret key = ',sk)
       let npub = nip19.npubEncode(pk)
       localStorage.setItem("sk", JSON.stringify(sk))
       const relay = await Relay.connect('wss://relay.damus.io')

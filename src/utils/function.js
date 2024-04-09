@@ -1,7 +1,8 @@
+import nacl from 'tweetnacl'
 import { RelayPool } from 'nostr'
 import axios from 'axios'
 import jwt from 'jwt-encode'
-import * as nip19 from 'nostr-tools/nip19'
+import { nip19, nip04 } from 'nostr-tools'
 import { toast } from 'react-toastify'
 import { RELAY_URL, UPLOAD_API_KEY } from './constant'
 import { Relay, SimplePool, finalizeEvent } from 'nostr-tools'
@@ -18,7 +19,6 @@ import { bech32 } from 'bech32'
 
 const stockLimit = 50
 const searchLimit = 30
-
 
 const npub2hexa = (npub) => {
   let { prefix, words } = bech32.decode(npub, 90)
@@ -55,7 +55,6 @@ export const updateToken = (userInfo) => {
 
 export const nsecToSK = (nsec) => {
   let { type, data } = nip19.decode(nsec)
-  console.log("mynsec", data)
   return data
 }
 
@@ -192,24 +191,26 @@ export const searchNostrContent = async (text, setLoading, dispatch) => {
   }
   setLoading(false)
 }
-
-export const searchNostrUserProfileEvents= async(pubkey, dispatch)=>{
+const  findTagValue=(ev, tag)=> {
+  return ev.tags.find(([t]) => t === tag)?.[1];
+}
+// Search user profile all events  ( For our plateform user profile)
+export const searchNostrUserProfileEvents = async (pubkey, dispatch) => {
   try {
-    const hexaPubKey= npub2hexa(pubkey)
+    const hexaPubKey = npub2hexa(pubkey)
     const searchPool = RelayPool([RELAY_URL])
     searchPool.on('open', (relay) => {
       relay.subscribe('profileEvent', {
         limit: 5,
-        kinds: [0,1],
-        authors: [hexaPubKey]
+        kinds: [0, 1],
+        authors: [hexaPubKey],
       })
     })
     searchPool.on('event', (relay, sub_id, profileEvent) => {
-      console.log("my notes",  profileEvent)
       dispatch({
         type: SET_USER_PROFILE_EVENT,
         payload: {
-          event:profileEvent
+          event: profileEvent,
         },
       })
     })
@@ -218,6 +219,81 @@ export const searchNostrUserProfileEvents= async(pubkey, dispatch)=>{
     console.log(error)
   }
 }
+
+// Search Nostr profile while start a  new conversation
+export const searchNostrProfile = async (pubkey, setResult, setSearchStatus) => {
+  try {
+    var profileData
+    setSearchStatus(1)
+    console.log('searchig... ')
+    const hexaPubKey = npub2hexa(pubkey)
+    const searchPool = RelayPool([RELAY_URL])
+    console.log('init done ')
+    searchPool.on('open', (relay) => {
+      console.log('opening')
+      relay.subscribe('searchNostrProfileData', {
+        limit: 1,
+        kinds: [0],
+        authors: [hexaPubKey],
+      })
+    })
+    searchPool.on('eose', (relay) => {
+      console.log('Searching Done ', profileData)
+      setSearchStatus(2)
+      if (profileData) {
+        console.log(profileData)
+        setResult(profileData)
+      }
+      relay.close()
+    })
+    searchPool.on('event', (relay, sub_id, searchNostrProfileData) => {
+      console.log('get event')
+      profileData = searchNostrProfileData
+    })
+  } catch (error) {
+    toast.error(error.message ? error.message : error)
+    setSearchStatus(2)
+
+    console.log(error, error.message)
+  }
+}
+
+const nSecToHexString = (nsec) => {
+  const { type, data } = nip19.decode(nsec)
+  const hexString = Array.from(data)
+    .map((byte) => ('00' + byte.toString(16)).slice(-2))
+    .join('')
+  return hexString
+}
+// Search Nostr profile while start a  new conversation
+export const searchUserConversations = async (nsec, pubkey, dispatch) => {
+  console.log('searchig... ')
+  const hexaPubKey = npub2hexa(pubkey)
+  const searchPool = RelayPool([RELAY_URL])
+  console.log('init done ')
+  searchPool.on('open', (relay) => {
+    console.log('opening')
+    relay.subscribe('searchUserConversation', {
+      kinds: [4],
+      authors: [hexaPubKey],
+    })
+  })
+  searchPool.on('eose', (relay) => {
+    // console.log('Searching cnv  Done ')
+    relay.close()
+  })
+  searchPool.on('event', (relay, sub_id, event) => { 
+    const peer = findTagValue(event, 'p');
+    // const peer = receiver === this.pub ? ev.pubkey : receiver;
+    const content = event.content
+    const privateKey = nSecToHexString(nsec)
+    nip04.decrypt(privateKey, peer, content).then((content) => {
+      console.log(event.pubkey, content)
+    })
+  })
+}
+
+// fetch initial  notes for nome page
 export const getStockNostrContent = async (dispatch) => {
   try {
     dispatch({
@@ -274,12 +350,14 @@ export const getStockNostrContent = async (dispatch) => {
     console.log(error)
   }
 }
-export function extractTextAndImage(post) {
+
+// extract data ( image and  text from a post note)
+export function extractTextAndImage(content) {
   // Regular expression pattern to match text and image link
   var pattern = /(.*?)\s*(https?:\/\/\S+\.(?:jpg|png|gif|jpeg)|null)\s*/
 
-  // Execute the regular expression on the post
-  var matches = post.match(pattern)
+  // Execute the regular expression on the content
+  var matches = content.match(pattern)
 
   if (matches) {
     // Extract text and image link from the first match
@@ -290,7 +368,7 @@ export function extractTextAndImage(post) {
     return { text: text, img: imageLink !== 'null' ? imageLink : null }
   } else {
     // If no matches found, return only the text
-    return { text: post.trim(), img: null }
+    return { text: content.trim(), img: null }
   }
 }
 export const formatTime = (timestamp) => {
