@@ -191,8 +191,8 @@ export const searchNostrContent = async (text, setLoading, dispatch) => {
   }
   setLoading(false)
 }
-const  findTagValue=(ev, tag)=> {
-  return ev.tags.find(([t]) => t === tag)?.[1];
+const findTagValue = (ev, tag) => {
+  return ev.tags.find(([t]) => t === tag)?.[1]
 }
 // Search user profile all events  ( For our plateform user profile)
 export const searchNostrUserProfileEvents = async (pubkey, dispatch) => {
@@ -279,16 +279,30 @@ export const searchUserConversations = async (nsec, pubkey, dispatch) => {
     })
   })
   searchPool.on('eose', (relay) => {
-    // console.log('Searching cnv  Done ')
     relay.close()
   })
-  searchPool.on('event', (relay, sub_id, event) => { 
-    const peer = findTagValue(event, 'p');
-    // const peer = receiver === this.pub ? ev.pubkey : receiver;
-    const content = event.content
+  searchPool.on('event', (relay, sub_id, event) => {
+    const peer = findTagValue(event, 'p')
     const privateKey = nSecToHexString(nsec)
-    nip04.decrypt(privateKey, peer, content).then((content) => {
-      console.log(event.pubkey, content)
+
+    const searchPool = RelayPool([RELAY_URL])
+    searchPool.on('open', (relay) => {
+      relay.subscribe('searchmessagesender', {
+        limit: 1,
+        kinds: [0],
+        authors: [peer],
+      })
+    })
+    searchPool.on('eose', (relay) => {
+      relay.close()
+    })
+    searchPool.on('event', (relay, sub_id, searchmessagesender) => {
+      const user = JSON.parse(searchmessagesender.content)
+      console.log('get event searchmessagesender', user)
+
+      nip04.decrypt(privateKey, peer, event.content).then((content) => {
+        console.log(user.name, content)
+      })
     })
   })
 }

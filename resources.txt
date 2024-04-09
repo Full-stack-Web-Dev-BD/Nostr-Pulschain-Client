@@ -23,3 +23,8 @@ https://github.com/Full-stack-Web-Dev-BD/NostrChat
                     decrypted: true
                 }
             });
+
+
+
+notes :
+"{"about":"Other Stuff Maximalist","picture":"https://pablof7z.com/images/me.jpg","website":"https://pablof7z.com","banner":"https://pablof7z.com/images/banner.jpg","lud06":"","display_name":"PABLOF7z","lud16":"pablof7z@primal.net","name":"PABLOF7z","nip05":"_@f7z.io","created_at":1712675446,"categories":["Development & Engineering"]}"
