@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import AddNostrUserOnChat from '../notifications/modals/AddNostrUserOnChat'
 import { useSelector } from 'react-redux'
-import { shortenString } from '../../utils/function'
+import { formatTime, npub2hexa, searchP2PConversations, shortenString } from '../../utils/function'
+import { useDispatch } from 'react-redux'
 
 const ChatPage = () => {
   const [chatHistoryWidth, setChatHistoryWidth] = useState('100%')
   const { loading, userState } = useSelector((state) => state)
   const [selectedUser, setselectedUser] = useState(null)
+  const dispatch = useDispatch()
+  const [p2pCNV, setp2pCNV] = useState([])
+  const [myHexaKey, setmyHexaKey] = useState('')
+  const [oppHexaKey, setOPPHexaKey] = useState('')
+  
 
   useEffect(() => {
     const chatHistoryElement = document.getElementById('chat_history')
@@ -162,6 +168,25 @@ const ChatPage = () => {
     { sender: 'user1', receiver: 'user2', message: 'That sounds like a plan!' },
   ]
 
+  useEffect(() => {
+    if (selectedUser) {
+      filterP2PCNV()
+    }
+  }, [selectedUser])
+
+  const filterP2PCNV = () => {
+    const myKey = npub2hexa(userState.npub)
+    const oppKey = selectedUser
+    setmyHexaKey(myKey)
+    setOPPHexaKey(oppKey)
+
+    const filteredMessages = userState.myAllConversation.filter((item) => {
+      return item.pubkey === myKey && item.receiver.pubkey === oppKey
+    })
+    console.log("filtered", filteredMessages)
+    setp2pCNV(filteredMessages)
+  }
+
   return (
     <div>
       <section>
@@ -174,11 +199,11 @@ const ChatPage = () => {
                 <div className="card-body">
                   <ul className="list-unstyled mb-0">
                     {loading.conversationLoading ? (
-                      <p className='text-center'>Loading ... </p>
+                      <p className="text-center">Loading ... </p>
                     ) : (
                       <>
                         {Object.keys(userState.userConversationList).length < 1 ? (
-                          <p className='text-center'> No User Founded </p>
+                          <p className="text-center"> No User Founded </p>
                         ) : (
                           ''
                         )}
@@ -243,17 +268,16 @@ const ChatPage = () => {
               {selectedUser ? (
                 <>
                   <ul className="list-unstyled" style={{ marginBottom: '100px' }}>
-                    {conversation.map((item, id) => (
-                      <>
-                        {item.sender == 'user1' ? (
+                    {p2pCNV.map((item, id) => (
+                      <> 
+                        {item.pubkey == myHexaKey ? (
                           <li className="d-flex justify-content-between mb-4" key={id}>
                             <div className="card w-100">
                               <div className="card-body">
-                                <p className="mb-0">
-                                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                                  accusantium doloremque laudantium.
+                                <p className="mb-0" style={{textTransform:'capitalize'}}>
+                                  {item.message}
                                 </p>
-                                <p className="text_right">12:04 AM</p>
+                                <p className="text_right color_text"> {formatTime(item.created_at)} </p>
                               </div>
                             </div>
                             <img

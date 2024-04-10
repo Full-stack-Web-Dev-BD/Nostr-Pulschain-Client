@@ -16,7 +16,8 @@ const initialState = {
     userEvents: [],
     searchedEvents: [],
     stockEvents: [],
-    userConversationList:{}
+    userConversationList:{},
+    myAllConversation:[],
   },
   loading: {
     searchLoading: false,
@@ -68,6 +69,7 @@ const changeState = (state = initialState, { type, payload }) => {
           userState: {
             ...state.userState,
             userConversationList: {...state.userState.userConversationList, ...payload.conversationList},
+            myAllConversation: [...state.userState.myAllConversation, ...payload.myAllConversation],
           },
         }
     case SET_LOADING:
