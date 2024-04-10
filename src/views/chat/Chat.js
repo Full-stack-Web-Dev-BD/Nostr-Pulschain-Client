@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import AddNostrUserOnChat from '../notifications/modals/AddNostrUserOnChat'
+import { useSelector } from 'react-redux'
+import { shortenString } from '../../utils/function'
 
 const ChatPage = () => {
   const [chatHistoryWidth, setChatHistoryWidth] = useState('100%')
+  const { userState } = useSelector((state) => state)
+  const [selectedUser, setselectedUser] = useState(null)
 
   useEffect(() => {
     const chatHistoryElement = document.getElementById('chat_history')
@@ -162,94 +166,123 @@ const ChatPage = () => {
     <div>
       <section>
         <div className="container py-5">
-          <AddNostrUserOnChat/>
+          <AddNostrUserOnChat />
           <div className="row chat_wrap">
             {/* Conversation user List */}
             <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0 chat_user">
               <div className="card " style={{ height: '100%' }}>
                 <div className="card-body">
                   <ul className="list-unstyled mb-0">
-                    {
-                      users.map((item, id)=>(
-                    <li className="p-2 border-bottom single_user" key={id}>
-                      <span className="d-flex justify-content-between">
-                        <div className="d-flex flex-row" style={{ alignItems: 'center' }}>
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-8.webp"
-                            alt="avatar"
-                            className="rounded-circle d-flex align-self-center me-3 shadow-1-strong"
-                            width={60}
-                          />
-                          <div className="pt-1">
-                            <p className="fw-bold mb-0 ">John Doe</p>
-                            {/* <p className="small text-muted">Hello, Are you there?</p> */}
+                    {Object.keys(userState.userConversationList).map((key, id) => (
+                      <li onClick={e=>{setselectedUser(key)}} className={selectedUser== key ? "p-2 border-bottom single_user single_user_active": "p-2 border-bottom single_user"} key={id}>
+                        <span className="d-flex justify-content-between">
+                          <div className="d-flex flex-row" style={{ alignItems: 'center' }}>
+                            {userState.userConversationList[key].picture ? (
+                              <img
+                                src={userState.userConversationList[key].picture}
+                                alt="avatar"
+                                className="rounded-circle d-flex align-self-center me-3 shadow-1-strong"
+                                width={60}
+                              />
+                            ) : (
+                              <img
+                                src="/img/8.jpg"
+                                alt="avatar"
+                                className="rounded-circle d-flex align-self-center me-3 shadow-1-strong"
+                                width={60}
+                              />
+                            )}
+
+                            <div className="pt-1">
+                              <p className="fw-bold mb-0 ">
+                                {' '}
+                                {userState.userConversationList[key].name
+                                  ? userState.userConversationList[key].name
+                                  : 'Nostr User'}{' '}
+                              </p>
+                              <p className="small text-muted"> {shortenString(key)} </p>
+                            </div>
                           </div>
-                        </div>
-                        {/* <div className="pt-1">
+                          {/* <div className="pt-1">
                           <p className="small text-muted mb-1">Just now</p>
                           <span className="badge bg-danger float-end">1</span>
                         </div> */}
-                      </span>
-                    </li>
-                      ))
-                    }
+                        </span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
             </div>
             {/* Conversation history ( message ) */}
-            <div className="col-md-6 col-lg-7 col-xl-8 chat_history" id="chat_history">
-              <ul className="list-unstyled" style={{ marginBottom: '100px' }}>
-                {conversation.map((item, id) => (
-                  <>
-                    {item.sender == 'user1' ? (
-                      <li className="d-flex justify-content-between mb-4" key={id}>
-                        <div className="card w-100">
-                          <div className="card-body">
-                            <p className="mb-0">
-                              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                              accusantium doloremque laudantium.
-                            </p>
-                            <p className='text_right'>12:04 AM</p>
-                          </div>
-                        </div>
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp"
-                          alt="avatar"
-                          className="rounded-circle d-flex align-self-start ms-3 shadow-1-strong"
-                          width={60}
-                        />
-                      </li>
-                    ) : (
-                      <li className="d-flex justify-content-between mb-4" key={id}>
-                        <img
-                          src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
-                          alt="avatar"
-                          className="rounded-circle d-flex align-self-start me-3 shadow-1-strong"
-                          width={60}
-                        />
-                        <div className="card">
-                          <div className="card-body">
-                            <p className="mb-0">
-                              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                            </p>
-                            <p>10:45 AM</p>
-                          </div>
-                        </div>
-                      </li>
-                    )}
-                  </>
-                ))}
-              </ul>
-              <div className="message_sendbox" style={{ width: chatHistoryWidth }}>
-                <div className="form-outline input_box">
-                  <textarea className="form-control" rows={2} defaultValue={''} />
-                </div>
-                <button type="button" className="btn float-end btn_success">
-                  Send
-                </button>
-              </div>
+            <div className="col-md-6 col-lg-7 col-xl-8 chat_history" id="chat_history" style={{position:'relative'}}>
+              {selectedUser ? (
+                <>
+                  <ul className="list-unstyled" style={{ marginBottom: '100px' }}>
+                    {conversation.map((item, id) => (
+                      <>
+                        {item.sender == 'user1' ? (
+                          <li className="d-flex justify-content-between mb-4" key={id}>
+                            <div className="card w-100">
+                              <div className="card-body">
+                                <p className="mb-0">
+                                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                                  accusantium doloremque laudantium.
+                                </p>
+                                <p className="text_right">12:04 AM</p>
+                              </div>
+                            </div>
+                            <img
+                              src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp"
+                              alt="avatar"
+                              className="rounded-circle d-flex align-self-start ms-3 shadow-1-strong"
+                              width={60}
+                            />
+                          </li>
+                        ) : (
+                          <li className="d-flex justify-content-between mb-4" key={id}>
+                            <img
+                              src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
+                              alt="avatar"
+                              className="rounded-circle d-flex align-self-start me-3 shadow-1-strong"
+                              width={60}
+                            />
+                            <div className="card">
+                              <div className="card-body">
+                                <p className="mb-0">
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                                  eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </p>
+                                <p>10:45 AM</p>
+                              </div>
+                            </div>
+                          </li>
+                        )}
+                      </>
+                    ))}
+                  </ul>
+                  <div className="message_sendbox" style={{ width: chatHistoryWidth  }}>
+                    <div className="form-outline input_box">
+                      <textarea className="form-control" rows={2} defaultValue={''} />
+                    </div>
+                    <button type="button" className="btn float-end btn_success">
+                      Send
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <h4
+                  style={{
+                    textAlign: 'center',
+                    position: ' absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                >
+                  Select a user to Start Chat
+                </h4>
+              )}
             </div>
           </div>
         </div>

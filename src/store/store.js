@@ -16,7 +16,7 @@ const initialState = {
     userEvents: [],
     searchedEvents: [],
     stockEvents: [],
-    userConversationList:[]
+    userConversationList:{}
   },
   loading: {
     searchLoading: false,
@@ -61,11 +61,12 @@ const changeState = (state = initialState, { type, payload }) => {
       }
       // Chat page
       case SET_USER_CONVERSATION_LIST:
+        
         return {
           ...state,
           userState: {
             ...state.userState,
-            userConversationList: [...state.userState.userConversationList, payload.users],
+            userConversationList: {...state.userState.userConversationList, ...payload.conversationList},
           },
         }
     case SET_LOADING:

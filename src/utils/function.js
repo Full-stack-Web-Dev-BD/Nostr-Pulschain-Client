@@ -11,6 +11,7 @@ import {
   RESET_SEARCH_EVENTS,
   SEARCH_EVENTS,
   SET_LOADING,
+  SET_USER_CONVERSATION_LIST,
   SET_USER_PROFILE_EVENT,
   STOCK_EVENTS,
 } from '../store/actions/actionType'
@@ -267,45 +268,60 @@ const nSecToHexString = (nsec) => {
 }
 // Search Nostr profile while start a  new conversation
 export const searchUserConversations = async (nsec, pubkey, dispatch) => {
-  console.log('searchig... ')
-  const hexaPubKey = npub2hexa(pubkey)
-  const searchPool = RelayPool([RELAY_URL])
-  console.log('init done ')
+  const hexaPubKey = npub2hexa(pubkey);
+  const messagesByUser = {}; // Object to store messages by user peer ID
+
+  const searchPool = RelayPool([RELAY_URL]);
   searchPool.on('open', (relay) => {
-    console.log('opening')
     relay.subscribe('searchUserConversation', {
       kinds: [4],
       authors: [hexaPubKey],
-    })
-  })
-  searchPool.on('eose', (relay) => {
-    relay.close()
-  })
-  searchPool.on('event', (relay, sub_id, event) => {
-    const peer = findTagValue(event, 'p')
-    const privateKey = nSecToHexString(nsec)
+    });
+  });
 
-    const searchPool = RelayPool([RELAY_URL])
+  searchPool.on('eose', (relay) => {
+    console.log('Messages by user:', messagesByUser);
+    relay.close();
+  });
+
+  searchPool.on('event', (relay, sub_id, event) => {
+    const peer = findTagValue(event, 'p');
+    const privateKey = nSecToHexString(nsec);
+
+    // const peerMessages = messagesByUser[peer] || []; // Array to store messages for this peer
+
+    const searchPool = RelayPool([RELAY_URL]);
     searchPool.on('open', (relay) => {
       relay.subscribe('searchmessagesender', {
         limit: 1,
         kinds: [0],
         authors: [peer],
-      })
-    })
-    searchPool.on('eose', (relay) => {
-      relay.close()
-    })
-    searchPool.on('event', (relay, sub_id, searchmessagesender) => {
-      const user = JSON.parse(searchmessagesender.content)
-      console.log('get event searchmessagesender', user)
+      });
+    });
 
-      nip04.decrypt(privateKey, peer, event.content).then((content) => {
-        console.log(user.name, content)
+    searchPool.on('eose', (relay) => {
+      dispatch({
+        type: SET_USER_CONVERSATION_LIST,
+        payload: {
+          conversationList:messagesByUser
+        },
       })
-    })
-  })
-}
+      
+      relay.close();
+    });
+
+    searchPool.on('event', (relay, sub_id, searchmessagesender) => {
+      const user = JSON.parse(searchmessagesender.content);
+      nip04.decrypt(privateKey, peer, event.content).then((content) => { 
+        messagesByUser[peer]={
+          message:content,
+          ...user
+        }
+      });
+    });
+  });
+};
+
 
 // fetch initial  notes for nome page
 export const getStockNostrContent = async (dispatch) => {
@@ -328,7 +344,7 @@ export const getStockNostrContent = async (dispatch) => {
           stockLoading: false,
         },
       })
-      console.log('Stock Ended')
+      // console.log('Stock Ended')
       relay.close()
     })
 
