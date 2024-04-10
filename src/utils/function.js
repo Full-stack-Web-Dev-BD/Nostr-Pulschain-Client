@@ -312,7 +312,7 @@ export const searchUserConversations = async (nsec, pubkey, dispatch) => {
         type: SET_USER_CONVERSATION_LIST,
         payload: {
           conversationList: messagesByUser,
-          myAllConversation:myAllConversation
+          myAllConversation: myAllConversation,
         },
       })
       dispatch({
@@ -327,11 +327,11 @@ export const searchUserConversations = async (nsec, pubkey, dispatch) => {
     searchPool.on('event', (relay, sub_id, searchmessagesender) => {
       const user = JSON.parse(searchmessagesender.content)
       nip04.decrypt(privateKey, peer, event.content).then((content) => {
-        console.log("my pub key ", npub2hexa(pubkey))
+        console.log('my pub key ', npub2hexa(pubkey))
         myAllConversation.push({
           message: content,
           ...event,
-          receiver:searchmessagesender,
+          receiver: searchmessagesender,
         })
         messagesByUser[peer] = {
           message: content,
@@ -410,6 +410,38 @@ export const searchP2PConversations = async (nsec, pubkey, recPubKey, dispatch) 
     //     }
     //   });
     // });
+  })
+}
+
+export const sendMessage = async (nsec, peer, sms, dispatch) => {
+  const hexa = nSecToHexString(nsec)
+  nip04.encrypt(hexa, peer, sms).then(async (hash) => {
+    console.log('my hash sms ', hash)
+
+    const relay = await Relay.connect(RELAY_URL)
+    let eventTemplate = {
+      kind: 4,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [['p', peer]],
+      content: hash,
+    }
+    const signedEvent = finalizeEvent(eventTemplate, hexa)
+    const published = await relay.publish(signedEvent)
+    console.log('uasdf', published)
+    relay.close()
+    toast('Message Sent !', published)
+
+    // pubkey: ourPubKey,
+    // created_at: Math.floor(Date.now() / 1000),
+    // kind: 4,
+    // tags: [['p', theirPublicKey]],
+    // content: encryptedMessage + '?iv=' + ivBase64
+    // dispatch({
+    //   type: ADD_NEW_NOTE,
+    //   payload: {
+    //     note: signedEvent,
+    //   },
+    // })
   })
 }
 // fetch initial  notes for nome page

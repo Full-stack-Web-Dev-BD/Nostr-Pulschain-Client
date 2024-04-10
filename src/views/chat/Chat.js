@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AddNostrUserOnChat from '../notifications/modals/AddNostrUserOnChat'
 import { useSelector } from 'react-redux'
-import { formatTime, npub2hexa, searchP2PConversations, shortenString } from '../../utils/function'
+import { formatTime, npub2hexa, searchP2PConversations, sendMessage, shortenString } from '../../utils/function'
 import { useDispatch } from 'react-redux'
 
 const ChatPage = () => {
@@ -12,6 +12,7 @@ const ChatPage = () => {
   const [p2pCNV, setp2pCNV] = useState([])
   const [myHexaKey, setmyHexaKey] = useState('')
   const [oppHexaKey, setOPPHexaKey] = useState('')
+  const [SMS, setSMS] = useState('')
   
 
   useEffect(() => {
@@ -183,7 +184,6 @@ const ChatPage = () => {
     const filteredMessages = userState.myAllConversation.filter((item) => {
       return item.pubkey === myKey && item.receiver.pubkey === oppKey
     })
-    console.log("filtered", filteredMessages)
     setp2pCNV(filteredMessages)
   }
 
@@ -268,7 +268,7 @@ const ChatPage = () => {
               {selectedUser ? (
                 <>
                   <ul className="list-unstyled" style={{ marginBottom: '100px' }}>
-                    {p2pCNV.map((item, id) => (
+                    {p2pCNV.reverse().map((item, id) => (
                       <> 
                         {item.pubkey == myHexaKey ? (
                           <li className="d-flex justify-content-between mb-4" key={id}>
@@ -311,9 +311,9 @@ const ChatPage = () => {
                   </ul>
                   <div className="message_sendbox" style={{ width: chatHistoryWidth }}>
                     <div className="form-outline input_box">
-                      <textarea className="form-control" rows={2} defaultValue={''} />
+                      <textarea onChange={e=>setSMS(e.target.value)} className="form-control" rows={2} defaultValue={''} />
                     </div>
-                    <button type="button" className="btn float-end btn_success">
+                    <button onClick={e=>sendMessage(userState.nsec,oppHexaKey, SMS)} type="button" className="btn float-end btn_success">
                       Send
                     </button>
                   </div>
