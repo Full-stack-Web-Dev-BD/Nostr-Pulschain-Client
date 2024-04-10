@@ -51,6 +51,7 @@ const AddNostrUserOnChat = () => {
                   setNPubKey(e.target.value)
                 }}
               />
+              <button className='btn btn_success' onClick={e=>setVisible(false)}> Close</button>
             </>
           ) : (
             ''

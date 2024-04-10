@@ -268,6 +268,12 @@ const nSecToHexString = (nsec) => {
 }
 // Search Nostr profile while start a  new conversation
 export const searchUserConversations = async (nsec, pubkey, dispatch) => {
+  dispatch({
+    type: SET_LOADING,
+    payload: {
+      conversationLoading:true
+    },
+  })
   const hexaPubKey = npub2hexa(pubkey);
   const messagesByUser = {}; // Object to store messages by user peer ID
 
@@ -306,7 +312,12 @@ export const searchUserConversations = async (nsec, pubkey, dispatch) => {
           conversationList:messagesByUser
         },
       })
-      
+      dispatch({
+        type: SET_LOADING,
+        payload: {
+          conversationLoading:false
+        },
+      })
       relay.close();
     });
 

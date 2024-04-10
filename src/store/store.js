@@ -20,6 +20,7 @@ const initialState = {
   },
   loading: {
     searchLoading: false,
+    conversationLoading:false,
     stockLoading: true,
   },
   sidebarShow: true,

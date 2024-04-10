@@ -5,7 +5,7 @@ import { shortenString } from '../../utils/function'
 
 const ChatPage = () => {
   const [chatHistoryWidth, setChatHistoryWidth] = useState('100%')
-  const { userState } = useSelector((state) => state)
+  const { loading, userState } = useSelector((state) => state)
   const [selectedUser, setselectedUser] = useState(null)
 
   useEffect(() => {
@@ -173,8 +173,29 @@ const ChatPage = () => {
               <div className="card " style={{ height: '100%' }}>
                 <div className="card-body">
                   <ul className="list-unstyled mb-0">
+                    {loading.conversationLoading ? (
+                      <p className='text-center'>Loading ... </p>
+                    ) : (
+                      <>
+                        {Object.keys(userState.userConversationList).length < 1 ? (
+                          <p className='text-center'> No User Founded </p>
+                        ) : (
+                          ''
+                        )}
+                      </>
+                    )}
                     {Object.keys(userState.userConversationList).map((key, id) => (
-                      <li onClick={e=>{setselectedUser(key)}} className={selectedUser== key ? "p-2 border-bottom single_user single_user_active": "p-2 border-bottom single_user"} key={id}>
+                      <li
+                        onClick={(e) => {
+                          setselectedUser(key)
+                        }}
+                        className={
+                          selectedUser == key
+                            ? 'p-2 border-bottom single_user single_user_active'
+                            : 'p-2 border-bottom single_user'
+                        }
+                        key={id}
+                      >
                         <span className="d-flex justify-content-between">
                           <div className="d-flex flex-row" style={{ alignItems: 'center' }}>
                             {userState.userConversationList[key].picture ? (
@@ -195,10 +216,9 @@ const ChatPage = () => {
 
                             <div className="pt-1">
                               <p className="fw-bold mb-0 ">
-                                {' '}
                                 {userState.userConversationList[key].name
                                   ? userState.userConversationList[key].name
-                                  : 'Nostr User'}{' '}
+                                  : 'Nostr User'}
                               </p>
                               <p className="small text-muted"> {shortenString(key)} </p>
                             </div>
@@ -215,7 +235,11 @@ const ChatPage = () => {
               </div>
             </div>
             {/* Conversation history ( message ) */}
-            <div className="col-md-6 col-lg-7 col-xl-8 chat_history" id="chat_history" style={{position:'relative'}}>
+            <div
+              className="col-md-6 col-lg-7 col-xl-8 chat_history"
+              id="chat_history"
+              style={selectedUser ? {} : { position: 'relative' }}
+            >
               {selectedUser ? (
                 <>
                   <ul className="list-unstyled" style={{ marginBottom: '100px' }}>
@@ -261,7 +285,7 @@ const ChatPage = () => {
                       </>
                     ))}
                   </ul>
-                  <div className="message_sendbox" style={{ width: chatHistoryWidth  }}>
+                  <div className="message_sendbox" style={{ width: chatHistoryWidth }}>
                     <div className="form-outline input_box">
                       <textarea className="form-control" rows={2} defaultValue={''} />
                     </div>
