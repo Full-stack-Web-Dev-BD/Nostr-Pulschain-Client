@@ -1,2 +1,0 @@
-Learning:
-    >To get a chain provider search with " pulschain web3 provicder" -For pulschain (The rps url is the provider )

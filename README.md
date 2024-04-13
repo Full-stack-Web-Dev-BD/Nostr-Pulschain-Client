@@ -1,1 +1,0 @@
-[Success,Danger]=[#8920e9,#d008f8]
