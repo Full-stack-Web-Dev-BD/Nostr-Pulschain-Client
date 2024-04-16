@@ -1,15 +1,7 @@
 ### Development Phase: Implementation and Testing
 
-1. **Team Formation**:
-   - Project Manager: Responsible for overseeing the entire development process, coordinating with team members, and ensuring project milestones are met.
-   - Technical Lead: Oversees technical aspects of the project, guides architectural decisions, and ensures adherence to best practices.
-   - Developers (Backend, Frontend, Blockchain Integration): Responsible for implementing various components of the AEVC library according to the provided architecture and specifications.
-   - Cryptography Expert: Provides guidance on cryptographic algorithms and ensures the security of the AEVC library.
-   - Network Specialist: Implements the peer-to-peer communication protocol and integrates with Nostr or other decentralized communication protocols.
-   - Quality Assurance Engineer: Conducts thorough testing to ensure the correctness, reliability, and security of the AEVC library.
-
 2. **Task Breakdown**:
-   - **Backend Development**:
+   - **Version Controll and  Development**:
      - Implement core components such as version control, branching, merging, and history management.
      - Develop storage backend for storing and retrieving versions and branches.
      - Implement delta encoding, compression, and encryption for efficient storage and data security.
@@ -30,14 +22,6 @@
      - Conduct thorough testing for various scenarios, edge cases, and potential failure points.
      - Establish a continuous integration and continuous deployment (CI/CD) pipeline for automated testing and deployment.
 
-3. **Timeline**:
-   - **Backend Development**: 4 weeks
-   - **Frontend Development**: 3 weeks
-   - **Blockchain Integration**: 2 weeks
-   - **Cryptography Implementation**: 3 weeks
-   - **Network Communication**: 2 weeks
-   - **Quality Assurance and Testing**: Ongoing throughout the development phase
-
 4. **Resource Allocation**:
    - Allocate appropriate resources to each development task based on complexity and priority.
    - Ensure effective communication and collaboration among team members to maximize productivity.
@@ -46,12 +30,7 @@
 5. **Documentation and Training**:
    - Develop comprehensive documentation for the AEVC library, including usage guidelines, tutorials, and API references.
    - Conduct training sessions for developers to familiarize them with the AEVC library and its usage.
-
-6. **Community Engagement**:
-   - Engage with the developer community to gather feedback and insights.
-   - Encourage open communication, bug reporting, and feature requests.
-   - Incorporate user feedback into the development process to improve the AEVC library.
-
+ 
 7. **Maintenance and Support**:
    - Establish a plan for ongoing maintenance and support of the AEVC library post-launch.
    - Regularly release updates, bug fixes, and security patches to ensure the stability and security of the library.
