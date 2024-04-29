@@ -1,5 +1,15 @@
 /* primary : #8920e9 */
 /* success : #d008f8 */
+.in_bg_tr,
+.in_bg_tr:focus,
+.in_bg_tr option
+{  
+  background-color: #212631;
+  color: white;
+  border: 1px solid #313848;
+  border-radius: 5px;
+}
+.in_bg_tr:focus
 .css-1h4yqj1 {
   background-color: #d008f8;
 }
