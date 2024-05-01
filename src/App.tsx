@@ -71,12 +71,13 @@ function App() {
                     <Dashboard path="/home" />
                     <Proposal path="/proposal" />
 
-                    <Channel path="/channel" />
+                    {/* <Channel path="/channel" />
                     {keys ? (
                       <Channel path="/channel/:channel" />
                     ) : (
                       <ChannelPublic path="/channel/:channel" />
-                    )}
+                    )} */}
+                        {/* to fix channel- dashboard  conflict , just  compire and check prev nostr  main repo channel component  */}
                     {keys ? (
                       <DirectMessage path="/dm/:npub" />
                     ) : (
