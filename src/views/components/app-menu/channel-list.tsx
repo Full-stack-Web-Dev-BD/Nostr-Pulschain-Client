@@ -10,7 +10,7 @@ import useLivePublicMessages from 'hooks/use-live-public-messages';
 import ChannelAddMenu from 'views/components/app-menu/channel-add-menu';
 import ListItem from 'views/components/app-menu/list-item';
 import { channelAtom, keysAtom, readMarkMapAtom } from 'atoms';
-import { CiFileOff } from "react-icons/ci";
+import { CiFileOff } from 'react-icons/ci';
 import { Channel } from 'types';
 
 const ChannelListItem = (props: { c: Channel }) => {
@@ -31,13 +31,20 @@ const ChannelListItem = (props: { c: Channel }) => {
     c.id === channel?.id && location.pathname.startsWith('/channel/');
 
   return (
-    <ListItem
-      key={c.id}
-      label={c.name}
-      href={`/channel/${c.id}`}
-      selected={isSelected}
-      hasUnread={hasUnread}
-    />
+    <>
+      {c.id ==
+      'f412192fdc846952c75058e911d37a7392aa7fd2e727330f4344badc92fb8a22' ? (
+        ""
+      ) : (
+        <ListItem
+          key={c.id}
+          label={c.name}
+          href={`/channel/${c.id}`}
+          selected={isSelected}
+          hasUnread={hasUnread}
+        />
+      )}
+    </>
   );
 };
 
@@ -63,14 +70,11 @@ const ChannelList = () => {
             color: theme.palette.primary.dark,
           }}
         >
-          <h3>
-          {t('Proposal History')}
-          </h3>
+          <h3>{t('Proposal History')}</h3>
         </Box>
         <ChannelAddMenu />
-        
       </Box>
-      <hr/>
+      <hr />
       {(() => {
         if (channels.length === 1) {
           return (
@@ -82,14 +86,15 @@ const ChannelList = () => {
                 opacity: '0.6',
               }}
             >
-              <h4 className='text-center'>
-              {t('No Proposal Finded')} <CiFileOff/>
+              <h4 className="text-center">
+                {t('No Proposal Finded')} <CiFileOff />
               </h4>
             </Box>
           );
+        } else {
+          console.log('all channel ', channels);
+          return channels.map(c => <ChannelListItem key={c.id} c={c} />);
         }
-
-        return channels.map(c => <ChannelListItem key={c.id} c={c} />);
       })()}
     </>
   );
