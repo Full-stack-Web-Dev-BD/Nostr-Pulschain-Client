@@ -111,68 +111,7 @@ const ChannelPage = (props: RouteComponentProps) => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-            {/* <div className="row">
-              <div className="col-12 col-md-8 offset-md-2">
-                {userState.stockEvents.length < 1 ? (
-                  <>
-                    <LoadingContent />
-                  </>
-                ) : (
-                  <>
-                    {userState.stockEvents.map((note, i) => (
-                      <div className="card mb-4 pb-4" key={i}>
-                        <div className="col-sm-11 ms-auto mt-5" key={note.id}>
-                          <div className="user_profile_box user_profile_link">
-                            {JSON.parse(note.user.content).picture ? (
-                              <img
-                                src={JSON.parse(note.user.content).picture}
-                              />
-                            ) : (
-                              <img src="/img/user.jpg" />
-                            )}
-                            <div>
-                              <Link to={"#"}>
-                                <h5 style={{ textTransform: "capitalize" }}>
-                                  {JSON.parse(note.user.content).name
-                                    ? JSON.parse(note.user.content).name
-                                    : "Nostr User"}
-                                </h5>
-                              </Link>
-                              <p> {formatTime(note.created_at)} </p>
-                            </div>
-                          </div>
-                          <div className="mb-3 mt-4 post_content">
-                            {extractTextAndImage(note.content).text ? (
-                              <p> {extractTextAndImage(note.content).text} </p>
-                            ) : (
-                              ""
-                            )}
-                            {extractTextAndImage(note.content).img ? (
-                              <img
-                                src={extractTextAndImage(note.content).img}
-                              />
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                          <div>
-                            <div className="upload_panal"> 
-                              <div className="post_reaction_item">
-                                <span className="reaction_icon">
-                                  <CIcon icon={cilHeart} size="xl" />
-                                </span>
-                                <span> {note.tags.length} </span>
-                              </div>
-                            </div>
-                          </div> 
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
-            </div> */}
+            </div> 
           </div>
         </AppContent>
       </AppWrapper>
