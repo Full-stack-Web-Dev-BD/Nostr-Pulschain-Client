@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import Joi from "joi";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import { CircularProgress } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import Joi from 'joi';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { CircularProgress } from '@mui/material';
+import { toast } from 'react-toastify';
 
-import useTranslation from "hooks/use-translation";
+import useTranslation from 'hooks/use-translation';
 // import PictureInput from "views/components/picture-input";
-import { Metadata } from "types";
-import axios from "axios";
-import { UPLOAD_API_KEY } from "util/constant";
+import { Metadata } from 'types';
+import axios from 'axios';
+import { UPLOAD_API_KEY, proposalTypes } from 'util/constant';
 
 const MetadataForm = (props: {
   values?: Metadata;
@@ -21,12 +22,12 @@ const MetadataForm = (props: {
 }) => {
   const { skipButton, submitBtnLabel, values, labels, onSubmit, inProgress } =
     props;
-  const [name, setName] = useState(values?.name || "");
-  const [about, setAbout] = useState(values?.about || "");
-  const [picture, setPicture] = useState(values?.picture || "");
+  const [name, setName] = useState(values?.name || '');
+  const [about, setAbout] = useState(values?.about || '');
+  const [picture, setPicture] = useState(values?.picture || '');
   const [t] = useTranslation();
-  const [error, setError] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [changed, setChanged] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -39,8 +40,8 @@ const MetadataForm = (props: {
   }, [values]);
 
   const resetError = () => {
-    setError("");
-    setErrorMessage("");
+    setError('');
+    setErrorMessage('');
   };
 
   const nameChanged = (
@@ -65,70 +66,114 @@ const MetadataForm = (props: {
     setChanged(true);
   };
 
-  const submit = () => {
-    const scheme = Joi.object({
-      name: Joi.string().required(),
-      about: Joi.string().empty(""),
-      picture: Joi.string()
-        .uri({ scheme: "https", allowRelative: false })
-        .empty(""),
-    }).messages({
-      "string.uriCustomScheme": t(
-        "Picture must be a valid uri with a scheme matching the https pattern"
-      ),
-    });
-
-    const metadata = { name, about, picture };
-    const validation = scheme.validate(metadata);
-
-    if (validation.error) {
-      setError(validation.error.details[0].path[0].toString() || "");
-      setErrorMessage(validation.error.details[0].message);
-      return;
-    }
-
-    onSubmit(metadata);
-  };
   const handleFileUpload = (event: any) => {
     if (event.target.files[0]) {
       const formData = new FormData();
-      formData.append("image", event.target.files[0]);
+      formData.append('image', event.target.files[0]);
       setUploading(true);
       axios
         .post(`https://api.imgbb.com/1/upload?key=${UPLOAD_API_KEY}`, formData)
         .then((response: any) => {
           if (response.data) {
-            console.log("file settled");
+            console.log('file settled');
             pictureChanged(response.data.data.url);
           }
           setUploading(false);
         })
         .catch((error: any) => {
-          console.error("Upload failed:", error);
+          console.error('Upload failed:', error);
         })
         .finally(() => {
-          console.log("file upload done");
+          console.log('file upload done');
         });
     }
   };
+
+  //  New proposal form
+  const [proposalType, setProposalType] = useState('');
+  const [formData, setFormData] = useState<{
+    problem: string;
+    solution: string;
+    targetAudience: string;
+    qualifications: string;
+    purpose: string;
+    approach: string;
+    outcome: string;
+    timeline: string;
+    budget: string;
+    callToAction: string;
+  }>({
+    problem: '',
+    solution: '',
+    targetAudience: '',
+    qualifications: '',
+    purpose: '',
+    approach: '',
+    outcome: '',
+    timeline: '',
+    budget: '',
+    callToAction: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleProposalTypeChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedProposalType = e.target.value;
+    setProposalType(selectedProposalType);
+
+    // Find the selected proposal type from the proposalTypes array
+    const selectedProposal = proposalTypes.find(
+      type => type.name === selectedProposalType
+    );
+
+    if (selectedProposal) {
+      // Update formData with purpose, approach, and outcome from selected proposal
+      setFormData({
+        ...formData,
+        purpose: selectedProposal.purpose,
+        approach: selectedProposal.approach,
+        outcome: selectedProposal.outcome,
+      });
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  const submit = () => {
+    setIsSubmitting(true)
+    const metadata = {
+      name: formData.approach,
+      about: JSON.stringify(formData),
+      picture: picture,
+    };
+    onSubmit(metadata);
+  };
   return (
     <>
-      <div style={{ textAlign: "center" }}>
+      <div style={{ textAlign: 'center' }}>
         <div>
-          <div style={{marginBottom:'20px'}}>
-          <img className="user_pic" src={picture ? picture : "/img/user.jpg"} />
+          <div style={{ marginBottom: '20px' }}>
+            <img
+              className="user_pic"
+              src={picture ? picture : '/img/proposal.png'}
+            />
           </div>
           {uploading ? (
             <>
-              <CircularProgress size={20} sx={{ mr: "8px" }} /> Uploading Image
+              <CircularProgress size={20} sx={{ mr: '8px' }} /> Uploading Image
               ...
             </>
           ) : (
             <Button
               variant="contained"
-              
-              onClick={(e) =>
-                document.getElementById("upload_profile_pic")?.click()
+              onClick={e =>
+                document.getElementById('upload_profile_pic')?.click()
               }
             >
               + Upload
@@ -136,42 +181,90 @@ const MetadataForm = (props: {
           )}
           <br />
           <input
-            style={{ visibility: "hidden" }}
-            onChange={(e) => handleFileUpload(e)}
+            style={{ visibility: 'hidden' }}
+            onChange={e => handleFileUpload(e)}
             type="file"
             accept="image/x-png,image/gif,image/jpeg"
             id="upload_profile_pic"
           />
         </div>
-        <TextField
-          label={t(labels?.name || "Name")}
-          value={name}
-          onChange={nameChanged}
-          fullWidth
-          autoFocus
-          autoComplete="off"
-          error={error === "name"}
-          helperText={error === "name" ? errorMessage : " "}
-        />
 
-        <TextField
-          label={t(labels?.about || "About")}
-          value={about}
-          onChange={aboutChanged}
-          fullWidth
-          autoComplete="off"
-          helperText=""
-        />
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Button
-            style={{ marginTop: "20px" }}
-            variant="contained"
-            disabled={inProgress}
-            onClick={submit}
-          >
-            {inProgress ? "Updating ..." : submitBtnLabel}
-          </Button>
-        </Box>
+        <div className="text-left">
+          <div style={{ textAlign: 'left' }}>
+            <label>Proposal Type:</label>
+            <select
+              className="form-control in_bg_tr"
+              value={proposalType}
+              onChange={handleProposalTypeChange}
+            >
+              <option value="">Select a proposal type</option>
+              {proposalTypes.map((type, i) => (
+                <option key={i} value={type.name}>
+                  {type.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {proposalType && (
+            <>
+              <div>
+                <label>Purpose:</label>
+                <textarea
+                  name="purpose"
+                  placeholder="Purpose"
+                  className="no_border form-control in_bg_tr"
+                  value={formData.purpose}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label>Approach:</label>
+                <textarea
+                  className="no_border form-control in_bg_tr"
+                  name="approach"
+                  value={formData.approach}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label>Outcome:</label>
+                <textarea
+                  className="no_border form-control in_bg_tr"
+                  name="outcome"
+                  value={formData.outcome}
+                  readOnly
+                />
+              </div>
+            </>
+          )}
+          <div>
+            <label>Problem:</label>
+            <textarea
+              className="form-control in_bg_tr"
+              name="problem"
+              value={formData.problem}
+              onChange={handleInputChange}
+            />
+          </div>
+          {proposalType && formData.problem ? (
+            <button
+              type="submit"
+              className="btn btn_success mt-3"
+              disabled={isSubmitting}
+              onClick={e => submit()}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="btn btn_success mt-3"
+              onClick={e => toast.error('Form incomplete, Fill it Up !')}
+            >
+              Submit
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
