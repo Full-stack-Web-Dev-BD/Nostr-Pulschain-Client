@@ -5,9 +5,11 @@ import { Card, CardContent } from '@mui/material';
 import AppWrapper from 'views/components/app-wrapper';
 import AppMenu from 'views/components/app-menu';
 import DashboardContent from 'views/components/app-content/DashboardContent';
-import { proposalTypes } from 'util/constant';
+import ChannelList from 'views/components/app-menu/channel-list';
 
- 
+
+
+import { proposalTypes } from 'util/constant';
 
 const Proposal = (props: RouteComponentProps) => {
   const [proposalType, setProposalType] = useState('');
@@ -36,12 +38,16 @@ const Proposal = (props: RouteComponentProps) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleProposalTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleProposalTypeChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const selectedProposalType = e.target.value;
     setProposalType(selectedProposalType);
 
     // Find the selected proposal type from the proposalTypes array
-    const selectedProposal = proposalTypes.find(type => type.name === selectedProposalType);
+    const selectedProposal = proposalTypes.find(
+      type => type.name === selectedProposalType
+    );
 
     if (selectedProposal) {
       // Update formData with purpose, approach, and outcome from selected proposal
@@ -85,10 +91,7 @@ const Proposal = (props: RouteComponentProps) => {
                       >
                         <option value="">Select a proposal type</option>
                         {proposalTypes.map((type, i) => (
-                          <option
-                            key={i}
-                            value={type.name}
-                          >
+                          <option key={i} value={type.name}>
                             {type.name}
                           </option>
                         ))}
@@ -101,7 +104,7 @@ const Proposal = (props: RouteComponentProps) => {
                           <textarea
                             name="purpose"
                             placeholder="Purpose"
-                            className="form-control in_bg_tr"
+                            className="no_border form-control in_bg_tr"
                             value={formData.purpose}
                             readOnly
                           />
@@ -109,7 +112,7 @@ const Proposal = (props: RouteComponentProps) => {
                         <div>
                           <label>Approach:</label>
                           <textarea
-                            className="form-control in_bg_tr"
+                            className="no_border form-control in_bg_tr"
                             name="approach"
                             value={formData.approach}
                             readOnly
@@ -118,7 +121,7 @@ const Proposal = (props: RouteComponentProps) => {
                         <div>
                           <label>Outcome:</label>
                           <textarea
-                            className="form-control in_bg_tr"
+                            className="no_border form-control in_bg_tr"
                             name="outcome"
                             value={formData.outcome}
                             readOnly
@@ -139,7 +142,7 @@ const Proposal = (props: RouteComponentProps) => {
                       type="submit"
                       className="btn btn_success mt-3"
                       disabled={isSubmitting}
-                      onClick={e => console.log(proposalType)}
+                      onClick={e => console.log(formData)}
                     >
                       {isSubmitting ? 'Submitting...' : 'Submit'}
                     </button>
@@ -147,7 +150,16 @@ const Proposal = (props: RouteComponentProps) => {
                 </CardContent>
               </Card>
             </div>
-            <h3>Proposal</h3>
+
+            <div className="mt-5 col-12 col-md-8 offset-md-2">
+              <Card>
+                <CardContent> 
+                  <div className='proposal_history'>
+                  <ChannelList/>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </DashboardContent>
       </AppWrapper>

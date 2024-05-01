@@ -6,8 +6,11 @@
 {  
   background-color: #212631 !important;
   color: white !important;
-  border: 1px solid #313848 !important;
+  border: 1px solid #313848 ;
   border-radius: 5px !important;
+}
+.no_border{
+  border: none !important;
 }
 .in_bg_tr:focus
 .css-1h4yqj1 {

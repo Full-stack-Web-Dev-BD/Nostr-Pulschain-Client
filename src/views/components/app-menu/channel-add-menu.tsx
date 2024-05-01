@@ -48,10 +48,10 @@ const ChannelAddMenu = () => {
     }
 
     return <>
-        <Button onClick={openMenu} sx={{minWidth: 'auto'}}><Plus height={18}/></Button>
+        <button onClick={openMenu}  className='btn btn_success'><Plus height={18}/> New Proposal</button>
         <Menu anchorEl={anchorEl} open={open} onClose={closeMenu}>
-            <MenuItem dense onClick={create}>{t('Create')}</MenuItem>
-            <MenuItem dense onClick={join}>{t('Join')}</MenuItem>
+            <MenuItem dense onClick={create}>{t('Create a New Proposal')}</MenuItem>
+            <MenuItem dense onClick={join}>{t('Join in a Proposal')}</MenuItem>
         </Menu>
     </>
 }

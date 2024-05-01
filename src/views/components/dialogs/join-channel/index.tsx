@@ -37,10 +37,10 @@ const JoinChannel = (props: { onSuccess: (id: string) => void }) => {
 
     return (
         <>
-            <DialogTitle>{t('Join a Channel')}<CloseModal onClick={handleClose}/></DialogTitle>
+            <DialogTitle>{t('Join a Proposal')}<CloseModal onClick={handleClose}/></DialogTitle>
             <DialogContent>
                 <Box sx={{pt: '6px'}}>
-                    <TextField label={t('Channel id')} value={id} onChange={idChanged} fullWidth autoFocus
+                    <TextField label={t('Enter Proposal ID')} value={id} onChange={idChanged} fullWidth autoFocus
                                error={!!error} helperText={error || ' '}/>
                     <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                         <Button variant="contained" onClick={submit}>{t('Go')}</Button>

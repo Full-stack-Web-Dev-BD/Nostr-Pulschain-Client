@@ -10,6 +10,7 @@ import useLivePublicMessages from 'hooks/use-live-public-messages';
 import ChannelAddMenu from 'views/components/app-menu/channel-add-menu';
 import ListItem from 'views/components/app-menu/list-item';
 import { channelAtom, keysAtom, readMarkMapAtom } from 'atoms';
+import { CiFileOff } from "react-icons/ci";
 import { Channel } from 'types';
 
 const ChannelListItem = (props: { c: Channel }) => {
@@ -62,12 +63,16 @@ const ChannelList = () => {
             color: theme.palette.primary.dark,
           }}
         >
-          {t('Proposal')}
+          <h3>
+          {t('Proposal History')}
+          </h3>
         </Box>
         <ChannelAddMenu />
+        
       </Box>
+      <hr/>
       {(() => {
-        if (channels.length === 0) {
+        if (channels.length === 1) {
           return (
             <Box
               component="span"
@@ -77,7 +82,9 @@ const ChannelList = () => {
                 opacity: '0.6',
               }}
             >
-              {t('No Proposal')}
+              <h4 className='text-center'>
+              {t('No Proposal Finded')} <CiFileOff/>
+              </h4>
             </Box>
           );
         }

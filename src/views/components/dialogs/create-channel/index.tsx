@@ -24,7 +24,7 @@ const CreateChannel = (props: { onSuccess: (id: string) => void }) => {
 
     return (
         <>
-            <DialogTitle>{t('Create Channel')}<CloseModal onClick={handleClose}/></DialogTitle>
+            <DialogTitle>{t('Create Proposal')}<CloseModal onClick={handleClose}/></DialogTitle>
             <DialogContent>
                 <Box sx={{pt: '6px'}}>
                     <MetadataForm submitBtnLabel='Submit' skipButton={<span/>} labels={{
