@@ -20,7 +20,7 @@ const AppContentHeaderBase = (props: { children: React.ReactNode }) => {
 
     return <Box>
         <Box sx={{
-            height: styles.headerHeight,
+            // height: styles.headerHeight,
             display: 'flex',
             flexGrow: 0,
             flexShrink: 0,

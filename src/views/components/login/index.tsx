@@ -25,6 +25,7 @@ import Wallet from "svg/wallet";
 import { PLATFORM } from "const";
 import { storeKeys } from "local-storage";
 import { Keys } from "types";
+import LoginMetadataForm from "../metadata-form/loginForm";
 
 const Login = (props: { onDone: () => void }) => {
   const { onDone } = props;
@@ -122,7 +123,7 @@ const Login = (props: { onDone: () => void }) => {
         if (step === 2) {
           return (
             <>
-              <MetadataForm
+              <LoginMetadataForm
                 skipButton={<Button onClick={onDone}>{t("Skip")}</Button>}
                 submitBtnLabel={t("Create Account")}
                 onSubmit={(data) => {

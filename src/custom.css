@@ -16,6 +16,21 @@
 .css-1h4yqj1 {
   background-color: #d008f8;
 }
+.text_success {
+  color: #d008f8 !important;
+}
+.flex_2s{
+  display: flex;
+  align-items:'center';
+  justify-content: space-between;
+}
+.bold_m{
+  font-weight: 600;
+}
+
+.bold{
+  font-weight: 900;
+}
 .css-isbbh3 {
   opacity: 1 !important;
   color: #d008f8 !important;

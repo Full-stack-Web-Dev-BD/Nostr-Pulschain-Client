@@ -125,11 +125,11 @@ const ChannelMenu = () => {
         {t('Invite')}
       </MenuItem>
     );
-    items.push(
-      <MenuItem key={4} dense onClick={leave}>
-        {t('Leave')}
-      </MenuItem>
-    );
+    // items.push(
+    //   <MenuItem key={4} dense onClick={leave}>
+    //     {t('Leave')}
+    //   </MenuItem>
+    // );
 
     return items;
   }, [keys, channel]);
