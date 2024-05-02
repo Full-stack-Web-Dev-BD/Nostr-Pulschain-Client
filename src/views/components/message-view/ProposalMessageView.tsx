@@ -35,7 +35,7 @@ import ChevronRight from 'svg/chevron-right';
 import { PLATFORM } from 'const';
 import { truncateMiddle } from 'util/truncate';
 
-const MessageView = (props: {
+const ProposalMessageView = (props: {
   message: Message;
   compactView: boolean;
   dateFormat: 'time' | 'fromNow';
@@ -223,7 +223,7 @@ const MessageView = (props: {
         }
       }}
     >
-      {(menu || activeMessage === message.id) && (
+      {/* {(menu || activeMessage === message.id) && (
         <Box
           sx={{
             position: 'absolute',
@@ -233,7 +233,7 @@ const MessageView = (props: {
         >
           <MessageMenuWeb message={message} inThreadView={inThreadView} />
         </Box>
-      )}
+      )} */}
       <Box
         sx={{
           display: 'flex',
@@ -375,4 +375,4 @@ const MessageView = (props: {
   );
 };
 
-export default MessageView;
+export default ProposalMessageView;

@@ -9,8 +9,8 @@ import AppWrapper from 'views/components/app-wrapper';
 import AppContent from 'views/components/app-content';
 import AppMenu from 'views/components/app-menu';
 import ChannelHeader from 'views/channel/components/channel-header';
-import ChatInput from 'views/components/chat-input';
-import ChatView from 'views/components/chat-view';
+import ProposalChatInput from 'views/components/chat-input/ProposalIndex';
+import ProposalChatView from 'views/components/chat-view/ProposalChatView';
 import ThreadChatView from 'views/components/thread-chat-view';
 import ChannelCard from 'views/components/channel-card';
 import useTranslation from 'hooks/use-translation';
@@ -199,9 +199,9 @@ const ChannelPage = (props: RouteComponentProps) => {
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}>
-                        <CircularProgress size={20} sx={{mr: '8px'}}/> {t('Fetching messages...')}
+                        <CircularProgress size={20} sx={{mr: '8px'}}/> {t('Fetching Proposal Details...')}
                     </Box>
-                    <ChatInput separator={channel.id} senderFn={() => {
+                    <ProposalChatInput separator={channel.id} senderFn={() => {
                         return new Promise(() => {
                         }).then()
                     }}/>
@@ -217,8 +217,8 @@ const ChannelPage = (props: RouteComponentProps) => {
             <AppMenu/>
             <AppContent divide={!!threadRoot}>
                 <ChannelHeader />
-                <ChatView separator={channel.id} messages={messages} loading={loading}/>
-                <ChatInput separator={channel.id} senderFn={(message: string, mentions: string[]) => {
+                <ProposalChatView separator={channel.id} messages={messages} loading={loading}/>
+                <ProposalChatInput separator={channel.id} senderFn={(message: string, mentions: string[]) => {
                     return raven!.sendPublicMessage(channel, message, mentions).catch(e => {
                         showMessage(e.toString(), 'error');
                     });
