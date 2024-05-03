@@ -46,7 +46,7 @@ const ChannelCard = (props: { channel: Channel, onJoin: () => void }) => {
                     color: theme.palette.primary.dark,
                     fontSize: '0.9em',
                     mb: '20px',
-                }}>{truncate(channel.about, 360)}</Box>
+                }}>{truncate(JSON.parse(channel.about).purpose, 360)}</Box>
             </>
         )}
         <Box>
