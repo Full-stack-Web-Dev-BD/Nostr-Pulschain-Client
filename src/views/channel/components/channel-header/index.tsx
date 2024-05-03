@@ -10,6 +10,10 @@ import useStyle from 'hooks/use-styles';
 import { channelAtom, keysAtom, ravenAtom } from 'atoms';
 import CountdownButton from './CountDownButton';
 
+interface Item {
+  voter: string;
+  agree: boolean;
+}
 const ChannelHeader = () => {
   const [keys] = useAtom(keysAtom);
   const [channel] = useAtom(channelAtom);
@@ -25,14 +29,14 @@ const ChannelHeader = () => {
 
   const doVote = (agree: any) => {
     // Parse the channel's about information
-    console.log(channel.about)
+    console.log(channel.about);
     const about = JSON.parse(channel.about);
-  
+
     // Find the existing vote entry for the current user (keys.pub)
     const existingVoteIndex = about.voting.findIndex(
       (vote: { voter: string }) => vote.voter === keys.pub
     );
-  
+
     if (existingVoteIndex !== -1) {
       // User has already voted, so replace the existing entry
       about.voting[existingVoteIndex] = { voter: keys.pub, agree };
@@ -40,12 +44,29 @@ const ChannelHeader = () => {
       // User has not voted yet, so push a new entry
       about.voting.push({ voter: keys.pub, agree });
     }
-    var metadata= {name:channel.name, about:JSON.stringify(about), picture:channel.picture}
-    raven?.voteOnProposal(channel,metadata)
-    toast.success("Your vote has been submitted for this Proposal")
+    var metadata = {
+      name: channel.name,
+      about: JSON.stringify(about),
+      picture: channel.picture,
+    };
+    raven?.voteOnProposal(channel, metadata);
+    toast.success('Your vote has been submitted for this Proposal');
   };
-  
-  
+
+  const separateByAgreement = (voteList: Item[]) => {
+    const agreed = voteList.filter(item => item.agree === true);
+    const nonAgreed = voteList.filter(item => item.agree === false);
+    return { agreed, nonAgreed };
+  };
+
+  function hasAgreed(voteList: any[], userId: any): boolean {
+    for (const vote of voteList) {
+      if (vote.id === userId && vote.agree === true) {
+        return true;
+      }
+    }
+    return false;
+  }
   return (
     <div style={{ padding: '40px 0' }}>
       <AppContentHeaderBase>
@@ -115,7 +136,13 @@ const ChannelHeader = () => {
                 ...styles.ellipsis,
               }}
             >
-              <span className="text_success bold_m" onClick={e=>console.log(JSON.parse(channel.about))}> Voting On Progress </span>
+              <span
+                className="text_success bold_m"
+                onClick={e => console.log(JSON.parse(channel.about))}
+              >
+                {' '}
+                Voting On Progress{' '}
+              </span>
             </Box>
             <Box
               sx={{
@@ -153,8 +180,15 @@ const ChannelHeader = () => {
                 }}
               >
                 <span>
-                  <button className="btn btn_success" onClick={e=>doVote(true)}>
-                    234
+                  {/* {`${hasAgreed(JSON.parse(channel.about).voting , keys.pub) }`} */}
+                  <button
+                    className="btn btn_success"
+                    onClick={e => doVote(true)}
+                  >
+                    {
+                      separateByAgreement(JSON.parse(channel.about).voting)
+                        .agreed.length
+                    }
                     <span className="ml-2">
                       <FaHeart />
                     </span>
@@ -170,8 +204,15 @@ const ChannelHeader = () => {
                 }}
               >
                 <span>
-                <button className="btn btn_primary" onClick={e=>doVote(false)}>
-                    234
+                  <button
+                    className="btn btn_primary"
+                    onClick={e => doVote(false)}
+                  >
+                    {
+                      separateByAgreement(JSON.parse(channel.about).voting)
+                        .nonAgreed.length
+                    }
+
                     <span className="ml-2">
                       <FaHeartBroken />
                     </span>
