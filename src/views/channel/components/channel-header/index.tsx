@@ -7,6 +7,7 @@ import { FaHeart, FaHeartBroken } from 'react-icons/fa';
 import AppContentHeaderBase from 'views/components/app-content-header-base';
 import useStyle from 'hooks/use-styles';
 import { channelAtom, keysAtom } from 'atoms';
+import CountdownButton from './CountDownButton';
 
 const ChannelHeader = () => {
   const [keys] = useAtom(keysAtom);
@@ -97,9 +98,7 @@ const ChannelHeader = () => {
               }}
             >
               <span>
-                <button className="btn btn_success">
-                  Remining Time - 00:43:32
-                </button>
+              <CountdownButton additionalDays={3} createdAt={channel.created} />
               </span>
             </Box>
           </div>
