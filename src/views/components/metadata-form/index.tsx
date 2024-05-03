@@ -102,6 +102,7 @@ const MetadataForm = (props: {
     timeline: string;
     budget: string;
     callToAction: string;
+    voting:object
   }>({
     problem: '',
     solution: '',
@@ -113,6 +114,7 @@ const MetadataForm = (props: {
     timeline: '',
     budget: '',
     callToAction: '',
+    voting:[]
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 

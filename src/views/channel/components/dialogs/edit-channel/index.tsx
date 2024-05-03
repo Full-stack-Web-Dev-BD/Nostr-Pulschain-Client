@@ -29,7 +29,7 @@ const EditChannel = (props: { channel: Channel, onSuccess: () => void }) => {
 
     return (
         <>
-            <DialogTitle>{t('Edit Channel')}<CloseModal onClick={handleClose}/></DialogTitle>
+            <DialogTitle>{t('Edit Proposal')}<CloseModal onClick={handleClose}/></DialogTitle>
             <DialogContent>
                 <Box sx={{pt: '6px'}}>
                     <MetadataForm values={{

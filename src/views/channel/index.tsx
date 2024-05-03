@@ -124,7 +124,7 @@ const ChannelPage = (props: RouteComponentProps) => {
 
     if (!cid) {
         return <>
-            <Helmet><title>{t('NostrChat')}</title></Helmet>
+            <Helmet><title>{t('Proposal Details')}</title></Helmet>
             <AppWrapper>
                 <AppMenu/>
                 <AppContent>
@@ -136,7 +136,7 @@ const ChannelPage = (props: RouteComponentProps) => {
                         color: 'text.secondary',
                         fontSize: '0.8em',
                     }}>
-                        {t('Select a channel from the menu')}
+                        {t('Select a Proposal from the menu')}
                     </Box>
                 </AppContent>
             </AppWrapper>
@@ -145,7 +145,7 @@ const ChannelPage = (props: RouteComponentProps) => {
 
     if (!channel) {
         return <>
-            <Helmet><title>{t('NostrChat')}</title></Helmet>
+            <Helmet><title>{t('NostrPulschain')}</title></Helmet>
             <AppWrapper>
                 <AppMenu/>
                 <AppContent>
@@ -174,10 +174,10 @@ const ChannelPage = (props: RouteComponentProps) => {
                                 </Box>;
                             }
 
-                            if (notFound) return t('Channel not found');
+                            if (notFound) return t('Proposal not found');
 
                             return <>
-                                <CircularProgress size={20} sx={{mr: '8px'}}/> {t('Looking for the channel...')}
+                                <CircularProgress size={20} sx={{mr: '8px'}}/> {t('Looking for the Proposal...')}
                             </>;
                         })()}
                     </Box>

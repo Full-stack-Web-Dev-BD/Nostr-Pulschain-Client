@@ -3,15 +3,17 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import ChannelMenu from 'views/channel/components/channel-header/channel-menu';
 import { FaHeart, FaHeartBroken } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 import AppContentHeaderBase from 'views/components/app-content-header-base';
 import useStyle from 'hooks/use-styles';
-import { channelAtom, keysAtom } from 'atoms';
+import { channelAtom, keysAtom, ravenAtom } from 'atoms';
 import CountdownButton from './CountDownButton';
 
 const ChannelHeader = () => {
   const [keys] = useAtom(keysAtom);
   const [channel] = useAtom(channelAtom);
+  const [raven] = useAtom(ravenAtom);
   const theme = useTheme();
   const styles = useStyle();
 
@@ -21,6 +23,29 @@ const ChannelHeader = () => {
 
   const hasPicture = channel.picture.startsWith('https://');
 
+  const doVote = (agree: any) => {
+    // Parse the channel's about information
+    console.log(channel.about)
+    const about = JSON.parse(channel.about);
+  
+    // Find the existing vote entry for the current user (keys.pub)
+    const existingVoteIndex = about.voting.findIndex(
+      (vote: { voter: string }) => vote.voter === keys.pub
+    );
+  
+    if (existingVoteIndex !== -1) {
+      // User has already voted, so replace the existing entry
+      about.voting[existingVoteIndex] = { voter: keys.pub, agree };
+    } else {
+      // User has not voted yet, so push a new entry
+      about.voting.push({ voter: keys.pub, agree });
+    }
+    var metadata= {name:channel.name, about:JSON.stringify(about), picture:channel.picture}
+    raven?.voteOnProposal(channel,metadata)
+    toast.success("Your vote has been submitted for this Proposal")
+  };
+  
+  
   return (
     <div style={{ padding: '40px 0' }}>
       <AppContentHeaderBase>
@@ -56,7 +81,7 @@ const ChannelHeader = () => {
           </Box>
         )}
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-          <div className='flex_2s'>
+          <div className="flex_2s">
             <div>
               <Box
                 sx={{
@@ -78,7 +103,9 @@ const ChannelHeader = () => {
                 </Box>
               )}
             </div>
-            <button className="btn btn_success" style={{height:'40px'}}>Proposal  Details</button>
+            <button className="btn btn_success" style={{ height: '40px' }}>
+              Proposal Details
+            </button>
           </div>
           <div className="flex_2s mt-3">
             <Box
@@ -88,7 +115,7 @@ const ChannelHeader = () => {
                 ...styles.ellipsis,
               }}
             >
-              <span  className="text_success bold_m"> Voting On Progress </span>
+              <span className="text_success bold_m" onClick={e=>console.log(JSON.parse(channel.about))}> Voting On Progress </span>
             </Box>
             <Box
               sx={{
@@ -98,7 +125,10 @@ const ChannelHeader = () => {
               }}
             >
               <span>
-              <CountdownButton additionalDays={3} createdAt={channel.created} />
+                <CountdownButton
+                  additionalDays={3}
+                  createdAt={channel.created}
+                />
               </span>
             </Box>
           </div>
@@ -114,6 +144,7 @@ const ChannelHeader = () => {
               <span className="text_success bold_m"> Received Vote </span>
             </Box>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              {/* Vote Up */}
               <Box
                 sx={{
                   color: theme.palette.primary.dark,
@@ -122,15 +153,15 @@ const ChannelHeader = () => {
                 }}
               >
                 <span>
-                  <button className="btn btn_success">
+                  <button className="btn btn_success" onClick={e=>doVote(true)}>
                     234
-                    <span className='ml-2'>
+                    <span className="ml-2">
                       <FaHeart />
                     </span>
                   </button>
                 </span>
               </Box>
-
+              {/* Vote Down */}
               <Box
                 sx={{
                   color: theme.palette.primary.dark,
@@ -139,9 +170,9 @@ const ChannelHeader = () => {
                 }}
               >
                 <span>
-                  <button className="btn btn_primary">
+                <button className="btn btn_primary" onClick={e=>doVote(false)}>
                     234
-                    <span className='ml-2'>
+                    <span className="ml-2">
                       <FaHeartBroken />
                     </span>
                   </button>

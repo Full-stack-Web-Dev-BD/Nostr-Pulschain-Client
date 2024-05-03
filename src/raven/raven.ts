@@ -420,6 +420,13 @@ class Raven extends TypedEventEmitter<RavenEvents, EventHandlerMap> {
     }
 
     public async updateChannel(channel: Channel, meta: Metadata) {
+        console.log("this is metadata", meta)
+        return this.bgRaven.where(channel.id).then(relay => {
+            return this.publish(Kind.ChannelMetadata, [['e', channel.id, relay]], JSON.stringify(meta));
+        });
+    }
+
+    public async voteOnProposal(channel: Channel, meta: Metadata) {
         return this.bgRaven.where(channel.id).then(relay => {
             return this.publish(Kind.ChannelMetadata, [['e', channel.id, relay]], JSON.stringify(meta));
         });
