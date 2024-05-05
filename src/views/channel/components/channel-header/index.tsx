@@ -57,7 +57,7 @@ const ChannelHeader = () => {
   };
   const uploadOnchain = async () => {
     toast.info('Proposal Data syncing with OnChain');
-    await registerDataOnChain(keys.priv, JSON.stringify(channel), '');
+    await registerDataOnChain(keys.priv, JSON.stringify({...channel, about:''}), '');
   };
 
   return (
