@@ -4,10 +4,12 @@ import { useTheme } from '@mui/material/styles';
 import ChannelMenu from 'views/channel/components/channel-header/channel-menu';
 import { FaHeart, FaHeartBroken } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-
 import AppContentHeaderBase from 'views/components/app-content-header-base';
 import useStyle from 'hooks/use-styles';
 import { channelAtom, keysAtom, ravenAtom } from 'atoms';
+import { votingPeriod } from 'util/constant';
+import { isTimeRemaining, separateByAgreement } from 'util/function';
+
 import CountdownButton from './CountDownButton';
 
 interface Item {
@@ -53,12 +55,6 @@ const ChannelHeader = () => {
     toast.success('Your vote has been submitted for this Proposal');
   };
 
-  const separateByAgreement = (voteList: Item[]) => {
-    const agreed = voteList.filter(item => item.agree === true);
-    const nonAgreed = voteList.filter(item => item.agree === false);
-    return { agreed, nonAgreed };
-  };
-
   function hasAgreed(voteList: any[], userId: any): boolean {
     for (const vote of voteList) {
       if (vote.id === userId && vote.agree === true) {
@@ -67,6 +63,7 @@ const ChannelHeader = () => {
     }
     return false;
   }
+
   return (
     <div style={{ padding: '40px 0' }}>
       <AppContentHeaderBase>
@@ -128,50 +125,8 @@ const ChannelHeader = () => {
               Proposal Details
             </button>
           </div>
-          <div className="flex_2s mt-3">
-            <Box
-              sx={{
-                color: theme.palette.primary.dark,
-                fontSize: '96%',
-                ...styles.ellipsis,
-              }}
-            >
-              <span
-                className="text_success bold_m"
-                onClick={e => console.log(JSON.parse(channel.about))}
-              >
-                {' '}
-                Voting On Progress{' '}
-              </span>
-            </Box>
-            <Box
-              sx={{
-                color: theme.palette.primary.dark,
-                fontSize: '96%',
-                ...styles.ellipsis,
-              }}
-            >
-              <span>
-                <CountdownButton
-                  additionalDays={3}
-                  createdAt={channel.created}
-                />
-              </span>
-            </Box>
-          </div>
-
-          <div className="flex_2s mt-3">
-            <Box
-              sx={{
-                color: theme.palette.primary.dark,
-                fontSize: '96%',
-                ...styles.ellipsis,
-              }}
-            >
-              <span className="text_success bold_m"> Received Vote </span>
-            </Box>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-              {/* Vote Up */}
+          {!isTimeRemaining(channel.created, votingPeriod) ? (
+            <div className="flex_2s mt-3">
               <Box
                 sx={{
                   color: theme.palette.primary.dark,
@@ -179,23 +134,13 @@ const ChannelHeader = () => {
                   ...styles.ellipsis,
                 }}
               >
-                <span>
-                  {/* {`${hasAgreed(JSON.parse(channel.about).voting , keys.pub) }`} */}
-                  <button
-                    className="btn btn_success"
-                    onClick={e => doVote(true)}
-                  >
-                    {
-                      separateByAgreement(JSON.parse(channel.about).voting)
-                        .agreed.length
-                    }
-                    <span className="ml-2">
-                      <FaHeart />
-                    </span>
-                  </button>
+                <span
+                  className="text_success bold_m"
+                  onClick={e => console.log(JSON.parse(channel.about))}
+                >
+                  Voting On Progress
                 </span>
               </Box>
-              {/* Vote Down */}
               <Box
                 sx={{
                   color: theme.palette.primary.dark,
@@ -204,23 +149,214 @@ const ChannelHeader = () => {
                 }}
               >
                 <span>
-                  <button
-                    className="btn btn_primary"
-                    onClick={e => doVote(false)}
-                  >
-                    {
-                      separateByAgreement(JSON.parse(channel.about).voting)
-                        .nonAgreed.length
-                    }
-
-                    <span className="ml-2">
-                      <FaHeartBroken />
-                    </span>
-                  </button>
+                  <CountdownButton
+                    additionalDays={votingPeriod}
+                    createdAt={channel.created}
+                  />
                 </span>
               </Box>
             </div>
-          </div>
+          ) : (
+            <div className="flex_2s mt-3">
+              <Box
+                sx={{
+                  color: theme.palette.primary.dark,
+                  fontSize: '96%',
+                  ...styles.ellipsis,
+                }}
+              >
+                <span
+                  className="text_success bold_m"
+                  onClick={e => console.log(JSON.parse(channel.about))}
+                >
+                  Result initialized
+                </span>
+              </Box>
+              <div
+                style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}
+              >
+                {/* Vote Result */}
+                <Box
+                  sx={{
+                    color: theme.palette.primary.dark,
+                    fontSize: '96%',
+                    ...styles.ellipsis,
+                  }}
+                >
+                  <span>
+                    {separateByAgreement(JSON.parse(channel.about).voting)
+                      .agreed.length >
+                    separateByAgreement(JSON.parse(channel.about).voting)
+                      .nonAgreed.length ? (
+                      <button className="btn btn_success">
+                        Success
+                        <span className="ml-2">
+                          <FaHeart />
+                        </span>
+                      </button>
+                    ) : (
+                      <button className="btn btn_success">
+                        Proposal Failed
+                        <span className="ml-2">
+                          <FaHeartBroken />
+                        </span>
+                      </button>
+                    )}
+                  </span>
+                </Box>
+                {/* Vote Down */}
+                {JSON.parse(channel.about).uploaded ? (
+                  ''
+                ) : (
+                  <Box
+                    sx={{
+                      color: theme.palette.primary.dark,
+                      fontSize: '96%',
+                      ...styles.ellipsis,
+                    }}
+                  >
+                    <span>
+                      <button className="btn btn_primary">
+                        Upload Onchain
+                      </button>
+                    </span>
+                  </Box>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!isTimeRemaining(channel.created, votingPeriod) ? (
+            <div className="flex_2s mt-2 ">
+              <Box
+                sx={{
+                  color: theme.palette.primary.dark,
+                  fontSize: '96%',
+                  ...styles.ellipsis,
+                }}
+              >
+                <span className="text_success bold_m"> Received Vote </span>
+              </Box>
+              <div
+                style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}
+              >
+                {/* Vote Up */}
+                <Box
+                  sx={{
+                    color: theme.palette.primary.dark,
+                    fontSize: '96%',
+                    ...styles.ellipsis,
+                  }}
+                >
+                  <span>
+                    {/* {`${hasAgreed(JSON.parse(channel.about).voting , keys.pub) }`} */}
+                    <button
+                      className="btn btn_success"
+                      onClick={e => doVote(true)}
+                    >
+                      {
+                        separateByAgreement(JSON.parse(channel.about).voting)
+                          .agreed.length
+                      }
+                      <span className="ml-2">
+                        <FaHeart />
+                      </span>
+                    </button>
+                  </span>
+                </Box>
+                {/* Vote Down */}
+                <Box
+                  sx={{
+                    color: theme.palette.primary.dark,
+                    fontSize: '96%',
+                    ...styles.ellipsis,
+                  }}
+                >
+                  <span>
+                    <button
+                      className="btn btn_primary"
+                      onClick={e => doVote(false)}
+                    >
+                      {
+                        separateByAgreement(JSON.parse(channel.about).voting)
+                          .nonAgreed.length
+                      }
+
+                      <span className="ml-2">
+                        <FaHeartBroken />
+                      </span>
+                    </button>
+                  </span>
+                </Box>
+              </div>
+            </div>
+          ) : (
+            <div className="flex_2s mt-2 ">
+              <Box
+                sx={{
+                  color: theme.palette.primary.dark,
+                  fontSize: '96%',
+                  ...styles.ellipsis,
+                }}
+              >
+                <span className="text_success bold_m">
+                  Received Vote [Done]
+                </span>
+              </Box>
+              <div
+                style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}
+              >
+                {/* Vote Up */}
+                <Box
+                  sx={{
+                    color: theme.palette.primary.dark,
+                    fontSize: '96%',
+                    ...styles.ellipsis,
+                  }}
+                >
+                  <span>
+                    {/* {`${hasAgreed(JSON.parse(channel.about).voting , keys.pub) }`} */}
+                    <button
+                      className="btn btn_success"
+                      // onClick={e => doVote(true)}
+                    >
+                      {
+                        separateByAgreement(JSON.parse(channel.about).voting)
+                          .agreed.length
+                      }
+                      <span className="ml-2">
+                        <FaHeart />
+                      </span>
+                    </button>
+                  </span>
+                </Box>
+                {/* Vote Down */}
+                <Box
+                  sx={{
+                    color: theme.palette.primary.dark,
+                    fontSize: '96%',
+                    ...styles.ellipsis,
+                  }}
+                >
+                  <span>
+                    <button
+                      className="btn btn_primary"
+                      // onClick={e => doVote(false)}
+                    >
+                      {
+                        separateByAgreement(JSON.parse(channel.about).voting)
+                          .nonAgreed.length
+                      }
+
+                      <span className="ml-2">
+                        <FaHeartBroken />
+                      </span>
+                    </button>
+                  </span>
+                </Box>
+              </div>
+            </div>
+          )}
         </Box>
       </AppContentHeaderBase>
     </div>

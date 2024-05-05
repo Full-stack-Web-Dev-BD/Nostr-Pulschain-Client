@@ -307,7 +307,7 @@ export  const contractABI = [
 		"type": "function"
 	}
 ]; // Your contract ABI
-
+export const votingPeriod= 0
 
 
 export const proposalTypes = [

@@ -108,11 +108,11 @@ const ChannelMenu = () => {
     const items: React.ReactElement[] = [];
 
     if (canEdit) {
-      items.push(
-        <MenuItem key={1} dense onClick={edit}>
-          {t('Edit')}
-        </MenuItem>
-      );
+      // items.push(
+      //   <MenuItem key={1} dense onClick={edit}>
+      //     {t('Edit')}
+      //   </MenuItem>
+      // );
       items.push(
         <MenuItem key={2} dense onClick={del}>
           {t('Delete')}

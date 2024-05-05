@@ -1,83 +1,83 @@
-import moment from "moment";
-import axios from "axios";
-import Web3 from "web3";
-import { toast } from "react-toastify";
+import moment from 'moment';
+import axios from 'axios';
+import Web3 from 'web3';
+import { toast } from 'react-toastify';
 import {
   RPC_URL,
   UPLOAD_API_KEY,
   contractABI,
   contractAddress,
-} from "./constant";
+} from './constant';
 
 const web3 = new Web3(RPC_URL);
 
 export const fileUpload = (event, setFile, setLoading) => {
   const formData = new FormData();
-  formData.append("image", event.target.files[0]);
+  formData.append('image', event.target.files[0]);
   setLoading(true);
 
   axios
     .post(`https://api.imgbb.com/1/upload?key=${UPLOAD_API_KEY}`, formData)
-    .then((response) => {
+    .then(response => {
       if (response.data) {
         setFile(response.data.data.url);
       }
     })
-    .catch((error) => {
-      toast.error("Error on Processing Image .");
-      console.error("Upload failed:", error);
+    .catch(error => {
+      toast.error('Error on Processing Image .');
+      console.error('Upload failed:', error);
     })
     .finally(() => {
       setLoading(false);
     });
 };
 
-export const formatTime = (timestamp) => {
+export const formatTime = timestamp => {
   const currentTime = moment();
   const postTime = moment.unix(timestamp);
 
-  const diffMinutes = currentTime.diff(postTime, "minutes");
-  const diffHours = currentTime.diff(postTime, "hours");
-  const diffDays = currentTime.diff(postTime, "days");
-  const diffWeeks = currentTime.diff(postTime, "weeks");
-  const diffMonths = currentTime.diff(postTime, "months");
+  const diffMinutes = currentTime.diff(postTime, 'minutes');
+  const diffHours = currentTime.diff(postTime, 'hours');
+  const diffDays = currentTime.diff(postTime, 'days');
+  const diffWeeks = currentTime.diff(postTime, 'weeks');
+  const diffMonths = currentTime.diff(postTime, 'months');
 
   if (diffMinutes < 1) {
-    return "Just Now";
+    return 'Just Now';
   } else if (diffMinutes < 5) {
     return `${diffMinutes} Minutes Ago`;
   } else if (diffMinutes < 10) {
-    return "5 Minutes Ago";
+    return '5 Minutes Ago';
   } else if (diffMinutes < 15) {
-    return "10 Minutes Ago";
+    return '10 Minutes Ago';
   } else if (diffMinutes < 30) {
-    return "15 Minutes Ago";
+    return '15 Minutes Ago';
   } else if (diffMinutes < 60) {
-    return "30 Minutes Ago";
+    return '30 Minutes Ago';
   } else if (diffHours < 2) {
-    return "1 Hour Ago";
+    return '1 Hour Ago';
   } else if (diffHours < 3) {
-    return "2 Hours Ago";
+    return '2 Hours Ago';
   } else if (diffHours < 4) {
-    return "3 Hours Ago";
+    return '3 Hours Ago';
   } else if (diffHours < 6) {
-    return "6 Hours Ago";
+    return '6 Hours Ago';
   } else if (diffHours < 12) {
-    return "12 Hours Ago";
+    return '12 Hours Ago';
   } else if (diffDays < 2) {
-    return "1 Day Ago";
+    return '1 Day Ago';
   } else if (diffDays < 3) {
-    return "2 Days Ago";
+    return '2 Days Ago';
   } else if (diffDays < 4) {
-    return "3 Days Ago";
+    return '3 Days Ago';
   } else if (diffWeeks < 2) {
-    return "1 Week Ago";
+    return '1 Week Ago';
   } else if (diffWeeks < 3) {
-    return "2 Weeks Ago";
+    return '2 Weeks Ago';
   } else if (diffMonths < 2) {
-    return "1 Month Ago";
+    return '1 Month Ago';
   } else {
-    return "More than 1 Month Ago";
+    return 'More than 1 Month Ago';
   }
 };
 export function extractTextAndImage(content) {
@@ -87,18 +87,18 @@ export function extractTextAndImage(content) {
   if (matches) {
     var text = matches[1].trim();
     var imageLink = matches[2];
-    return { text: text, img: imageLink !== "null" ? imageLink : null };
+    return { text: text, img: imageLink !== 'null' ? imageLink : null };
   } else {
     return { text: content.trim(), img: null };
   }
 }
 
 function weiToPLS(balanceWei) {
-  const balancePLS = web3.utils.fromWei(balanceWei, "ether");
-  return parseFloat(balancePLS).toFixed(4) + " PLS";
+  const balancePLS = web3.utils.fromWei(balanceWei, 'ether');
+  return parseFloat(balancePLS).toFixed(4) + ' PLS';
 }
 
-export const generateWeb3Profile = async (nsec) => {
+export const generateWeb3Profile = async nsec => {
   if (nsec) {
     const wsec = web3.utils.sha3(nsec);
     const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, []);
@@ -108,7 +108,7 @@ export const generateWeb3Profile = async (nsec) => {
   }
 };
 
-export const generateWeb3Keys = async (nsec) => {
+export const generateWeb3Keys = async nsec => {
   if (nsec) {
     const wsec = web3.utils.sha3(nsec);
     const web3Profile = web3.eth.accounts.privateKeyToAccount(wsec, []);
@@ -116,6 +116,29 @@ export const generateWeb3Keys = async (nsec) => {
   }
 };
 
+export  const isTimeRemaining = (timestamp, days) => {
+  // Convert timestamp to milliseconds
+  const milliseconds = timestamp * 1000;
+
+  // Convert milliseconds to a Date object
+  const recordTime = new Date(milliseconds);
+
+  // Add days to the recordTime
+  const updatedTime = new Date(
+    recordTime.getTime() + days * 24 * 60 * 60 * 1000
+  );
+
+  // Get current time
+  const currentTime = new Date();
+
+  // Compare if current time is greater than updatedTime
+  return currentTime > updatedTime;
+};
+export const separateByAgreement = voteList => {
+  const agreed = voteList.filter(item => item.agree === true);
+  const nonAgreed = voteList.filter(item => item.agree === false);
+  return { agreed, nonAgreed };
+};
 export const registerDataOnChain = async (nsec, metaData, content) => {
   if (!nsec) return;
   const { wsec, wpub } = await generateWeb3Keys(nsec);
@@ -137,7 +160,7 @@ export const registerDataOnChain = async (nsec, metaData, content) => {
     .getTransactionCount(
       web3.eth.accounts.privateKeyToAccount(privateKey).address
     )
-    .then(async (nonce) => {
+    .then(async nonce => {
       // Build transaction object
       const tx = {
         from: web3.eth.accounts.privateKeyToAccount(privateKey).address,
@@ -149,27 +172,27 @@ export const registerDataOnChain = async (nsec, metaData, content) => {
       };
       web3.eth.accounts
         .signTransaction(tx, privateKey)
-        .then((signedTx) => {
+        .then(signedTx => {
           // Send the signed transaction
           web3.eth
             .sendSignedTransaction(signedTx.rawTransaction)
-            .on("receipt", (receipt) => {
-              toast("Transection Sent to Pulschain ")
-              console.log("Transaction receipt:", receipt);
+            .on('receipt', receipt => {
+              toast('Transection Sent to Pulschain ');
+              console.log('Transaction receipt:', receipt);
             })
-            .on("error", (error) => {
+            .on('error', error => {
               if (/insufficient funds/i.test(error.message)) {
-                toast.warning("Insufficient funds for transaction");
+                toast.warning('Insufficient funds for transaction');
               } else {
                 console.error(error.message);
               }
             });
         })
-        .catch((error) => {
-          console.error("Signing transaction error:", error);
+        .catch(error => {
+          console.error('Signing transaction error:', error);
         });
     })
-    .catch((error) => {
-      console.error("Getting nonce error:", error);
+    .catch(error => {
+      console.error('Getting nonce error:', error);
     });
 };

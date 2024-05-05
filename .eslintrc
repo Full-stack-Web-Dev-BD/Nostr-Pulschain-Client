@@ -8,7 +8,7 @@
     "import/no-anonymous-default-export": "off",
     "react-hooks/exhaustive-deps": "off",
     "import/order": [
-      2,
+      "error",
       {
         "groups": [
           "external",
@@ -19,6 +19,6 @@
           "index"
         ]
       }
-    ],
+    ]
   }
 }
