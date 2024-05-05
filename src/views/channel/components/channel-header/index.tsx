@@ -15,11 +15,8 @@ import {
 } from 'util/function';
 
 import CountdownButton from './CountDownButton';
+import ProposalDetails from './ProposalDetails';
 
-interface Item {
-  voter: string;
-  agree: boolean;
-}
 const ChannelHeader = () => {
   const [keys] = useAtom(keysAtom);
   const [channel] = useAtom(channelAtom);
@@ -66,63 +63,82 @@ const ChannelHeader = () => {
   return (
     <div style={{ padding: '40px 0' }}>
       <AppContentHeaderBase>
-        <Box
-          sx={{
-            width: '50px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <ChannelMenu />
-        </Box>
-        {hasPicture && (
-          <Box
-            sx={{
-              display: 'flex',
-              mr: '10px',
-              flexShrink: 0,
-            }}
-          >
-            <Box
-              component="img"
-              sx={{
-                width: '50px',
-                height: '50px',
-                borderRadius: theme.shape.borderRadius,
-              }}
-              src={channel.picture}
-              alt={channel.name}
-            />
-          </Box>
-        )}
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-          <div className="flex_2s">
+          <div className="">
             <div>
-              <Box
-                sx={{
-                  fontFamily: 'Faktum, sans-serif',
-                  ...styles.ellipsis,
-                }}
-              >
-                {channel.name}
-              </Box>
               {channel.about && (
-                <Box
-                  sx={{
-                    color: theme.palette.primary.dark,
-                    fontSize: '96%',
-                    ...styles.ellipsis,
-                  }}
-                >
-                  <span> Purpose: </span> {JSON.parse(channel.about).purpose}
-                </Box>
+                <div className="flex_2s">
+                  <div>
+                    <div style={{display:'flex',gap:'10px', alignItems:'center'}}>
+                      {hasPicture && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            mr: '10px',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Box
+                            component="img"
+                            sx={{
+                              width: '50px',
+                              height: '50px',
+                              borderRadius: theme.shape.borderRadius,
+                            }}
+                            src={channel.picture}
+                            alt={channel.name}
+                          />
+                        </Box>
+                      )}
+                      <Box
+                        sx={{
+                          fontFamily: 'Faktum, sans-serif',
+                          ...styles.ellipsis,
+                        }}
+                      >
+                        {channel.name}
+                      </Box>
+                    </div>
+                    <Box
+                      sx={{
+                        color: theme.palette.primary.dark,
+                        fontSize: '96%',
+                        ...styles.ellipsis,
+                      }}
+                    >
+                      <p style={{ margin: '0' }}>
+                        <span> Purpose: </span>{' '}
+                        {JSON.parse(channel.about).purpose}
+                      </p>
+                      <p style={{ margin: '0' }}>
+                        <span> Approach: </span>{' '}
+                        {JSON.parse(channel.about).approach}
+                      </p>
+                      <p style={{ margin: '0' }}>
+                        <span> Outcome: </span>{' '}
+                        {JSON.parse(channel.about).outcome}
+                      </p>
+                      <p style={{ margin: '0' }}>
+                        <span> Problem: </span>{' '}
+                        {JSON.parse(channel.about).problem}
+                      </p>
+                    </Box>
+                  </div>
+                  <Box
+                    sx={{
+                      width: '50px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <ChannelMenu />
+                  </Box>
+                </div>
               )}
             </div>
-            <button className="btn btn_success" style={{ height: '40px' }}>
-              Proposal Details
-            </button>
+            {/* <ProposalDetails proposal={channel} /> */}
           </div>
           {!isTimeRemaining(channel.created, votingPeriod) ? (
             <div className="flex_2s mt-3">
