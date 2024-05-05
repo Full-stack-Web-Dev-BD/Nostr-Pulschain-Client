@@ -42,29 +42,7 @@ const ProposalIndexExpired = (props: {
       editor?.commands.focus();
     }
   }, [storageKey]);
-
-  function getMentions(data: JSONContent): string[] {
-    const mentions = (data.content || []).flatMap(getMentions);
-    if (data.type === 'mention' && data.attrs?.id) {
-      mentions.push(data.attrs.id);
-    }
-    return [...new Set(mentions)];
-  }
-
-  const send = () => {
-    const message = editor?.getText();
-    if (!message) return;
-    const json = editor?.getJSON();
-    const mentions = json ? getMentions(json) : [];
-    editor?.commands.setContent('');
-    removeEditorValue(storageKey);
-    return senderFn(message, mentions);
-  };
-
-  const insert = (text: string) => {
-    editor?.commands.insertContent(text);
-    editor?.commands.focus();
-  };
+ 
 
   return (
     <Box

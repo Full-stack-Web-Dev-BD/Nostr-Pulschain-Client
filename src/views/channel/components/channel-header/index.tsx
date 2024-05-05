@@ -8,7 +8,11 @@ import AppContentHeaderBase from 'views/components/app-content-header-base';
 import useStyle from 'hooks/use-styles';
 import { channelAtom, keysAtom, ravenAtom } from 'atoms';
 import { votingPeriod } from 'util/constant';
-import { isTimeRemaining, separateByAgreement } from 'util/function';
+import {
+  isTimeRemaining,
+  registerDataOnChain,
+  separateByAgreement,
+} from 'util/function';
 
 import CountdownButton from './CountDownButton';
 
@@ -54,15 +58,10 @@ const ChannelHeader = () => {
     raven?.voteOnProposal(channel, metadata);
     toast.success('Your vote has been submitted for this Proposal');
   };
-
-  function hasAgreed(voteList: any[], userId: any): boolean {
-    for (const vote of voteList) {
-      if (vote.id === userId && vote.agree === true) {
-        return true;
-      }
-    }
-    return false;
-  }
+  const uploadOnchain = async () => {
+    toast.info('Proposal Data syncing with OnChain');
+    await registerDataOnChain(keys.priv, JSON.stringify(channel), '');
+  };
 
   return (
     <div style={{ padding: '40px 0' }}>
@@ -205,9 +204,7 @@ const ChannelHeader = () => {
                   </span>
                 </Box>
                 {/* Vote Down */}
-                {JSON.parse(channel.about).uploaded ? (
-                  ''
-                ) : (
+                {channel.creator == keys.pub ? (
                   <Box
                     sx={{
                       color: theme.palette.primary.dark,
@@ -216,11 +213,16 @@ const ChannelHeader = () => {
                     }}
                   >
                     <span>
-                      <button className="btn btn_primary">
-                        Upload Onchain
+                      <button
+                        className="btn btn_primary"
+                        onClick={e => uploadOnchain()}
+                      >
+                        Sync Proposal With OnChain
                       </button>
                     </span>
                   </Box>
+                ) : (
+                  ''
                 )}
               </div>
             </div>

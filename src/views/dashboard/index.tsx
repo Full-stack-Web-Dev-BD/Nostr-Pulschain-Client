@@ -17,7 +17,7 @@ import { useRecoilState } from "recoil";
 import { manageUserState, userState } from "state/userState";
 import { FaArrowLeft } from "react-icons/fa6";
 
-import { extractTextAndImage, fileUpload, formatTime, registerDataOnChain } from "util/function";
+import { extractTextAndImage, fileUpload, formatTime } from "util/function";
 import { SET_NOTE, SET_SEARCH_NOTE, SET_STOCK_NOTE } from "util/actionTypes";
 
 const Dashboard = (props: RouteComponentProps) => {

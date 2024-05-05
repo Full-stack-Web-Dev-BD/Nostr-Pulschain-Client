@@ -18,7 +18,12 @@ const CountdownButton: React.FC<CountdownButtonProps> = ({ createdAt, additional
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setRemainingTime(calculateRemainingTime());
+      const newRemainingTime = calculateRemainingTime();
+      setRemainingTime(newRemainingTime);
+      if (newRemainingTime === 0) {
+        // Refresh the page when remainingTime reaches 0
+        window.location.reload();
+      }
     }, 1000);
 
     return () => clearInterval(timer);
