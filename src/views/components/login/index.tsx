@@ -27,7 +27,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import DownloadSeedWords from 'views/settings/DownloadSeedWords';
 import { Checkbox } from '@mui/material';
-import { CiWarning } from "react-icons/ci";
+import { CiWarning } from 'react-icons/ci';
+import { IoMdClose } from 'react-icons/io';
 import LoginMetadataForm from '../metadata-form/loginForm';
 
 const style = {
@@ -80,7 +81,7 @@ const Login = (props: { onDone: () => void }) => {
   };
 
   const continueCreateAccount = (priv: any) => {
-    handleClose()
+    handleClose();
     loginPriv(priv);
     setBackupWarn(true);
   };
@@ -141,12 +142,22 @@ const Login = (props: { onDone: () => void }) => {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-               <CiWarning/> Important
+              <div className="flex_2s">
+                <span>
+                  <CiWarning /> Important
+                </span>
+                <span
+                  onClick={e => handleClose()}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <IoMdClose />
+                </span>
+              </div>
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2, mb: 2 }}>
               Your mnemonic seed phrase will be display under your user profile
               (Once you Logged in ) . Please ensure to keep it safe as it is
-              crucial for recovering your account if needed.'
+              crucial for recovering your account if needed.
             </Typography>
             <p>
               <Checkbox onChange={e => setUnderstand(!understand)} />
@@ -158,11 +169,19 @@ const Login = (props: { onDone: () => void }) => {
             {understand ? (
               <div className="flex_2s">
                 {localStorage.getItem('downloaded') === 'true' ? (
-                  <DownloadSeedWords text={seedWords} title="Download Seed Phrase " />
+                  <DownloadSeedWords
+                    text={seedWords}
+                    title="Download Seed Phrase "
+                  />
                 ) : (
                   ''
                 )}
-                <button className="btn btn_primary" onClick={e=>continueCreateAccount(priv)}> Next </button>
+                <button
+                  className="btn btn_primary"
+                  onClick={e => continueCreateAccount(priv)}
+                >
+                  Next
+                </button>
               </div>
             ) : (
               ''

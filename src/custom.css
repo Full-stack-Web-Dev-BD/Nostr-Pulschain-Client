@@ -28,7 +28,7 @@
 }
 .flex_2s{
   display: flex;
-  align-items:'center';
+  align-items:center;
   justify-content: space-between;
 }
 .bold_m{
