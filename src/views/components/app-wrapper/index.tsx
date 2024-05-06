@@ -58,7 +58,7 @@ const AppWrapper = (props: { children: React.ReactNode }) => {
                     }}>
                         <Alert height={18}/>
                     </Box>
-                    {t('Please take a moment to save a copy of your private key.')}
+                    {t('Please take a moment to save a copy of your private key  and Mnemonic Seed Phrase.')}
                 </Box>
             </Box>
         )}

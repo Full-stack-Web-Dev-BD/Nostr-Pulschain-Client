@@ -13,6 +13,7 @@ import SettingsMenu from "views/settings/components/settings-menu";
 import MetadataForm from "views/components/metadata-form";
 import { keysAtom, profileAtom, ravenAtom } from "atoms";
 import { Card, CardContent } from "@mui/material";
+import LoginMetadataForm from "views/components/metadata-form/loginForm";
 
 const SettingsProfilePage = (_: RouteComponentProps) => {
   const [keys] = useAtom(keysAtom);
@@ -43,7 +44,7 @@ const SettingsProfilePage = (_: RouteComponentProps) => {
             <Card>
               <CardContent>
                 <SettingsContent>
-                  <MetadataForm
+                  <LoginMetadataForm
                     values={{
                       name: profile?.name || "",
                       about: profile?.about || "",

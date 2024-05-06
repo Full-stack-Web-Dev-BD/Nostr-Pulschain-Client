@@ -85,7 +85,6 @@ function App() {
                     )}
                     <Settings path="/settings" />
                     <SettingsProfile path="/settings/profile" />
-                    <SettingsProfile path="/settings/profile" />
                     <SettingsKeys path="/settings/keys" />
                     <SettingsPassword path="/settings/password" />
                     <SettingsRelays path="/settings/relays" />

@@ -23,7 +23,7 @@ const ConfirmDialog = (props: {onConfirm: () => void}) => {
     }
 
     return (
-        <>
+        <div className='p-3'>
             <DialogTitle>{t('Confirmation')}
                 <CloseModal onClick={handleClose}/>
             </DialogTitle>
@@ -31,10 +31,10 @@ const ConfirmDialog = (props: {onConfirm: () => void}) => {
                 <DialogContentText>{t('Are you sure?')}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>{t('Cancel')}</Button>
-                <Button onClick={handleConfirm}>{t('Confirm')}</Button>
+                <button className=' btn btn_success' onClick={handleClose}>{t('Cancel')}</button>
+                <button className=' btn btn_primary' onClick={handleConfirm}>{t('Confirm')}</button>
             </DialogActions>
-        </>
+        </div>
     );
 }
 
