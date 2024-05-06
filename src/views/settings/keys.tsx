@@ -32,6 +32,7 @@ const SettingsKeysPage = (_: RouteComponentProps) => {
   const [t] = useTranslation();
   const [reveal, setReveal] = useState(false);
   const [revealWS, setRevealWS] = useState(false);
+  const [revealSP, setRevealSP] = useState(false);
   const [web3Profile, setWeb3Profile] = useState<any>({
     wsec: 'Loading',
     wpub: 'Loading',
@@ -76,14 +77,24 @@ const SettingsKeysPage = (_: RouteComponentProps) => {
                     <div className="nostr_keys">
                       <h4> Mnemonic Seed Phrase</h4>
                       <hr />
+
                       <TextField
+                        sx={{ mb: '30px' }}
+                        label={t('Your Seed Phrase')}
+                        value={
+                          revealSP
+                            ? localStorage.getItem('seedWords')
+                            : 'x'.repeat(64)
+                        }
+                        fullWidth
+                        type={revealSP ? 'text' : 'password'}
                         helperText={
                           <Box
                             component="span"
                             sx={{
                               fontWeight: 'bold',
                               color: theme.palette.warning.main,
-                              fontSize:'18px',
+                              fontSize: '18px',
                               opacity: 0.7,
                             }}
                           >
@@ -92,14 +103,34 @@ const SettingsKeysPage = (_: RouteComponentProps) => {
                             )}
                           </Box>
                         }
-                        label={t('Your Seed Phrase')}
-                        value={localStorage.getItem('seedWords')}
-                        fullWidth
                         InputProps={{
                           readOnly: true,
                           endAdornment: (
                             <InputAdornment position="end">
-                              <CopyToClipboard copy={pub}>
+                              <Tooltip title={reveal ? t('Hide') : t('Reveal')}>
+                                <IconButton
+                                  onClick={() => {
+                                    setRevealSP(!revealSP);
+                                  }}
+                                >
+                                  {revealSP ? (
+                                    <>
+                                      <button className="btn btn_success">
+                                        Hide
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <button className="btn btn_success">
+                                        Show
+                                      </button>
+                                    </>
+                                  )}
+                                </IconButton>
+                              </Tooltip>
+                              <CopyToClipboard
+                                copy={`${localStorage.getItem('seedWords')}`}
+                              >
                                 <IconButton>
                                   <ContentCopy height={22} />
                                 </IconButton>
@@ -108,7 +139,10 @@ const SettingsKeysPage = (_: RouteComponentProps) => {
                           ),
                         }}
                       />
-                      <DownloadSeedWords text={`${localStorage.getItem("seedWords")}`} title='' />
+                      <DownloadSeedWords
+                        text={`${localStorage.getItem('seedWords')}`}
+                        title=""
+                      />
                     </div>
                   </CardContent>
                 </Card>
