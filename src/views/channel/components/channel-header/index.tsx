@@ -164,7 +164,7 @@ const ChannelHeader = () => {
               >
                 <span>
                   <CountdownButton
-                    additionalDays={votingPeriod}
+                    additionalMinutes={votingPeriod}
                     createdAt={channel.created}
                   />
                 </span>

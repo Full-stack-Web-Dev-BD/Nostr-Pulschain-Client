@@ -116,16 +116,16 @@ export const generateWeb3Keys = async nsec => {
   }
 };
 
-export  const isTimeRemaining = (timestamp, days) => {
+export const isTimeRemaining = (timestamp, minutes) => {
   // Convert timestamp to milliseconds
   const milliseconds = timestamp * 1000;
 
   // Convert milliseconds to a Date object
   const recordTime = new Date(milliseconds);
 
-  // Add days to the recordTime
+  // Add minutes to the recordTime
   const updatedTime = new Date(
-    recordTime.getTime() + days * 24 * 60 * 60 * 1000
+    recordTime.getTime() + minutes * 60 * 1000
   );
 
   // Get current time
@@ -134,6 +134,7 @@ export  const isTimeRemaining = (timestamp, days) => {
   // Compare if current time is greater than updatedTime
   return currentTime > updatedTime;
 };
+
 export const separateByAgreement = voteList => {
   const agreed = voteList.filter(item => item.agree === true);
   const nonAgreed = voteList.filter(item => item.agree === false);
