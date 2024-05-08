@@ -168,14 +168,10 @@ const Login = (props: { onDone: () => void }) => {
             </p>
             {understand ? (
               <div className="flex_2s">
-                {localStorage.getItem('downloaded') === 'true' ? (
                   <DownloadSeedWords
                     text={seedWords}
                     title="Download Seed Phrase "
-                  />
-                ) : (
-                  ''
-                )}
+                  /> 
                 <button
                   className="btn btn_primary"
                   onClick={e => continueCreateAccount(priv)}
