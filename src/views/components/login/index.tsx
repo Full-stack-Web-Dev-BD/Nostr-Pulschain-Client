@@ -155,8 +155,8 @@ const Login = (props: { onDone: () => void }) => {
               </div>
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2, mb: 2 }}>
-              Your mnemonic seed phrase will be display under your user profile
-              (Once you Logged in ) . Please ensure to keep it safe as it is
+              Your mnemonic seed phrase will be display under your  profile
+              (Once you Logged in ) . Please ensure now to Download it and  keep it safe as it is
               crucial for recovering your account if needed.
             </Typography>
             <p>

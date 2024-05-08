@@ -43,6 +43,21 @@ const Invite = (props: { channel: Channel }) => {
                         }}
                     />
                 </Box>
+                <Box sx={{pt: '10px'}}>
+                <p> OR</p>
+                    <TextField
+                        label="Proposal ID"
+                        value={channel.id}
+                        fullWidth
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <CopyToClipboard copy={channel.id}>
+                                    <IconButton><ContentCopy height={18}/></IconButton>
+                                </CopyToClipboard>
+                            </InputAdornment>,
+                        }}
+                    />
+                </Box>
             </DialogContent>
         </>
     );
