@@ -33,6 +33,7 @@ export class TypedEventEmitter<
         event: T,
         listener: Listener<Events, Arguments, T>,
     ): this {
+        // console.log("fuck", super.addListener(event, listener))
         return super.addListener(event, listener);
     }
 

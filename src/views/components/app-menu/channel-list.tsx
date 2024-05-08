@@ -9,7 +9,7 @@ import useLiveChannels from 'hooks/use-live-channels';
 import useLivePublicMessages from 'hooks/use-live-public-messages';
 import ChannelAddMenu from 'views/components/app-menu/channel-add-menu';
 import ListItem from 'views/components/app-menu/list-item';
-import { channelAtom, keysAtom, readMarkMapAtom } from 'atoms';
+import { channelAtom, keysAtom, ravenAtom, readMarkMapAtom } from 'atoms';
 import { CiFileOff } from 'react-icons/ci';
 import { Channel } from 'types';
 
@@ -52,6 +52,7 @@ const ChannelList = () => {
   const theme = useTheme();
   const [t] = useTranslation();
   const channels = useLiveChannels();
+  const [raven] = useAtom(ravenAtom);
 
   return (
     <>
@@ -70,7 +71,7 @@ const ChannelList = () => {
             color: theme.palette.primary.dark,
           }}
         >
-          <h3>{t('Proposal History')}</h3>
+          <h3 onClick={async(e)=>console.log("p...",await raven?.fetchAllProposal())}>{t('Proposal History')}</h3>
         </Box>
         <ChannelAddMenu />
       </Box>

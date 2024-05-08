@@ -60,7 +60,7 @@ const ChannelMenu = () => {
             raven
               ?.deleteEvents([channel.id], '')
               .then(() => {
-                navigate('/channel').then();
+                navigate('/proposal').then();
               })
               .catch(e => {
                 showMessage(e.toString(), 'error');

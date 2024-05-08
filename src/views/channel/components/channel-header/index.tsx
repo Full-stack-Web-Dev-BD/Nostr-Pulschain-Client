@@ -15,7 +15,6 @@ import {
 } from 'util/function';
 
 import CountdownButton from './CountDownButton';
-import ProposalDetails from './ProposalDetails';
 
 const ChannelHeader = () => {
   const [keys] = useAtom(keysAtom);

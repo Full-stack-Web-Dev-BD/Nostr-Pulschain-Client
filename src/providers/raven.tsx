@@ -167,10 +167,7 @@ const RavenProvider = (props: { children: React.ReactNode }) => {
 
     // Channel creation handler
     const handleChannelCreation = (data: Channel[]) => {
-        logger.info('handleChannelCreation', data);
-        console.log("all channel================> ", data)
         const append = data.filter(x => channels.find(y => y.id === x.id) === undefined);
-        
         setChannels([...channels, ...append]);
     }
 

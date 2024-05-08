@@ -308,7 +308,7 @@ export  const contractABI = [
 	}
 ]; // Your contract ABI
 export const votingPeriod= 3
-export const plateformProposalKey="affba9d46a77d7816291608ee948c0e755a3314477bd3a9495aa3c9ba2139b07"
+export const plateformProposalKey="affba9d46a77d7816291608ee948c0e755a3314477bd3a9495aa3c9ba2139b04"
 
 export const proposalTypes = [
   {
