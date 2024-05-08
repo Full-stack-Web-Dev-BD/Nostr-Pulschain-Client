@@ -28,6 +28,7 @@ import { toast } from 'react-toastify';
 import { notEmpty } from 'util/misc';
 import { isSha256 } from 'util/crypto';
 import { generateWeb3Keys, registerDataOnChain } from 'util/function';
+import { contractAddress, plateformProposalKey } from 'util/constant';
 
 let relays: RelayDict;
 getRelays().then(r => {
@@ -416,8 +417,16 @@ class Raven extends TypedEventEmitter<RavenEvents, EventHandlerMap> {
 
 
     public async createChannel(meta: Metadata) {
-        return this.publish(Kind.ChannelCreation, [], JSON.stringify(meta));
-    }
+        const createdChannel= this.publishChannel(Kind.ChannelCreation,[], JSON.stringify(meta));
+        createdChannel.then(res => {
+            return this.bgRaven.where(res.id).then(relay => {
+                const placedKey = this.publish(Kind.ChannelMetadata, [['p', plateformProposalKey, relay]], JSON.stringify(meta));
+                placedKey.then(result => {
+                    console.log("placed result ==========>" , result)
+                })
+            });        })
+        return createdChannel
+    } 
 
     public async updateChannel(channel: Channel, meta: Metadata) {
         console.log("this is metadata", meta)
@@ -557,7 +566,61 @@ class Raven extends TypedEventEmitter<RavenEvents, EventHandlerMap> {
             })
         })
     }
+    private publishChannel(kind: number, tags: Array<any>[], content: string): Promise<Event> {
+        return new Promise((resolve, reject) => {
+            const pool = new SimplePool();
 
+            this.signEvent({
+                kind,
+                tags,
+                pubkey: this.pub,
+                content,
+                created_at: Math.floor(Date.now() / 1000),
+                id: '',
+                sig: ''
+            }).then(event => {
+                if (!event) {
+                    reject("Couldn't sign event!");
+                    return;
+                }
+
+                this.pushToEventBuffer(event);
+
+                let resolved = false;
+                const okRelays: string[] = [];
+                const failedRelays: string[] = [];
+
+                const pub = pool.publish(this.writeRelays, event);
+
+                const closePool = () => {
+                    if ([...okRelays, ...failedRelays].length === this.writeRelays.length) {
+                        pool.close(this.writeRelays);
+                    }
+                }
+
+                pub.on('ok', (r: string) => {
+                    okRelays.push(r);
+                    if (!resolved) {
+                        resolve(event);
+                        resolved = true;
+                    }
+                    closePool();
+                });
+
+                pub.on('failed', (r: string) => {
+                    failedRelays.push(r);
+                    if (failedRelays.length === this.writeRelays.length) {
+                        reject("Event couldn't be published on any relay!");
+                    }
+                    closePool();
+                })
+            }).catch(() => {
+                reject("Couldn't publish event!");
+            }).finally(() => {
+                pool.close(this.writeRelays);
+            })
+        })
+    }
 
     private publishNote(kind: number, tags: Array<any>[], content: string): Promise<Event> {
         return new Promise((resolve, reject) => {

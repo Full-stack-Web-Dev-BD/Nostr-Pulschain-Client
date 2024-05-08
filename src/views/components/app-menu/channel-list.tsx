@@ -92,7 +92,6 @@ const ChannelList = () => {
             </Box>
           );
         } else {
-          console.log('all channel ', channels);
           return channels.map(c => <ChannelListItem key={c.id} c={c} />);
         }
       })()}
