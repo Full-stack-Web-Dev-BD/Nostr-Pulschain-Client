@@ -48,6 +48,43 @@ const ChannelListItem = (props: { c: Channel }) => {
   );
 };
 
+const AllProposalChannelListItem = (props: { c: any }) => {
+  const { c } = props;
+
+  const location = useLocation();
+  const messages = useLivePublicMessages(c.id);
+  const [readMarkMap] = useAtom(readMarkMapAtom);
+  const [channel] = useAtom(channelAtom);
+  const [keys] = useAtom(keysAtom);
+
+  const lMessage = messages[messages.length - 1];
+  const hasUnread =
+    keys?.priv !== 'none' &&
+    !!(readMarkMap[c.id] && lMessage && lMessage.created > readMarkMap[c.id]);
+
+  const isSelected =
+    c.id === channel?.id && location.pathname.startsWith('/channel/');
+
+  return (
+    <>
+      {c.id ==
+      'f412192fdc846952c75058e911d37a7392aa7fd2e727330f4344badc92fb8a22' ? (
+        ''
+      ) : (
+          <div> 
+          <ListItem
+            key={c.id}
+            label={JSON.parse(c.content).name}
+            href={`/channel/${JSON.parse(JSON.parse(c.content).about).proposalID}`}
+            selected={isSelected}
+            hasUnread={hasUnread}
+          />
+        </div>
+      )}
+    </>
+  );
+};
+
 const ChannelList = () => {
   const theme = useTheme();
   const [t] = useTranslation();
@@ -81,11 +118,7 @@ const ChannelList = () => {
               color: theme.palette.primary.dark,
             }}
           >
-            <h3
-              onClick={async e =>
-                console.log('p...', channels)
-              }
-            >
+            <h3 onClick={async e => console.log('p...', channels)}>
               {t('Proposal History')}
             </h3>
           </Box>
@@ -117,7 +150,7 @@ const ChannelList = () => {
       <div>
         <Box
           sx={{
-            mt: '10px',
+            mt: '50px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -130,12 +163,12 @@ const ChannelList = () => {
               color: theme.palette.primary.dark,
             }}
           >
-            <h3 onClick={e=>console.log(allProposal)}>{t('All Proposal ')}</h3>
+            <h3 onClick={e => console.log(allProposal)}>
+              {t('All Proposal ')}
+            </h3>
           </Box>
-          <ChannelAddMenu />
         </Box>
-        <hr />
-        
+
         {(() => {
           if (allProposal.length === 0) {
             return (
@@ -153,7 +186,12 @@ const ChannelList = () => {
               </Box>
             );
           } else {
-            return allProposal.map((c:any) => <ChannelListItem key={c.id} c={c} />);
+            return allProposal.map((c: any) => (
+              <>
+                {console.log(JSON.parse(JSON.parse(c.content).about).proposalID)}
+              <AllProposalChannelListItem key={c.id} c={c} />
+              </>
+            ));
           }
         })()}
       </div>
