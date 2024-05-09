@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from '@reach/router';
 import { useAtom } from 'jotai';
 import { Box } from '@mui/material';
@@ -34,7 +34,7 @@ const ChannelListItem = (props: { c: Channel }) => {
     <>
       {c.id ==
       'f412192fdc846952c75058e911d37a7392aa7fd2e727330f4344badc92fb8a22' ? (
-        ""
+        ''
       ) : (
         <ListItem
           key={c.id}
@@ -53,49 +53,110 @@ const ChannelList = () => {
   const [t] = useTranslation();
   const channels = useLiveChannels();
   const [raven] = useAtom(ravenAtom);
+  const [allProposal, setAllProposal] = useState<any>([]);
+
+  useEffect(() => {
+    const init = async () => {
+      const allProposal = await raven?.fetchAllProposal();
+      setAllProposal(allProposal);
+    };
+    init();
+  }, []);
 
   return (
     <>
-      <Box
-        sx={{
-          mt: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <div>
         <Box
           sx={{
-            fontFamily: 'Faktum, sans-serif',
-            fontWeight: 'bold',
-            color: theme.palette.primary.dark,
+            mt: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
-          <h3 onClick={async(e)=>console.log("p...",await raven?.fetchAllProposal())}>{t('Proposal History')}</h3>
-        </Box>
-        <ChannelAddMenu />
-      </Box>
-      <hr />
-      {(() => {
-        if (channels.length === 1) {
-          return (
-            <Box
-              component="span"
-              sx={{
-                color: theme.palette.primary.dark,
-                fontSize: '85%',
-                opacity: '0.6',
-              }}
+          <Box
+            sx={{
+              fontFamily: 'Faktum, sans-serif',
+              fontWeight: 'bold',
+              color: theme.palette.primary.dark,
+            }}
+          >
+            <h3
+              onClick={async e =>
+                console.log('p...', channels)
+              }
             >
-              <h4 className="text-center">
-                {t('No Proposal Finded')} <CiFileOff />
-              </h4>
-            </Box>
-          );
-        } else {
-          return channels.map(c => <ChannelListItem key={c.id} c={c} />);
-        }
-      })()}
+              {t('Proposal History')}
+            </h3>
+          </Box>
+          <ChannelAddMenu />
+        </Box>
+        <hr />
+        {(() => {
+          if (channels.length === 1) {
+            return (
+              <Box
+                component="span"
+                sx={{
+                  color: theme.palette.primary.dark,
+                  fontSize: '85%',
+                  opacity: '0.6',
+                }}
+              >
+                <h4 className="text-center">
+                  {t('No Proposal Finded')} <CiFileOff />
+                </h4>
+              </Box>
+            );
+          } else {
+            return channels.map(c => <ChannelListItem key={c.id} c={c} />);
+          }
+        })()}
+      </div>
+
+      <div>
+        <Box
+          sx={{
+            mt: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box
+            sx={{
+              fontFamily: 'Faktum, sans-serif',
+              fontWeight: 'bold',
+              color: theme.palette.primary.dark,
+            }}
+          >
+            <h3 onClick={e=>console.log(allProposal)}>{t('All Proposal ')}</h3>
+          </Box>
+          <ChannelAddMenu />
+        </Box>
+        <hr />
+        
+        {(() => {
+          if (allProposal.length === 0) {
+            return (
+              <Box
+                component="span"
+                sx={{
+                  color: theme.palette.primary.dark,
+                  fontSize: '85%',
+                  opacity: '0.6',
+                }}
+              >
+                <h4 className="text-center">
+                  {t('No Proposal Finded')} <CiFileOff />
+                </h4>
+              </Box>
+            );
+          } else {
+            return allProposal.map((c:any) => <ChannelListItem key={c.id} c={c} />);
+          }
+        })()}
+      </div>
     </>
   );
 };

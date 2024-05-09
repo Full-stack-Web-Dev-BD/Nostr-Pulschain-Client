@@ -180,13 +180,13 @@ class Raven extends TypedEventEmitter<RavenEvents, EventHandlerMap> {
         ids: x,
       })),
     ]);
-    const publicEvents = await this.fetch([
+    const publicProposal = await this.fetch([
       {
         kinds: [Kind.ChannelMetadata],
         '#p': [plateformProposalKey],
       },
     ]);
-    console.log('Public Proposal', publicEvents);
+    console.log('Public Proposal', publicProposal);
     console.log('All of Proposal', events);
     console.log('Filtered Proposal', channels);
     channels.forEach(x => this.pushToEventBuffer(x));
