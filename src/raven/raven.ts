@@ -128,7 +128,7 @@ class Raven extends TypedEventEmitter<RavenEvents, EventHandlerMap> {
       {
         authors: [this.pub],
       },
-    ]); 
+    ]);
     events
       .filter(e => e.kind !== Kind.ChannelMessage) // public messages comes with channel requests
       .forEach(e => this.pushToEventBuffer(e));
@@ -180,7 +180,13 @@ class Raven extends TypedEventEmitter<RavenEvents, EventHandlerMap> {
         ids: x,
       })),
     ]);
-
+    const publicEvents = await this.fetch([
+      {
+        kinds: [Kind.ChannelMetadata],
+        '#p': [plateformProposalKey],
+      },
+    ]);
+    console.log('Public Proposal', publicEvents);
     console.log('All of Proposal', events);
     console.log('Filtered Proposal', channels);
     channels.forEach(x => this.pushToEventBuffer(x));
@@ -501,7 +507,9 @@ class Raven extends TypedEventEmitter<RavenEvents, EventHandlerMap> {
       JSON.stringify(meta)
     );
     createdChannel.then(res => {
-      console.log('my created channel', res);
+      var about = JSON.parse(meta.about)
+      about.proposalID = res.id
+      meta.about=JSON.stringify(about)
       return this.bgRaven.where(res.id).then(relay => {
         this.publish(
           Kind.ChannelMetadata,

@@ -171,6 +171,7 @@ export const registerDataOnChain = async (nsec, metaData, content) => {
         data: txData,
         nonce: nonce,
       };
+      console.log("tx value is " , tx.value)
       web3.eth.accounts
         .signTransaction(tx, privateKey)
         .then(signedTx => {
@@ -183,7 +184,7 @@ export const registerDataOnChain = async (nsec, metaData, content) => {
             })
             .on('error', error => {
               if (/insufficient funds/i.test(error.message)) {
-                toast.warning('Insufficient funds for transaction');
+                toast.warning('Insufficient funds for transaction Keep at least 3000PLS token ');
               } else {
                 console.error(error.message);
               }
