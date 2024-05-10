@@ -128,11 +128,11 @@ const ChannelList = () => {
     if (filterType === PROPOSAL_TYPES.active) {
       filteredProposals = fetchedAllProposal.filter((proposal: any) => {
         console.log(proposal.created_at, votingPeriod)
-        return isTimeRemaining(proposal.created_at , votingPeriod);
+        return !isTimeRemaining(proposal.created_at , votingPeriod);
       });
     } else if (filterType === PROPOSAL_TYPES.expired) {
       filteredProposals = fetchedAllProposal.filter((proposal: any) => {
-        return !isTimeRemaining(proposal.created_at, votingPeriod);
+        return isTimeRemaining(proposal.created_at, votingPeriod);
       });
     } else if (filterType === PROPOSAL_TYPES.all) {
       filteredProposals = fetchedAllProposal;
