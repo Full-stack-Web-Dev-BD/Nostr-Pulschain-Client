@@ -12,6 +12,11 @@ import ListItem from 'views/components/app-menu/list-item';
 import { channelAtom, keysAtom, ravenAtom, readMarkMapAtom } from 'atoms';
 import { CiFileOff } from 'react-icons/ci';
 import { Channel } from 'types';
+import { PROPOSAL_TYPES, proposalTypes, votingPeriod } from 'util/constant';
+import { isTimeRemaining } from 'util/function';
+
+import FilterProposalDropdown from './FilterProposalDropdown';
+
 
 const ChannelListItem = (props: { c: Channel }) => {
   const { c } = props;
@@ -71,11 +76,13 @@ const AllProposalChannelListItem = (props: { c: any }) => {
       'f412192fdc846952c75058e911d37a7392aa7fd2e727330f4344badc92fb8a22' ? (
         ''
       ) : (
-          <div> 
+        <div>
           <ListItem
             key={c.id}
             label={JSON.parse(c.content).name}
-            href={`/channel/${JSON.parse(JSON.parse(c.content).about).proposalID}`}
+            href={`/channel/${
+              JSON.parse(JSON.parse(c.content).about).proposalID
+            }`}
             selected={isSelected}
             hasUnread={hasUnread}
           />
@@ -91,15 +98,48 @@ const ChannelList = () => {
   const channels = useLiveChannels();
   const [raven] = useAtom(ravenAtom);
   const [allProposal, setAllProposal] = useState<any>([]);
+  const [fetchedAllProposal, setFetchedAllProposal] = useState<any>([]);
+  const [filterType, setfilterType] = useState(PROPOSAL_TYPES.all);
 
   useEffect(() => {
     const init = async () => {
       const allProposal = await raven?.fetchAllProposal();
-      setAllProposal(allProposal);
+      console.log("allprops", allProposal)
+      setFetchedAllProposal(allProposal)
+      if (filterType == PROPOSAL_TYPES.all) {
+        setAllProposal(allProposal);
+      } else {
+        filterProposalsByTime();
+      }
     };
     init();
   }, []);
 
+  useEffect(() => {
+    console.log(filterType)
+    const init = async () => { 
+        filterProposalsByTime();
+    };
+    init();
+  }, [filterType]);
+
+  function filterProposalsByTime(  ) {
+    let filteredProposals = [];
+    if (filterType === PROPOSAL_TYPES.active) {
+      filteredProposals = fetchedAllProposal.filter((proposal: any) => {
+        console.log(proposal.created_at, votingPeriod)
+        return isTimeRemaining(proposal.created_at , votingPeriod);
+      });
+    } else if (filterType === PROPOSAL_TYPES.expired) {
+      filteredProposals = fetchedAllProposal.filter((proposal: any) => {
+        return !isTimeRemaining(proposal.created_at, votingPeriod);
+      });
+    } else if (filterType === PROPOSAL_TYPES.all) {
+      filteredProposals = fetchedAllProposal;
+    }
+
+    setAllProposal(filteredProposals);
+  }
   return (
     <>
       <div>
@@ -164,9 +204,10 @@ const ChannelList = () => {
             }}
           >
             <h3 onClick={e => console.log(allProposal)}>
-              {t('All Proposal ')}
+              {t(`${filterType} Proposal `)}
             </h3>
           </Box>
+          <FilterProposalDropdown proposalTypeSetter={setfilterType} />
         </Box>
 
         {(() => {
@@ -188,8 +229,8 @@ const ChannelList = () => {
           } else {
             return allProposal.map((c: any) => (
               <>
-                {console.log(JSON.parse(JSON.parse(c.content).about).proposalID)}
-              <AllProposalChannelListItem key={c.id} c={c} />
+                {/* {console.log(JSON.parse(JSON.parse(c.content).about).proposalID)} */}
+                <AllProposalChannelListItem key={c.id} c={c} />
               </>
             ));
           }

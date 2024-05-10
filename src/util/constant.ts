@@ -309,7 +309,11 @@ export  const contractABI = [
 ]; // Your contract ABI
 export const votingPeriod= 300
 export const plateformProposalKey="affba9d46a77d7816291608ee948c0e755a3314477bd3a9495aa3c9ba2139b06"
-
+export const PROPOSAL_TYPES = {
+	all:'All',
+	active: 'Active',
+	expired: 'Expired'
+}
 export const proposalTypes = [
   {
     name: 'Strategic Proposal',
